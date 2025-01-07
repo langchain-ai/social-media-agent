@@ -1,4 +1,9 @@
+import { initChatModel } from "langchain/chat_models/universal";
+import { LangGraphRunnableConfig } from "@langchain/langgraph";
 import * as cheerio from "cheerio";
+import { LLM_MODEL_NAME } from "./generate-post/constants.js";
+import { ChatAnthropic } from "@langchain/anthropic";
+import { ChatVertexAI } from "@langchain/google-vertexai-web";
 
 /**
  * Extracts URLs from Slack-style message text containing links in the format:
@@ -435,4 +440,28 @@ export function removeQueryParams(url: string): string {
     // If URL parsing fails, return the original string
     return url;
   }
+}
+
+export async function getModelFromConfig(
+  config: LangGraphRunnableConfig,
+  modelArgs?: Record<string, any>,
+): Promise<ChatAnthropic | ChatVertexAI> {
+  const model = config.configurable?.[LLM_MODEL_NAME] || "gemini-2.0-flash-exp";
+
+  if (model.startsWith("gemini-")) {
+    return initChatModel(model, {
+      modelProvider: "google-vertexai-web",
+      apiKey: process.env.GOOGLE_VERTEX_AI_WEB_CREDENTIALS,
+      ...modelArgs,
+    }) as unknown as ChatVertexAI;
+  }
+  if (model.startsWith("claude-")) {
+    return initChatModel(model, {
+      modelProvider: "anthropic",
+      apiKey: process.env.ANTHROPIC_API_KEY,
+      ...modelArgs,
+    }) as unknown as ChatAnthropic;
+  }
+
+  throw new Error(`Unknown model: ${model}`);
 }

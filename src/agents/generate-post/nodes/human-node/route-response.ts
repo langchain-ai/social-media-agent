@@ -1,5 +1,6 @@
-import { ChatAnthropic } from "@langchain/anthropic";
 import { z } from "zod";
+import { getModelFromConfig } from "../../../utils.js";
+import { LangGraphRunnableConfig } from "@langchain/langgraph";
 
 const ROUTE_RESPONSE_PROMPT = `You are an AI assistant tasked with routing a user's response to one of two possible routes based on their intention. The two possible routes are:
 
@@ -55,15 +56,16 @@ interface RouteResponseArgs {
   post: string;
   dateOrPriority: string;
   userResponse: string;
+  config: LangGraphRunnableConfig;
 }
 
 export async function routeResponse({
   post,
   dateOrPriority,
   userResponse,
+  config,
 }: RouteResponseArgs) {
-  const model = new ChatAnthropic({
-    model: "claude-3-5-sonnet-20241022",
+  const model = await getModelFromConfig(config, {
     temperature: 0,
   });
 

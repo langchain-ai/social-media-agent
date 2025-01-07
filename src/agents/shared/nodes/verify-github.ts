@@ -1,6 +1,5 @@
 import { z } from "zod";
 import { LangGraphRunnableConfig } from "@langchain/langgraph";
-import { ChatAnthropic } from "@langchain/anthropic";
 import { LANGCHAIN_PRODUCTS_CONTEXT } from "../../generate-post/prompts.js";
 import { VerifyContentAnnotation } from "../shared-state.js";
 import { GeneratePostAnnotation } from "../../generate-post/generate-post-state.js";
@@ -9,6 +8,7 @@ import {
   getRepoContents,
   getFileContents,
 } from "../../../utils/github-repo-contents.js";
+import { getModelFromConfig } from "../../utils.js";
 
 type VerifyGitHubContentReturn = {
   relevantLinks: (typeof GeneratePostAnnotation.State)["relevantLinks"];
@@ -132,10 +132,11 @@ export async function verifyGitHubContentIsRelevant({
   dependenciesFileName,
   config,
 }: VerifyGitHubContentParams): Promise<boolean> {
-  const relevancyModel = new ChatAnthropic({
-    model: "claude-3-5-sonnet-20241022",
-    temperature: 0,
-  }).withStructuredOutput(RELEVANCY_SCHEMA, {
+  const relevancyModel = (
+    await getModelFromConfig(config, {
+      temperature: 0,
+    })
+  ).withStructuredOutput(RELEVANCY_SCHEMA, {
     name: "relevancy",
   });
 

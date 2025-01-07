@@ -6,13 +6,13 @@ import {
   StateGraph,
 } from "@langchain/langgraph";
 import { z } from "zod";
-import { ChatAnthropic } from "@langchain/anthropic";
 import {
   getReflections,
   putReflections,
   RULESET_KEY,
 } from "../../utils/reflections.js";
 import { REFLECTION_PROMPT, UPDATE_RULES_PROMPT } from "./prompts.js";
+import { getModelFromConfig } from "../utils.js";
 
 const newRuleSchema = z.object({
   newRule: z.string().describe("The new rule to create."),
@@ -47,8 +47,7 @@ async function reflection(
   if (!config.store) {
     throw new Error("No store provided");
   }
-  const model = new ChatAnthropic({
-    model: "claude-3-5-sonnet-latest",
+  const model = await getModelFromConfig(config, {
     temperature: 0,
   });
 

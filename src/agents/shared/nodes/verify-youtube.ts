@@ -2,7 +2,6 @@ import { z } from "zod";
 import { LangGraphRunnableConfig } from "@langchain/langgraph";
 import { GeneratePostAnnotation } from "../../generate-post/generate-post-state.js";
 import { ChatVertexAI } from "@langchain/google-vertexai-web";
-import { ChatAnthropic } from "@langchain/anthropic";
 import { HumanMessage } from "@langchain/core/messages";
 import { LANGCHAIN_PRODUCTS_CONTEXT } from "../../generate-post/prompts.js";
 import { VerifyContentAnnotation } from "../shared-state.js";
@@ -10,6 +9,7 @@ import {
   getVideoThumbnailUrl,
   getYouTubeVideoDuration,
 } from "./youtube.utils.js";
+import { getModelFromConfig } from "../../utils.js";
 
 type VerifyYouTubeContentReturn = {
   relevantLinks: (typeof GeneratePostAnnotation.State)["relevantLinks"];
@@ -90,11 +90,13 @@ export async function generateVideoSummary(url: string): Promise<string> {
 
 export async function verifyYouTubeContentIsRelevant(
   summary: string,
+  config: LangGraphRunnableConfig,
 ): Promise<boolean> {
-  const relevancyModel = new ChatAnthropic({
-    model: "claude-3-5-sonnet-20241022",
-    temperature: 0,
-  }).withStructuredOutput(RELEVANCY_SCHEMA, {
+  const relevancyModel = (
+    await getModelFromConfig(config, {
+      temperature: 0,
+    })
+  ).withStructuredOutput(RELEVANCY_SCHEMA, {
     name: "relevancy",
   });
 
@@ -120,7 +122,7 @@ export async function verifyYouTubeContentIsRelevant(
  */
 export async function verifyYouTubeContent(
   state: typeof VerifyContentAnnotation.State,
-  _config: LangGraphRunnableConfig,
+  config: LangGraphRunnableConfig,
 ): Promise<VerifyYouTubeContentReturn> {
   const [videoDurationS, videoThumbnail] = await Promise.all([
     getYouTubeVideoDuration(state.link),
@@ -140,7 +142,7 @@ export async function verifyYouTubeContent(
   }
 
   const videoSummary = await generateVideoSummary(state.link);
-  const relevant = await verifyYouTubeContentIsRelevant(videoSummary);
+  const relevant = await verifyYouTubeContentIsRelevant(videoSummary, config);
 
   if (relevant) {
     return {

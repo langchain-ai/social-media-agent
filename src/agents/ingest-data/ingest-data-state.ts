@@ -1,6 +1,9 @@
 import { Annotation } from "@langchain/langgraph";
 import { SimpleSlackMessage } from "../../clients/slack.js";
-import { POST_TO_LINKEDIN_ORGANIZATION } from "../generate-post/constants.js";
+import {
+  LLM_MODEL_NAME,
+  POST_TO_LINKEDIN_ORGANIZATION,
+} from "../generate-post/constants.js";
 
 export type LangChainProduct = "langchain" | "langgraph" | "langsmith";
 export type SimpleSlackMessageWithLinks = SimpleSlackMessage & {
@@ -50,4 +53,14 @@ export const IngestDataConfigurableAnnotation = Annotation.Root({
    * If true, [LINKEDIN_ORGANIZATION_ID] is required.
    */
   [POST_TO_LINKEDIN_ORGANIZATION]: Annotation<boolean | undefined>,
+  /**
+   * The name of the LLM to use for generations
+   * @default "gemini-2.0-flash-exp"
+   */
+  [LLM_MODEL_NAME]: Annotation<
+    "gemini-2.0-flash-exp" | "claude-3-5-sonnet-latest" | undefined
+  >({
+    reducer: (_state, update) => update,
+    default: () => "gemini-2.0-flash-exp",
+  }),
 });

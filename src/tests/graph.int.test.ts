@@ -14,10 +14,14 @@ import { getGitHubContentsAndTypeFromUrl } from "../agents/shared/nodes/verify-g
 import { verifyYouTubeContent } from "../agents/shared/nodes/verify-youtube.js";
 import { Command, MemorySaver } from "@langchain/langgraph";
 import { verifyTweetGraph } from "../agents/verify-tweet/verify-tweet-graph.js";
-import { POST_TO_LINKEDIN_ORGANIZATION } from "../agents/generate-post/constants.js";
+import {
+  LLM_MODEL_NAME,
+  POST_TO_LINKEDIN_ORGANIZATION,
+} from "../agents/generate-post/constants.js";
 
 const BASE_CONFIG = {
   [POST_TO_LINKEDIN_ORGANIZATION]: undefined,
+  [LLM_MODEL_NAME]: undefined,
 };
 
 describe("GeneratePostGraph", () => {

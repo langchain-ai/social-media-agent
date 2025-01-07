@@ -95,3 +95,5 @@ export const TWITTER_USER_ID = "twitterUserId";
 export const TWITTER_TOKEN = "twitterToken";
 export const TWITTER_TOKEN_SECRET = "twitterTokenSecret";
 export const INGEST_TWITTER_USERNAME = "ingestTwitterUsername";
+
+export const LLM_MODEL_NAME = "llmModel";
