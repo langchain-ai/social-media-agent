@@ -45,7 +45,8 @@ ${LANGCHAIN_PRODUCTS_CONTEXT}
 {repoDependenciesPrompt}
 
 Given this context, examine the  {file_type} closely, and determine if the repository implements LangChain's products.
-You should provide reasoning as to why or why not the repository implements LangChain's products, then a simple true or false for whether or not it implements some.`;
+You should provide reasoning as to why or why not the repository implements LangChain's products, then a simple true or false for whether or not it implements some.
+Always call the 'relevancy' tool to respond.`;
 
 const getDependencies = async (
   githubUrl: string,

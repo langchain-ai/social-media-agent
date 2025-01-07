@@ -451,7 +451,7 @@ export async function getModelFromConfig(
   if (model.startsWith("gemini-")) {
     return initChatModel(model, {
       modelProvider: "google-vertexai-web",
-      apiKey: process.env.GOOGLE_VERTEX_AI_WEB_CREDENTIALS,
+      // apiKey: process.env.GOOGLE_VERTEX_AI_WEB_CREDENTIALS,
       ...modelArgs,
     }) as unknown as ChatVertexAI;
   }
