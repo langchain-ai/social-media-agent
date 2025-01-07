@@ -1,12 +1,11 @@
 import { LangGraphRunnableConfig } from "@langchain/langgraph";
 import { GeneratePostAnnotation } from "../../generate-post/generate-post-state.js";
 import { z } from "zod";
-import { ChatAnthropic } from "@langchain/anthropic";
 import { FireCrawlLoader } from "@langchain/community/document_loaders/web/firecrawl";
 import { LANGCHAIN_PRODUCTS_CONTEXT } from "../../generate-post/prompts.js";
 import { VerifyContentAnnotation } from "../shared-state.js";
 import { RunnableLambda } from "@langchain/core/runnables";
-import { getPageText } from "../../utils.js";
+import { getModelFromConfig, getPageText } from "../../utils.js";
 
 type VerifyGeneralContentReturn = {
   relevantLinks: (typeof GeneratePostAnnotation.State)["relevantLinks"];
@@ -87,11 +86,13 @@ export async function getUrlContents(url: string): Promise<UrlContents> {
 
 export async function verifyGeneralContentIsRelevant(
   content: string,
+  config: LangGraphRunnableConfig,
 ): Promise<boolean> {
-  const relevancyModel = new ChatAnthropic({
-    model: "claude-3-5-sonnet-20241022",
-    temperature: 0,
-  }).withStructuredOutput(RELEVANCY_SCHEMA, {
+  const relevancyModel = (
+    await getModelFromConfig(config, {
+      temperature: 0,
+    })
+  ).withStructuredOutput(RELEVANCY_SCHEMA, {
     name: "relevancy",
   });
 
@@ -125,14 +126,17 @@ export async function verifyGeneralContentIsRelevant(
  */
 export async function verifyGeneralContent(
   state: typeof VerifyContentAnnotation.State,
-  _config: LangGraphRunnableConfig,
+  config: LangGraphRunnableConfig,
 ): Promise<VerifyGeneralContentReturn> {
   const urlContents = await new RunnableLambda<string, UrlContents>({
     func: getUrlContents,
   })
     .withConfig({ runName: "get-url-contents" })
     .invoke(state.link);
-  const relevant = await verifyGeneralContentIsRelevant(urlContents.content);
+  const relevant = await verifyGeneralContentIsRelevant(
+    urlContents.content,
+    config,
+  );
 
   if (relevant) {
     return {

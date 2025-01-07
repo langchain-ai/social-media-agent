@@ -1,11 +1,11 @@
 import { LangGraphRunnableConfig } from "@langchain/langgraph";
 import { GeneratePostAnnotation } from "../../generate-post-state.js";
-import { ChatAnthropic } from "@langchain/anthropic";
 import { GENERATE_POST_PROMPT, REFLECTIONS_PROMPT } from "./prompts.js";
 import { formatPrompt, parseGeneration } from "./utils.js";
 import { ALLOWED_TIMES } from "../../constants.js";
 import { getReflections, RULESET_KEY } from "../../../../utils/reflections.js";
 import { getNextSaturdayDate } from "../../../../utils/date.js";
+import { getModelFromConfig } from "../../../utils.js";
 
 export async function generatePost(
   state: typeof GeneratePostAnnotation.State,
@@ -17,8 +17,7 @@ export async function generatePost(
   if (state.relevantLinks.length === 0) {
     throw new Error("No relevant links found");
   }
-  const postModel = new ChatAnthropic({
-    model: "claude-3-5-sonnet-20241022",
+  const postModel = await getModelFromConfig(config, {
     temperature: 0.5,
   });
 

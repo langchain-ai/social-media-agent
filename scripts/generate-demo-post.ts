@@ -1,9 +1,5 @@
 import "dotenv/config";
 import { Client } from "@langchain/langgraph-sdk";
-// import {
-//   LINKEDIN_USER_ID,
-//   TWITTER_USER_ID,
-// } from "../src/agents/generate-post/constants.js";
 
 /**
  * Generate a post based on the Open Canvas project.
@@ -21,13 +17,6 @@ async function invokeGraph() {
   await client.runs.create(thread_id, "generate_post", {
     input: {
       links: [link],
-    },
-    config: {
-      configurable: {
-        // By default, the graph will read these values from the environment
-        // [TWITTER_USER_ID]: process.env.TWITTER_USER_ID,
-        // [LINKEDIN_USER_ID]: process.env.LINKEDIN_USER_ID,
-      },
     },
   });
 }

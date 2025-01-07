@@ -1,7 +1,7 @@
 import { LangGraphRunnableConfig } from "@langchain/langgraph";
 import { GeneratePostAnnotation } from "../generate-post-state.js";
 import { LANGCHAIN_PRODUCTS_CONTEXT } from "../prompts.js";
-import { ChatAnthropic } from "@langchain/anthropic";
+import { getModelFromConfig } from "../../utils.js";
 
 const GENERATE_REPORT_PROMPT = `You are a highly regarded marketing employee at LangChain.
 You have been tasked with writing a marketing report on content submitted to you from a third party which uses LangChain's products.
@@ -85,10 +85,9 @@ ${pageContents.map((content, index) => `<Content index={${index + 1}}>\n${conten
 
 export async function generateContentReport(
   state: typeof GeneratePostAnnotation.State,
-  _config: LangGraphRunnableConfig,
+  config: LangGraphRunnableConfig,
 ): Promise<Partial<typeof GeneratePostAnnotation.State>> {
-  const reportModel = new ChatAnthropic({
-    model: "claude-3-5-sonnet-20241022",
+  const reportModel = await getModelFromConfig(config, {
     temperature: 0,
   });
 

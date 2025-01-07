@@ -1,7 +1,8 @@
 import { z } from "zod";
 import { LANGCHAIN_PRODUCTS_CONTEXT } from "../../generate-post/prompts.js";
 import { VerifyTweetAnnotation } from "../verify-tweet-state.js";
-import { ChatAnthropic } from "@langchain/anthropic";
+import { getModelFromConfig } from "../../utils.js";
+import { LangGraphRunnableConfig } from "@langchain/langgraph";
 
 const RELEVANCY_SCHEMA = z
   .object({
@@ -31,11 +32,13 @@ You should provide reasoning as to why or why not the content implements LangCha
 
 async function verifyGeneralContentIsRelevant(
   content: string,
+  config: LangGraphRunnableConfig,
 ): Promise<boolean> {
-  const relevancyModel = new ChatAnthropic({
-    model: "claude-3-5-sonnet-20241022",
-    temperature: 0,
-  }).withStructuredOutput(RELEVANCY_SCHEMA, {
+  const relevancyModel = (
+    await getModelFromConfig(config, {
+      temperature: 0,
+    })
+  ).withStructuredOutput(RELEVANCY_SCHEMA, {
     name: "relevancy",
   });
 
@@ -81,13 +84,14 @@ ${pageContents.map((content, index) => `<webpage-content key="${index}">\n${cont
  */
 export async function validateTweetContent(
   state: typeof VerifyTweetAnnotation.State,
+  config: LangGraphRunnableConfig,
 ): Promise<Partial<typeof VerifyTweetAnnotation.State>> {
   const context = constructContext({
     tweetContent: state.tweetContent,
     pageContents: state.pageContents,
   });
 
-  const relevant = await verifyGeneralContentIsRelevant(context);
+  const relevant = await verifyGeneralContentIsRelevant(context, config);
 
   if (!relevant) {
     return {

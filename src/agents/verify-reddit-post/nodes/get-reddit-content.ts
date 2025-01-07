@@ -1,9 +1,9 @@
 import { LangGraphRunnableConfig } from "@langchain/langgraph";
 import { GeneratePostAnnotation } from "../../generate-post/generate-post-state.js";
 import { LANGCHAIN_PRODUCTS_CONTEXT } from "../../generate-post/prompts.js";
-import { ChatAnthropic } from "@langchain/anthropic";
 import { z } from "zod";
 import { VerifyRedditPostAnnotation } from "../verify-reddit-post-state.js";
+import { getModelFromConfig } from "../../utils.js";
 
 /**
  * TODO: Support handling links in the main content of the reddit post
@@ -94,7 +94,7 @@ You should provide reasoning as to why or why not the content implements LangCha
 
 export async function getRedditPostContent(
   state: typeof VerifyRedditPostAnnotation.State,
-  _config: LangGraphRunnableConfig,
+  config: LangGraphRunnableConfig,
 ): Promise<VerifyRedditContentReturn> {
   const url = new URL(state.link);
   const jsonUrl = `${url.origin}${url.pathname.endsWith("/") ? url.pathname.slice(0, -1) : url.pathname}.json`;
@@ -110,10 +110,11 @@ export async function getRedditPostContent(
     )
     .join("\n")}\n</replies>`;
 
-  const relevancyModel = new ChatAnthropic({
-    model: "claude-3-5-sonnet-20241022",
-    temperature: 0,
-  }).withStructuredOutput(RELEVANCY_SCHEMA, {
+  const relevancyModel = (
+    await getModelFromConfig(config, {
+      temperature: 0,
+    })
+  ).withStructuredOutput(RELEVANCY_SCHEMA, {
     name: "relevancy",
   });
 

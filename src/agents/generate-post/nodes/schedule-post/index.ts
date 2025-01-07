@@ -1,7 +1,10 @@
 import { LangGraphRunnableConfig } from "@langchain/langgraph";
 import { GeneratePostAnnotation } from "../../generate-post-state.js";
 import { Client } from "@langchain/langgraph-sdk";
-import { POST_TO_LINKEDIN_ORGANIZATION } from "../../constants.js";
+import {
+  LLM_MODEL_NAME,
+  POST_TO_LINKEDIN_ORGANIZATION,
+} from "../../constants.js";
 import { getScheduledDateSeconds } from "./find-date.js";
 import { SlackClient } from "../../../../clients/slack.js";
 import { getFutureDate } from "./get-future-date.js";
@@ -40,6 +43,8 @@ export async function schedulePost(
         [POST_TO_LINKEDIN_ORGANIZATION]:
           config.configurable?.[POST_TO_LINKEDIN_ORGANIZATION] ||
           process.env.POST_TO_LINKEDIN_ORGANIZATION,
+        [LLM_MODEL_NAME]:
+          config.configurable?.[LLM_MODEL_NAME] || "gemini-2.0-flash-exp",
       },
     },
     afterSeconds,

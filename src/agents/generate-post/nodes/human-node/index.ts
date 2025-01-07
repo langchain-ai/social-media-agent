@@ -78,7 +78,7 @@ Here is the report that was generated for the posts:\n${report}
 
 export async function humanNode(
   state: typeof GeneratePostAnnotation.State,
-  _config: LangGraphRunnableConfig,
+  config: LangGraphRunnableConfig,
 ): Promise<Partial<typeof GeneratePostAnnotation.State>> {
   if (!state.post) {
     throw new Error("No post found");
@@ -153,6 +153,7 @@ export async function humanNode(
       post: state.post,
       dateOrPriority: defaultDateString,
       userResponse: response.args,
+      config,
     });
 
     if (route === "rewrite_post") {
