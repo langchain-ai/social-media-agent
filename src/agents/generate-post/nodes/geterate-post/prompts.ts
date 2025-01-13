@@ -2,7 +2,7 @@ import {
   TWEET_EXAMPLES,
   POST_STRUCTURE_INSTRUCTIONS,
   POST_CONTENT_RULES,
-} from "../../prompts/prompts.langchain.js";
+} from "../../prompts/index.js";
 
 export const GENERATE_POST_PROMPT = `You're a highly regarded marketing employee, working on crafting thoughtful and engaging content for the LinkedIn and Twitter pages.
 You've been provided with a report on some content that you need to turn into a LinkedIn/Twitter post. The same post will be used for both platforms.

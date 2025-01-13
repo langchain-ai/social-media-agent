@@ -11,7 +11,7 @@ import { LangGraphRunnableConfig } from "@langchain/langgraph";
 import {
   POST_STRUCTURE_INSTRUCTIONS,
   POST_CONTENT_RULES,
-} from "../prompts/prompts.langchain.js";
+} from "../prompts/index.js";
 
 const CONDENSE_POST_PROMPT = `You're a highly skilled marketer at LangChain, working on crafting thoughtful and engaging content for LangChain's LinkedIn and Twitter pages.
 You wrote a post for the LangChain LinkedIn and Twitter pages, however it's a bit too long for Twitter, and thus needs to be condensed.
