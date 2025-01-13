@@ -145,26 +145,21 @@ export const ALLOWED_P3_DAY_AND_TIMES_IN_UTC = [
   { day: 1, hour: 1 },
 ];
 
-// const FIRST_ALLOWED_P3_HOUR_WEEKEND = 21;
-// const LAST_ALLOWED_P3_HOUR_WEEKEND = 23;
-// const FIRST_ALLOWED_P3_HOUR_MONDAY = 0;
-// const LAST_ALLOWED_P3_HOUR_MONDAY = 1;
-
-type TakenScheduleDates = {
+export type TakenScheduleDates = {
   p1: Date[];
   p2: Date[];
   p3: Date[];
 };
 
-const DEFAULT_TAKEN_DATES: TakenScheduleDates = {
+export const DEFAULT_TAKEN_DATES: TakenScheduleDates = {
   p1: [],
   p2: [],
   p3: [],
 };
 
-const NAMESPACE = ["taken_schedule_dates"];
-const KEY = "dates";
-const TAKEN_DATES_KEY = "taken_dates";
+export const SCHEDULE_DATES_NAMESPACE = ["taken_schedule_dates"];
+export const SCHEDULE_DATES_KEY = "dates";
+export const TAKEN_DATES_KEY = "taken_dates";
 
 /**
  * Searches the store for all taken schedule dates
@@ -178,7 +173,7 @@ export async function getTakenScheduleDates(
   if (!store) {
     throw new Error("No store provided");
   }
-  const takenDates = await store.get(NAMESPACE, KEY);
+  const takenDates = await store.get(SCHEDULE_DATES_NAMESPACE, SCHEDULE_DATES_KEY);
   if (!takenDates) {
     return DEFAULT_TAKEN_DATES;
   }
@@ -211,7 +206,7 @@ export async function putTakenScheduleDates(
     p2: takenDates.p2.map((d) => d.toISOString()),
     p3: takenDates.p3.map((d) => d.toISOString()),
   };
-  await store.put(NAMESPACE, KEY, {
+  await store.put(SCHEDULE_DATES_NAMESPACE, SCHEDULE_DATES_KEY, {
     [TAKEN_DATES_KEY]: serializedDates,
   });
 }
