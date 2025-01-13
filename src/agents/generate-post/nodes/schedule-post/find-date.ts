@@ -2,12 +2,18 @@ import { LangGraphRunnableConfig } from "@langchain/langgraph";
 import {
   isValid,
   addDays,
-  isSaturday,
   isSunday,
   isFriday,
   isMonday,
-  addMinutes,
+  isSaturday,
 } from "date-fns";
+import {
+  getNextFriday,
+  getNextMonday,
+  getNextSaturday,
+  isMondayOrFriday,
+  isWeekend,
+} from "./utils.js";
 import { DateType } from "../../../types.js";
 
 export function validateAfterSeconds(afterSeconds: number) {
@@ -51,6 +57,9 @@ export const ALLOWED_P1_DAY_AND_TIMES_IN_UTC = [
     hour: 18,
   },
 ];
+
+const LAST_ALLOWED_P1_HOUR = 18;
+const FIRST_ALLOWED_P1_HOUR = 16;
 
 export const ALLOWED_P2_DAY_AND_TIMES_IN_UTC = [
   // Monday 16:00 UTC (8AM PST)
@@ -115,74 +124,42 @@ export const ALLOWED_P2_DAY_AND_TIMES_IN_UTC = [
   },
 ];
 
+const FIRST_ALLOWED_P2_HOUR_WEEKDAY = 16;
+const LAST_ALLOWED_P2_HOUR_WEEKDAY = 18;
+const FIRST_ALLOWED_P2_HOUR_WEEKEND = 19;
+const LAST_ALLOWED_P2_HOUR_WEEKEND = 21;
+
 export const ALLOWED_P3_DAY_AND_TIMES_IN_UTC = [
-  // Sunday 21:00 UTC (1PM PST)
-  {
-    day: 0,
-    hour: 21,
-  },
-  // Sunday 22:00 UTC (2PM PST)
-  {
-    day: 0,
-    hour: 22,
-  },
-  // Sunday 23:00 UTC (3PM PST)
-  {
-    day: 0,
-    hour: 23,
-  },
-  // Monday 00:00 UTC (4PM PST Sunday)
-  {
-    day: 1,
-    hour: 0,
-  },
-  // Monday 01:00 UTC (5PM PST Sunday)
-  {
-    day: 1,
-    hour: 1,
-  },
-  // Saturday 21:00 UTC (1PM PST)
-  {
-    day: 6,
-    hour: 21,
-  },
-  // Saturday 22:00 UTC (2PM PST)
-  {
-    day: 6,
-    hour: 22,
-  },
-  // Saturday 23:00 UTC (3PM PST)
-  {
-    day: 6,
-    hour: 23,
-  },
-  // Sunday 00:00 UTC (4PM PST Saturday)
-  {
-    day: 0,
-    hour: 0,
-  },
-  // Sunday 01:00 UTC (5PM PST Saturday)
-  {
-    day: 0,
-    hour: 1,
-  },
+  // Saturday: 21, 22, 23
+  { day: 6, hour: 21 },
+  { day: 6, hour: 22 },
+  { day: 6, hour: 23 },
+  // Sunday: 0, 1, 21, 22, 23
+  { day: 0, hour: 0 },
+  { day: 0, hour: 1 },
+  { day: 0, hour: 21 },
+  { day: 0, hour: 22 },
+  { day: 0, hour: 23 },
+  // Monday: 0, 1
+  { day: 1, hour: 0 },
+  { day: 1, hour: 1 },
 ];
 
-type TakenScheduleDates = {
+export type TakenScheduleDates = {
   p1: Date[];
   p2: Date[];
   p3: Date[];
 };
 
-const DEFAULT_TAKEN_DATES: TakenScheduleDates = {
+export const DEFAULT_TAKEN_DATES: TakenScheduleDates = {
   p1: [],
   p2: [],
   p3: [],
 };
 
-const NAMESPACE = ["taken_schedule_dates"];
-const KEY = "dates";
-const TAKEN_DATES_KEY = "taken_dates";
+export const SCHEDULE_DATES_NAMESPACE = ["taken_schedule_dates"];
+export const SCHEDULE_DATES_KEY = "dates";
+export const TAKEN_DATES_KEY = "taken_dates";
 
 /**
  * Searches the store for all taken schedule dates
@@ -196,7 +173,7 @@ export async function getTakenScheduleDates(
   if (!store) {
     throw new Error("No store provided");
   }
-  const takenDates = await store.get(NAMESPACE, KEY);
+  const takenDates = await store.get(SCHEDULE_DATES_NAMESPACE, SCHEDULE_DATES_KEY);
   if (!takenDates) {
     return DEFAULT_TAKEN_DATES;
   }
@@ -229,7 +206,7 @@ export async function putTakenScheduleDates(
     p2: takenDates.p2.map((d) => d.toISOString()),
     p3: takenDates.p3.map((d) => d.toISOString()),
   };
-  await store.put(NAMESPACE, KEY, {
+  await store.put(SCHEDULE_DATES_NAMESPACE, SCHEDULE_DATES_KEY, {
     [TAKEN_DATES_KEY]: serializedDates,
   });
 }
@@ -238,132 +215,304 @@ function getAfterSeconds(date: Date, baseDate: Date = new Date()): number {
   return Math.floor((date.getTime() - baseDate.getTime()) / 1000);
 }
 
-export function isDateTaken(
-  date: Date,
-  takenDates: TakenScheduleDates | undefined,
+/**
+ * Given an input date, priority level, and taken dates,
+ * returns an available date on that day, or undefined if
+ * no times are available that day.
+ */
+function getNextAvailableDate(
+  dateToCheck: Date,
   priority: "p1" | "p2" | "p3",
-): boolean {
-  if (!takenDates) return false;
-  const hour = date.getUTCHours();
-  const day = date.getUTCDay();
-  const month = date.getUTCMonth();
-  const year = date.getUTCFullYear();
-
-  // Only check dates within the same priority level
-  const priorityDates = takenDates[priority];
-  return priorityDates.some((takenDate) => {
-    return (
-      hour === takenDate.getUTCHours() &&
-      day === takenDate.getUTCDay() &&
-      month === takenDate.getUTCMonth() &&
-      year === takenDate.getUTCFullYear()
-    );
-  });
-}
-
-function getNextValidDay(
-  currentDate: Date,
-  priority: "p1" | "p2" | "p3",
+  takenDates: TakenScheduleDates,
 ): Date {
-  const currentHour = currentDate.getUTCHours();
-  const currentMinutes = currentDate.getUTCMinutes();
+  const takenDatesForPriority = takenDates[priority];
+  // No times taken yet
+  if (!takenDatesForPriority.length) {
+    const dateToCheckDay = dateToCheck.getUTCDay();
+    if (priority === "p1") {
+      return new Date(
+        Date.UTC(
+          dateToCheck.getUTCFullYear(),
+          dateToCheck.getUTCMonth(),
+          dateToCheck.getUTCDate(),
+          FIRST_ALLOWED_P1_HOUR,
+          0,
+          0,
+          0,
+        ),
+      );
+    }
+    if (priority === "p2") {
+      const allowedHour = ALLOWED_P2_DAY_AND_TIMES_IN_UTC.find(
+        (d) => d.day === dateToCheckDay,
+      )?.hour;
+      if (allowedHour === undefined) {
+        throw new Error("Unreachable code");
+      }
+      return new Date(
+        Date.UTC(
+          dateToCheck.getUTCFullYear(),
+          dateToCheck.getUTCMonth(),
+          dateToCheck.getUTCDate(),
+          allowedHour,
+          0,
+          0,
+          0,
+        ),
+      );
+    }
+    if (priority === "p3") {
+      const allowedHour = ALLOWED_P3_DAY_AND_TIMES_IN_UTC.find(
+        (d) => d.day === dateToCheckDay,
+      )?.hour;
+      if (allowedHour === undefined) {
+        throw new Error("Unreachable code");
+      }
+      return new Date(
+        Date.UTC(
+          dateToCheck.getUTCFullYear(),
+          dateToCheck.getUTCMonth(),
+          dateToCheck.getUTCDate(),
+          allowedHour,
+          0,
+          0,
+          0,
+        ),
+      );
+    }
+  }
+  const lastTakenDate = takenDatesForPriority[takenDatesForPriority.length - 1];
+  const lastTakenHour = lastTakenDate.getUTCHours();
 
-  // For the current day, check if we've passed the time window
-  const isPastTimeWindow = (day: Date): boolean => {
-    const { end } = getTimeRangeForPriority(day, priority);
-    return (
-      currentHour > end.getUTCHours() ||
-      (currentHour === end.getUTCHours() &&
-        currentMinutes >= end.getUTCMinutes())
-    );
-  };
+  if (priority === "p1") {
+    // If the last taken date hour is before the last allowed hour, then simply add one hour to the last taken date
+    if (lastTakenHour < LAST_ALLOWED_P1_HOUR) {
+      // Add one hour to the last taken date
+      return new Date(
+        Date.UTC(
+          lastTakenDate.getUTCFullYear(),
+          lastTakenDate.getUTCMonth(),
+          lastTakenDate.getUTCDate(),
+          lastTakenHour + 1,
+          0,
+          0,
+          0,
+        ),
+      );
+    } else {
+      // The last taken date is the last allowed hour, so we can't add one hour to it
+      // Check if the next day is Sunday
+      const nextDay = addDays(lastTakenDate, 1);
+      if (isSunday(nextDay)) {
+        // The next day is sunday, meaning we can return the first allowed hour for P1
+        return new Date(
+          Date.UTC(
+            nextDay.getUTCFullYear(),
+            nextDay.getUTCMonth(),
+            nextDay.getUTCDate(),
+            FIRST_ALLOWED_P1_HOUR,
+            0,
+            0,
+            0,
+          ),
+        );
+      } else {
+        // The next day is not sunday, so we can find the next saturday and return the first allowed hour for P1
+        const nextSaturday = getNextSaturday(lastTakenDate);
+        return new Date(
+          Date.UTC(
+            nextSaturday.getUTCFullYear(),
+            nextSaturday.getUTCMonth(),
+            nextSaturday.getUTCDate(),
+            FIRST_ALLOWED_P1_HOUR,
+            0,
+            0,
+            0,
+          ),
+        );
+      }
+    }
+  }
 
-  // For P2, first try to find a valid weekday (Friday or Monday)
   if (priority === "p2") {
-    for (let i = 0; i < 7; i += 1) {
-      const candidateDate = addDays(currentDate, i);
-      if (isFriday(candidateDate) || isMonday(candidateDate)) {
-        if (i === 0 && isPastTimeWindow(candidateDate)) {
-          continue;
+    // Find the first available day
+    if (isMondayOrFriday(lastTakenDate)) {
+      if (lastTakenHour < LAST_ALLOWED_P2_HOUR_WEEKDAY) {
+        // Add one hour to the last taken date
+        return new Date(
+          Date.UTC(
+            lastTakenDate.getUTCFullYear(),
+            lastTakenDate.getUTCMonth(),
+            lastTakenDate.getUTCDate(),
+            lastTakenHour + 1,
+            0,
+            0,
+            0,
+          ),
+        );
+      } else {
+        // No more available times that day. Check if the current day is Monday. If it is, then we can return the first allowed weekday hour for p2 for the next friday
+        if (isMonday(lastTakenDate)) {
+          const nextFriday = getNextFriday(lastTakenDate);
+          return new Date(
+            Date.UTC(
+              nextFriday.getUTCFullYear(),
+              nextFriday.getUTCMonth(),
+              nextFriday.getUTCDate(),
+              FIRST_ALLOWED_P2_HOUR_WEEKDAY,
+              0,
+              0,
+              0,
+            ),
+          );
+        } else {
+          // It's not a Monday, likely meaning it's a Friday. We can get the first allowed weekend hour and the next saturday and use that
+          const nextSaturday = getNextSaturday(lastTakenDate);
+          return new Date(
+            Date.UTC(
+              nextSaturday.getUTCFullYear(),
+              nextSaturday.getUTCMonth(),
+              nextSaturday.getUTCDate(),
+              FIRST_ALLOWED_P2_HOUR_WEEKEND,
+              0,
+              0,
+              0,
+            ),
+          );
         }
-        return candidateDate;
       }
-    }
-  }
-
-  // For P1 and P3, find the next weekend day
-  const isWeekendPriority = priority === "p1" || priority === "p3";
-  if (isWeekendPriority) {
-    for (let i = 0; i < 7; i += 1) {
-      const candidateDate = addDays(currentDate, i);
-      if (isSaturday(candidateDate) || isSunday(candidateDate)) {
-        if (i === 0 && isPastTimeWindow(candidateDate)) {
-          continue;
+    } else if (isWeekend(lastTakenDate)) {
+      if (lastTakenHour < LAST_ALLOWED_P2_HOUR_WEEKEND) {
+        // Add one hour to the last taken date
+        return new Date(
+          Date.UTC(
+            lastTakenDate.getUTCFullYear(),
+            lastTakenDate.getUTCMonth(),
+            lastTakenDate.getUTCDate(),
+            lastTakenHour + 1,
+            0,
+            0,
+            0,
+          ),
+        );
+      } else {
+        // No more available times that day. Check if next day is sunday, and if so, return the first allowed hour for p2
+        const nextDay = addDays(lastTakenDate, 1);
+        if (isSunday(nextDay)) {
+          return new Date(
+            Date.UTC(
+              nextDay.getUTCFullYear(),
+              nextDay.getUTCMonth(),
+              nextDay.getUTCDate(),
+              FIRST_ALLOWED_P2_HOUR_WEEKEND,
+              0,
+              0,
+              0,
+            ),
+          );
+        } else {
+          // Next day is not sunday, so we can find the next monday and return the first allowed hour for p2
+          const nextMonday = getNextMonday(lastTakenDate);
+          return new Date(
+            Date.UTC(
+              nextMonday.getUTCFullYear(),
+              nextMonday.getUTCMonth(),
+              nextMonday.getUTCDate(),
+              FIRST_ALLOWED_P2_HOUR_WEEKDAY,
+              0,
+              0,
+              0,
+            ),
+          );
         }
-        return candidateDate;
       }
+    } else {
+      // It's not a Monday, Friday, or Weekend, so it must be a weekday. Get the next friday and return the first allowed hour for p2
+      const nextFriday = getNextFriday(lastTakenDate);
+      return new Date(
+        Date.UTC(
+          nextFriday.getUTCFullYear(),
+          nextFriday.getUTCMonth(),
+          nextFriday.getUTCDate(),
+          FIRST_ALLOWED_P2_HOUR_WEEKDAY,
+          0,
+          0,
+          0,
+        ),
+      );
     }
   }
 
-  // For P2, if no weekday was found, try weekend
-  for (let i = 0; i < 7; i += 1) {
-    const candidateDate = addDays(currentDate, i);
-    if (isSaturday(candidateDate) || isSunday(candidateDate)) {
-      if (i === 0 && isPastTimeWindow(candidateDate)) {
-        continue;
-      }
-      return candidateDate;
+  if (priority === "p3") {
+    const lastDay = lastTakenDate.getUTCDay();
+    const lastHour = lastTakenDate.getUTCHours();
+
+    // Try next slot in the same day
+    const sameDaySlots = ALLOWED_P3_DAY_AND_TIMES_IN_UTC.filter(
+      (slot) => slot.day === lastDay && slot.hour > lastHour,
+    ).sort((a, b) => a.hour - b.hour);
+
+    if (sameDaySlots.length) {
+      // Pick the earliest hour that’s > lastHour
+      const nextHour = sameDaySlots[0].hour;
+      return new Date(
+        Date.UTC(
+          lastTakenDate.getUTCFullYear(),
+          lastTakenDate.getUTCMonth(),
+          lastTakenDate.getUTCDate(),
+          nextHour,
+          0,
+          0,
+          0,
+        ),
+      );
     }
-  }
 
-  // If no valid day found in the next week, return the last checked date
-  return addDays(currentDate, 6);
-}
-
-function getTimeRangeForPriority(
-  date: Date,
-  priority: "p1" | "p2" | "p3",
-): { start: Date; end: Date } {
-  const allowedTimes =
-    priority === "p1"
-      ? ALLOWED_P1_DAY_AND_TIMES_IN_UTC
-      : priority === "p2"
-        ? ALLOWED_P2_DAY_AND_TIMES_IN_UTC
-        : ALLOWED_P3_DAY_AND_TIMES_IN_UTC;
-
-  const dayTimes = allowedTimes.filter((time) => time.day === date.getUTCDay());
-
-  if (dayTimes.length === 0) {
-    throw new Error(
-      `No allowed times found for day ${date.getUTCDay()} and priority ${priority}`,
+    // Else, no more slots in this day. Move forward day-by-day until you find a valid day.
+    let candidate = new Date(
+      Date.UTC(
+        lastTakenDate.getUTCFullYear(),
+        lastTakenDate.getUTCMonth(),
+        lastTakenDate.getUTCDate(),
+        0,
+        0,
+        0,
+        0,
+      ),
     );
+    candidate = addDays(candidate, 1); // move to next day, 00:00
+
+    for (let i = 0; i < 14; i++) {
+      const candidateDay = candidate.getUTCDay();
+      // All valid hours for that day
+      const validSlots = ALLOWED_P3_DAY_AND_TIMES_IN_UTC.filter(
+        (slot) => slot.day === candidateDay,
+      ).sort((a, b) => a.hour - b.hour);
+
+      if (validSlots.length) {
+        // pick earliest hour for this new day
+        const nextHour = validSlots[0].hour;
+        return new Date(
+          Date.UTC(
+            candidate.getUTCFullYear(),
+            candidate.getUTCMonth(),
+            candidate.getUTCDate(),
+            nextHour,
+            0,
+            0,
+            0,
+          ),
+        );
+      }
+
+      // otherwise, keep searching
+      candidate = addDays(candidate, 1);
+    }
+
+    throw new Error("Couldn't find a valid p3 slot within 2 weeks!");
   }
 
-  const startHour = Math.min(...dayTimes.map((t) => t.hour));
-  const endHour = Math.max(...dayTimes.map((t) => t.hour));
-
-  return {
-    start: new Date(
-      Date.UTC(
-        date.getUTCFullYear(),
-        date.getUTCMonth(),
-        date.getUTCDate(),
-        startHour,
-        0,
-        0,
-      ),
-    ),
-    end: new Date(
-      Date.UTC(
-        date.getUTCFullYear(),
-        date.getUTCMonth(),
-        date.getUTCDate(),
-        endHour,
-        0,
-        0,
-      ),
-    ),
-  };
+  throw new Error("Unreachable code");
 }
 
 function validateScheduleDate(date: Date, baseDate: Date): void {
@@ -374,9 +523,6 @@ function validateScheduleDate(date: Date, baseDate: Date): void {
     );
   }
 }
-
-const MAX_WEEKS_AHEAD = 52; // Maximum weeks to look ahead (1 year)
-const MAX_DAYS_AHEAD = 365; // Maximum days to look ahead (1 year)
 
 export async function getScheduledDateSeconds(
   scheduleDate: DateType,
@@ -397,67 +543,127 @@ export async function getScheduledDateSeconds(
   }
 
   const takenScheduleDates = await getTakenScheduleDates(config);
+  let currentTime = baseDate;
+  const currentDayUTCHours = baseDate.getUTCHours();
 
-  // For P1 and P3, look for available weekend slots within the next 52 weeks
-  if (priority === "p1" || priority === "p3") {
-    let weekOffset = 0;
-    while (weekOffset < MAX_WEEKS_AHEAD) {
-      const candidateDate = addDays(baseDate, weekOffset * 7);
-      const nextWeekendDay = getNextValidDay(candidateDate, priority);
-      const { start, end } = getTimeRangeForPriority(nextWeekendDay, priority);
-
-      let currentTime = start;
-      while (currentTime <= end) {
-        if (!isDateTaken(currentTime, takenScheduleDates, priority)) {
-          validateScheduleDate(currentTime, baseDate);
-          takenScheduleDates[priority].push(currentTime);
-          await putTakenScheduleDates(takenScheduleDates, config);
-          return getAfterSeconds(currentTime, baseDate);
+  if (priority === "p1") {
+    // Check if the current date is a saturday/sunday
+    if (isWeekend(baseDate)) {
+      // Check if there are available slots for the current date
+      if (currentDayUTCHours >= LAST_ALLOWED_P1_HOUR) {
+        // If the current hour is 6PM (UTC) or later, advance to the next day
+        currentTime = addDays(baseDate, 1);
+        // Reset the hour to midnight UTC
+        currentTime = new Date(currentTime.setUTCHours(0, 0, 0, 0));
+        if (!isSunday(currentTime)) {
+          // After adding one day, we must check if the day is Sunday. If not, we must assign
+          // the next Saturday at midnight
+          currentTime = getNextSaturday(currentTime);
         }
-        currentTime = addMinutes(currentTime, 60);
+      } else {
+        // This means the current time is before 6PM (UTC), and it's a weekend. We can do nothing and get the next available time.
       }
-
-      // If Saturday slots are full, try Sunday
-      if (isSaturday(nextWeekendDay)) {
-        const nextDay = addDays(nextWeekendDay, 1);
-        const { start, end } = getTimeRangeForPriority(nextDay, priority);
-
-        let currentTime = start;
-        while (currentTime <= end) {
-          if (!isDateTaken(currentTime, takenScheduleDates, priority)) {
-            validateScheduleDate(currentTime, baseDate);
-            takenScheduleDates[priority].push(currentTime);
-            await putTakenScheduleDates(takenScheduleDates, config);
-            return getAfterSeconds(currentTime, baseDate);
-          }
-          currentTime = addMinutes(currentTime, 60);
-        }
-      }
-      weekOffset++;
+    } else {
+      // If the current date is not a Saturday or Sunday, assign the next Saturday at midnight
+      currentTime = getNextSaturday(currentTime);
     }
-
-    throw new Error("No available schedule date found");
   }
 
-  // For P2, try until we find an available slot within the next 365 days
-  let dayOffset = 0;
-  while (dayOffset < MAX_DAYS_AHEAD) {
-    const candidateDate = addDays(baseDate, dayOffset);
-    const nextValidDay = getNextValidDay(candidateDate, priority);
-    const { start, end } = getTimeRangeForPriority(nextValidDay, priority);
-
-    let currentTime = start;
-    while (currentTime <= end) {
-      if (!isDateTaken(currentTime, takenScheduleDates, priority)) {
-        validateScheduleDate(currentTime, baseDate);
-        takenScheduleDates[priority].push(currentTime);
-        await putTakenScheduleDates(takenScheduleDates, config);
-        return getAfterSeconds(currentTime, baseDate);
+  if (priority === "p2") {
+    // Find the first available day
+    if (isMondayOrFriday(baseDate)) {
+      // Current date is a weekday, so check if the current hour is before the last allowed hour
+      if (currentDayUTCHours >= LAST_ALLOWED_P2_HOUR_WEEKDAY) {
+        // If the current hour is 5PM (UTC) or later, advance to the next day. To do this, check if the current day is a Friday.
+        // If it's not a friday, we can assume it's a monday and we can find the next friday
+        if (isFriday(baseDate)) {
+          currentTime = addDays(baseDate, 1);
+          currentTime = new Date(currentTime.setUTCHours(0, 0, 0, 0));
+        } else {
+          // base date is likely a monday
+          currentTime = getNextFriday(currentTime);
+        }
+      } else {
+        // This means the current time is before 5PM (UTC), and it's a weekday. We can do nothing and get the next available time.
       }
-      currentTime = addMinutes(currentTime, 60);
+    } else if (isWeekend(baseDate)) {
+      if (currentDayUTCHours >= LAST_ALLOWED_P2_HOUR_WEEKEND) {
+        // If the current hour is 5PM (UTC) or later, advance to the next day and check if it's a Sunday. If not, get the next monday
+        const nextDay = addDays(baseDate, 1);
+        if (isSunday(nextDay)) {
+          currentTime = new Date(nextDay.setUTCHours(0, 0, 0, 0));
+        } else {
+          currentTime = getNextMonday(currentTime);
+        }
+      } else {
+        // This means the current time is before 5PM (UTC), and it's a weekend. We can do nothing and get the next available time.
+      }
+    } else {
+      // The date is not a Monday/Friday, or weekend. We can assume it's a weekday and get the next friday
+      currentTime = getNextFriday(currentTime);
     }
-    dayOffset++;
   }
 
-  throw new Error("No available schedule date found");
+  if (priority === "p3") {
+    const hour = baseDate.getUTCHours();
+
+    if (isSaturday(baseDate)) {
+      if (hour >= 23) {
+        // Next day @ midnight
+        let tmp = addDays(baseDate, 1);
+        tmp = new Date(tmp.setUTCHours(0, 0, 0, 0));
+        if (!isSunday(tmp) && !isMonday(tmp)) {
+          tmp = getNextSaturday(tmp);
+        }
+        currentTime = tmp;
+      }
+      // else do nothing, we’re still on Saturday < 23
+    } else if (isSunday(baseDate)) {
+      if (hour >= 23) {
+        let tmp = addDays(baseDate, 1);
+        tmp = new Date(tmp.setUTCHours(0, 0, 0, 0));
+        if (!isMonday(tmp)) {
+          tmp = getNextSaturday(tmp);
+        }
+        currentTime = tmp;
+      }
+    } else if (isMonday(baseDate)) {
+      // Monday is valid only at hour=0 in your updated config
+      if (hour >= 0) {
+        // If it’s already Monday 0:00 or later, you might allow that single slot,
+        // but if your code sees hour=0 as "already used up," it can jump to Tuesday:
+        //     let tmp = addDays(baseDate, 1);
+        //     tmp = new Date(tmp.setUTCHours(0, 0, 0, 0));
+        //     tmp = getNextSaturday(tmp);
+        //     currentTime = tmp;
+        //
+        // BUT probably you do "do nothing" if hour=0,
+        // else jump to next Saturday if hour>0
+        if (hour > 1) {
+          // Jump to next Saturday
+          let tmp = addDays(baseDate, 1); // Tuesday
+          tmp = new Date(tmp.setUTCHours(0, 0, 0, 0));
+          tmp = getNextSaturday(tmp);
+          currentTime = tmp;
+        }
+      }
+    } else {
+      // If not Sat/Sun/Mon, jump to next Saturday @ 00:00
+      currentTime = getNextSaturday(baseDate);
+    }
+  }
+
+  const nextAvailDate = getNextAvailableDate(
+    currentTime,
+    priority,
+    takenScheduleDates,
+  );
+  if (!nextAvailDate) {
+    throw new Error("Received no available times");
+  }
+
+  validateScheduleDate(nextAvailDate, baseDate);
+  takenScheduleDates[priority].push(nextAvailDate);
+  await putTakenScheduleDates(takenScheduleDates, config);
+  return getAfterSeconds(nextAvailDate, baseDate);
 }

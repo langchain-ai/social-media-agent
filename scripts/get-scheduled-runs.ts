@@ -25,8 +25,8 @@ async function sendPendingRunsToSlack(messageString: string) {
 
 async function getScheduledRuns() {
   const client = new Client({
-    // apiUrl: process.env.LANGGRAPH_API_URL,
-    apiUrl: "http://localhost:54367",
+    apiUrl: process.env.LANGGRAPH_API_URL,
+    // apiUrl: "http://localhost:54367",
   });
   const threads = await client.threads.search({
     metadata: {
