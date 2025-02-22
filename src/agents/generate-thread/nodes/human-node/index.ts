@@ -6,7 +6,7 @@ import {
   parseDateResponse,
 } from "../../../../utils/date.js";
 import { formatInTimeZone } from "date-fns-tz";
-import { HumanInterrupt, HumanResponse } from "../../../types.js";
+import { HumanInterrupt, HumanResponse } from "@langchain/langgraph/prebuilt";
 import { processImageInput } from "../../../utils.js";
 import { routeResponse } from "../../../shared/nodes/route-response.js";
 

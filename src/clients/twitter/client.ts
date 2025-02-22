@@ -485,37 +485,54 @@ export class TwitterClient {
    * A thread is defined as a series of tweets where the author replies to their own tweets.
    *
    * @param {string} id - The ID of the initial tweet in the thread
-   * @param {string} authorIdOrUsername - The ID or username of the author who created the thread
+   * @param {string} username - The username of the author who created the thread
    * @returns {Promise<TweetV2[]>} An array of tweets in chronological order. This does NOT include the initial tweet, only the replies.
    */
-  async getThreadReplies(
-    id: string,
-    authorIdOrUsername: string,
-  ): Promise<TweetV2[]> {
+  async getThreadReplies(id: string, username: string): Promise<TweetV2[]> {
     const fetchTweetOptions: Partial<Tweetv2FieldsParams> =
       BASE_FETCH_TWEET_OPTIONS;
 
     const thread: TweetV2[] = [];
 
     // Search for replies by the same author, to the same author. This must result in a thread, or the author is replying to themselves.
-    const replies = await this.twitterClient.v2.search(
-      `conversation_id:${id} from:${authorIdOrUsername} to:${authorIdOrUsername}`,
-      {
-        ...fetchTweetOptions,
-        max_results: 15, // Limit to 15 replies as most threads will not be longer than this.
-      },
-    );
+    const query = `conversation_id:${id} from:${username} to:${username}`;
+
+    const replies = await this.twitterClient.v2.searchAll(query, {
+      ...fetchTweetOptions,
+      sort_order: "recency",
+      max_results: 2, // Limit to 15 replies as most threads will not be longer than this.
+    });
 
     if (!replies.data || !replies.data.data) {
       return thread;
     }
 
-    const formattedThreads: TweetV2[] = replies.data.data.sort((a, b) => {
-      return (
-        new Date(a.created_at!).getTime() - new Date(b.created_at!).getTime()
-      );
-    });
+    return replies.data.data;
+  }
+}
 
-    return formattedThreads;
+/**
+ * Gets a TwitterClient instance. Will use Arcade auth if USE_ARCADE_AUTH is true, otherwise will use basic auth.
+ * @returns A TwitterClient instance.
+ */
+export async function getTwitterClient(): Promise<TwitterClient> {
+  const useArcadeAuth = process.env.USE_ARCADE_AUTH;
+  const useTwitterApiOnly = process.env.USE_TWITTER_API_ONLY;
+
+  if (useTwitterApiOnly === "true" || useArcadeAuth !== "true") {
+    return TwitterClient.fromBasicTwitterAuth();
+  } else {
+    const twitterUserId = process.env.TWITTER_USER_ID;
+    if (!twitterUserId) {
+      throw new Error("Twitter user ID not found in configurable fields.");
+    }
+
+    const twitterToken = process.env.TWITTER_USER_TOKEN;
+    const twitterTokenSecret = process.env.TWITTER_USER_TOKEN_SECRET;
+
+    return TwitterClient.fromArcade(twitterUserId, {
+      twitterToken,
+      twitterTokenSecret,
+    });
   }
 }

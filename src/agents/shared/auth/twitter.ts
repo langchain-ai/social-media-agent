@@ -1,7 +1,7 @@
 // @ts-expect-error - The type is used in the JSDoc comment, but not defined in the code.
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { interrupt, type NodeInterrupt } from "@langchain/langgraph";
-import { HumanInterrupt, HumanResponse } from "../../types.js";
+import { HumanInterrupt, HumanResponse } from "@langchain/langgraph/prebuilt";
 import Arcade from "@arcadeai/arcadejs";
 import { TwitterClient } from "../../../clients/twitter/client.js";
 

@@ -2,6 +2,7 @@ import { ChatOpenAI } from "@langchain/openai";
 import { GenerateReportState } from "../state.js";
 import { EXTRACT_KEY_DETAILS_PROMPT } from "../prompts.js";
 import { TweetsGroupedByContent } from "../../curate-data/types.js";
+import { formatImageMessages } from "../utils.js";
 
 const formatKeyDetailsPrompt = (
   pageContents: string[],
@@ -61,11 +62,16 @@ export async function extractKeyDetails(
     streaming: false,
   });
 
+  const imageMessage = state.imageOptions?.length
+    ? formatImageMessages(state.imageOptions)
+    : undefined;
+
   const keyDetailsRes = await model.invoke([
     {
       role: "system",
       content: EXTRACT_KEY_DETAILS_PROMPT,
     },
+    ...(imageMessage ? [imageMessage] : []),
     {
       role: "user",
       content: keyDetailsPrompt,

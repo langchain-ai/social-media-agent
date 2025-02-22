@@ -10,7 +10,8 @@
     "verify_reddit_post": "./src/agents/verify-reddit-post/verify-reddit-post-graph.ts:verifyRedditPostGraph",
     "verify_tweet": "./src/agents/verify-tweet/verify-tweet-graph.ts:verifyTweetGraph",
     "supervisor": "./src/agents/supervisor/supervisor-graph.ts:supervisorGraph",
-    "generate_report": "./src/agents/generate-report/index.ts:generateReportGraph"
+    "generate_report": "./src/agents/generate-report/index.ts:generateReportGraph",
+    "repurposer": "./src/agents/repurposer/index.ts:repurposerGraph"
   },
   "env": ".env",
   "dependencies": ["."],

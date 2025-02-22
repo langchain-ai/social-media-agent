@@ -1,41 +1,37 @@
+import { traceable } from "langsmith/traceable";
 import { ChatVertexAI } from "@langchain/google-vertexai-web";
-import { FindImagesAnnotation } from "../find-images-graph.js";
 import { chunkArray, imageUrlToBuffer, isValidUrl } from "../../utils.js";
+import { RepurposerState } from "../types.js";
 import { getImageMessageContents } from "../../../utils/image-message.js";
 
-const VALIDATE_IMAGES_PROMPT = `You are an advanced AI assistant tasked with validating image options for a social media post.
-Your goal is to identify which images from a given set are relevant to the post, based on the content of the post and an associated marketing report.
+const VALIDATE_IMAGES_PROMPT = `You are an advanced AI assistant tasked with validating image options to be included in context when generating a marketing report for a social media campaign.
+Your task is to identify which images extracted from a blog/webpage are relevant to the marketing campaign, and will be useful when writing a marketing report.
 
-First, carefully read and analyze the following social media post:
+First, carefully read and analyze the full text content extracted from the blog/webpage:
 
-<post>
-{POST}
-</post>
-
-Now, review the marketing report that was used to generate this post:
-
-<report>
-{REPORT}
-</report>
+<page-contents>
+{PAGE_CONTENTS}
+</page-contents>
 
 To determine which images are relevant, consider the following criteria:
-1. Does the image directly illustrate a key point or theme from the post?
-2. Does the image represent any products, services, or concepts mentioned in either the post or the report?
+1. Does the image directly illustrate a key point or theme from the webpage?
+2. Does the image represent any products, services, or concepts mentioned throughout the webpage?
+3. Is the image highly relevant, or a technical illustration? 
 
 You should NEVER include images which are:
-- Logos, icons, or profile pictures (unless it is a LangChain/LangGraph/LangSmith logo).
+- Only containing logos, icons, or profile pictures.
 - Personal, or non-essential images from a business perspective.
-- Small, low-resolution images. These are likely accidentally included in the post and should be excluded.
+- Small, low-resolution images. These are likely accidentally included in the marketing campaign and should be excluded.
 
-You will be presented with a list of image options. Your task is to identify which of these images are relevant to the post based on the criteria above.
+You will be presented with a list of image options. Your task is to identify which of these images are relevant to the marketing campaign based on the criteria above.
 
 Provide your response in the following format:
-1. <analysis> tag: Briefly explain your thought process for each image, referencing specific elements from the post and report.
+1. <analysis> tag: Briefly explain your thought process for each image, referencing specific elements from the webpage.
 2. <relevant_indices> tag: List the indices of the relevant images, starting from 0, separated by commas.
 
 Ensure you ALWAYS WRAP your analysis and relevant indices inside the <analysis> and <relevant_indices> tags, respectively. Do not only prefix, but ensure they are wrapped completely.
 
-Remember to carefully consider each image in relation to both the post content and the marketing report.
+Remember to carefully consider each image in relation to the webpage content.
 Be thorough in your analysis, but focus on the most important factors that determine relevance.
 If an image is borderline, err on the side of inclusion.
 
@@ -43,6 +39,39 @@ Provide your complete response within <answer> tags.
 `;
 
 export function parseResult(result: string): number[] {
+  if (result.includes("<relevant_indices>")) {
+    let relevantIndicesText = "";
+    if (result.includes("</relevant_indices>")) {
+      relevantIndicesText = result
+        .split("<relevant_indices>")[1]
+        ?.split("</relevant_indices>")[0]
+        ?.replaceAll(" ", "")
+        .replaceAll("\n", "");
+    } else if (result.includes("</answer>")) {
+      relevantIndicesText = result
+        .split("<relevant_indices>")[1]
+        ?.split("</answer>")[0]
+        ?.replaceAll(" ", "")
+        .replaceAll("\n", "");
+    }
+
+    if (relevantIndicesText?.length) {
+      if (!relevantIndicesText.includes(",")) {
+        // Add a comma so the code below which parses the string into an array will work.
+        relevantIndicesText += ",";
+      }
+
+      const indices = relevantIndicesText
+        .split(",")
+        .map((s) => s.trim())
+        .filter((s) => s.length > 0)
+        .map(Number);
+      if (indices.length && indices.every((n) => !isNaN(n))) {
+        return indices;
+      }
+    }
+  }
+
   const match = result.match(
     /<relevant_indices>\s*([\d,\s]*?)\s*<\/relevant_indices>/s,
   );
@@ -125,15 +154,23 @@ async function filterImageUrls(imageOptions: string[]): Promise<{
   };
 }
 
-export async function validateImages(
-  state: typeof FindImagesAnnotation.State,
-): Promise<{
+const extractIndicesFromText = traceable(
+  (text: string): number[] => {
+    const chunkAnalysis = parseResult(text);
+    return chunkAnalysis;
+  },
+  {
+    name: "extractIndicesFromText",
+  },
+);
+
+export async function validateImages(state: RepurposerState): Promise<{
   imageOptions: string[] | undefined;
 }> {
-  const { imageOptions, report, post } = state;
+  const { imageOptions, originalContent } = state;
 
   const model = new ChatVertexAI({
-    model: "gemini-2.0-flash-exp",
+    model: "gemini-2.0-pro-exp-02-05",
     temperature: 0,
   });
 
@@ -148,13 +185,13 @@ export async function validateImages(
 
   // Split images into chunks of 10
   const imageChunks = chunkArray(imagesWithoutProtected, 10);
-  let allIrrelevantIndices: number[] = [];
+  let allRelevantIndices: number[] = [];
   let baseIndex = 0;
 
   const formattedSystemPrompt = VALIDATE_IMAGES_PROMPT.replace(
-    "{POST}",
-    post,
-  ).replace("{REPORT}", report);
+    "{PAGE_CONTENTS}",
+    originalContent,
+  );
 
   // Process each chunk
   for (const imageChunk of imageChunks) {
@@ -176,10 +213,10 @@ export async function validateImages(
         },
       ]);
 
-      const chunkAnalysis = parseResult(response.content as string);
-      // Convert chunk indices to global indices and add to our list of relevant indices
-      const globalIndices = chunkAnalysis.map((index) => index + baseIndex);
-      allIrrelevantIndices = [...allIrrelevantIndices, ...globalIndices];
+      allRelevantIndices = [
+        ...allRelevantIndices,
+        ...(await extractIndicesFromText(response.content as string)),
+      ];
     } catch (error) {
       console.error(
         `Failed to validate images.\nImage URLs: ${imageMessages
@@ -188,12 +225,6 @@ export async function validateImages(
           .join(", ")}\n\nError:`,
         error,
       );
-      // Add all indices from the failed chunk to allIrrelevantIndices
-      const failedChunkIndices = Array.from(
-        { length: imageChunk.length },
-        (_, i) => i + baseIndex,
-      );
-      allIrrelevantIndices = [...allIrrelevantIndices, ...failedChunkIndices];
     }
 
     baseIndex += imageChunk.length;
@@ -206,12 +237,12 @@ export async function validateImages(
       fileUri.startsWith(YOUTUBE_THUMBNAIL_URL),
   );
 
-  // Keep only the relevant images (those whose indices are in allIrrelevantIndices)
+  // Keep only the relevant images (those whose indices are in allRelevantIndices)
   return {
     imageOptions: [
       ...(protectedUrls || []),
       ...(imagesWithoutProtected || []).filter((_, index) =>
-        allIrrelevantIndices.includes(index),
+        allRelevantIndices.some((i) => i === index),
       ),
     ],
   };

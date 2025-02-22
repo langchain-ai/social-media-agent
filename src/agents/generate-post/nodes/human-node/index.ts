@@ -1,7 +1,6 @@
 import { END, LangGraphRunnableConfig, interrupt } from "@langchain/langgraph";
 import { GeneratePostAnnotation } from "../../generate-post-state.js";
 import { formatInTimeZone } from "date-fns-tz";
-import { HumanInterrupt, HumanResponse } from "../../../types.js";
 import { isTextOnly, processImageInput } from "../../../utils.js";
 import {
   getNextSaturdayDate,
@@ -9,6 +8,7 @@ import {
 } from "../../../../utils/date.js";
 import { routeResponse } from "../../../shared/nodes/route-response.js";
 import { savePostSubjectUrls } from "../../../shared/stores/post-subject-urls.js";
+import { HumanInterrupt, HumanResponse } from "@langchain/langgraph/prebuilt";
 
 interface ConstructDescriptionArgs {
   unknownResponseDescription: string;

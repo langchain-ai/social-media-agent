@@ -2,6 +2,7 @@ import { ChatOpenAI } from "@langchain/openai";
 import { GenerateReportState } from "../state.js";
 import { GENERATE_REPORT_PROMPT_O1 } from "../prompts.js";
 import { TweetsGroupedByContent } from "../../curate-data/types.js";
+import { formatImageMessages } from "../utils.js";
 
 interface FormatReportPromptParams {
   pageContents?: string[];
@@ -87,11 +88,16 @@ export async function generateReport(
     state.keyReportDetails,
   );
 
+  const imageMessage = state.imageOptions?.length
+    ? formatImageMessages(state.imageOptions)
+    : undefined;
+
   const report = await reportO1Model.invoke([
     {
       role: "system",
       content: formattedReportPrompt,
     },
+    ...(imageMessage ? [imageMessage] : []),
     {
       role: "user",
       content: prompt,

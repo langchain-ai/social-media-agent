@@ -3,15 +3,17 @@ import { getPrompts } from "../generate-post/prompts/index.js";
 export const EXTRACT_KEY_DETAILS_PROMPT = `You are a highly skilled marketing analyst. You've been tasked with extracting key details from the content submitted to you.
 
 You should focus on technical details, new findings, new features, and other interesting information about the content.
-These details will be used in a report generated after this, so ensure the details you extract are relevant and accurate.
+These details will be used in a report generated after this, so ensure the details you extract are relevant and accurate. Do NOT make up details, or make assumptions.
 
 You should first read the entire content carefully, then do the following:
 
 1. Ask yourself what the content is about, and why it matters.
-2. With this in mind, think about ALL of the key details from the content. Remember: NO DETAIL IS TOO SMALL, and NO DETAIL IS TOO LARGE. It's better to overdo it than underdo it.
-3. Finally, extract the key details from the content, and respond with them.
+2. Ensure each key detail is unique from the rest of the list. You should group together similar details you find throughout the content.
+3. With this in mind, think about ALL of the key details from the content. Remember: NO DETAIL IS TOO SMALL, and NO DETAIL IS TOO LARGE. It's better to overdo it than underdo it.
+4. Finally, extract the key details from the content, and respond with them.
 
-Your response should be in proper markdown format, and should ONLY include the key details from the content, and no other dialog.`;
+Your response should be in proper markdown format, and should ONLY include the key details from the content, and no other dialog.
+Think carefully and slowly. Begin!`;
 
 const REPORT_RULES = `- Focus on the subject of the content, and how it uses or relates to the business context outlined above.
 - The final Tweet/LinkedIn post will be developer focused, so ensure the report is VERY technical and detailed.
@@ -22,31 +24,35 @@ const REPORT_RULES = `- Focus on the subject of the content, and how it uses or 
 - Generate the report in English, even if the content submitted is not in English.`;
 
 const STRUCTURE_GUIDELINES = `<part key="1">
-This is the introduction and summary of the content. This must include key details such as:
-- the name of the content/product/service.
-- what the content/product/service does, and/or the problems it solves.
-- unique selling points or interesting facts about the content.
-- a high level summary of the content/product/service.
+This is the introduction and summary of the content.
+It should contain:
+- A high level summary of the content provided.
+- All of the key details from the content, along with any additional context you're able to find which was not present in the key details.
+  - Each key detail should be explained and detailed, ensuring the reader of this report will be able to gain a deep understanding of each key detail.
+- Unique selling points, or interesting facts about the content.
 
-Ensure this is section packed with details and engaging.
+Ensure this is section packed with details and engaging. Do NOT make anything up, or make assumptions. Everything you say should be able to be referenced and in the original context.
 </part>
 
 <part key="2">
-This section should focus on how the content implements, or related to any of the business context outlined above. It should include:
-- key details about how it relates to the context.
-- any product(s) or service(s) used in the content.
-- why the content is relevant to the business context.
-- how the content is used, implemented, or related.
-- why these products are important to the application.
+The second part of the marketing report should focus on the key details. Go into even deeper detail, without making anything up, or making assumptions.
+Reference specific parts of the content when elaborating on the key details.
 </part>
 
 <part key="3">
-This section should cover any additional details about the content that the first two parts missed. It should include:
-- a detailed technical overview of the content.
-- interesting facts about the content.
-- any other relevant information that may be engaging to readers.
+This section should focus on how the content implements, or related to any of the "business context" outlined above. It should include:
+- Specific details about how it relates to the context.
+- Specifics on each product(s) or service(s) used in the content.
+- Why the content is relevant to the "business context".
+</part>
 
-This is the section where you should include any relevant parts of the content which you were unable to include in the first two sections.
+<part key="4">
+This section should cover any additional details about the content that the first three parts missed. It should include:
+- A detailed technical overview of the content.
+- Interesting facts about the content.
+- Any other relevant information that may be engaging to readers.
+
+This is the section where you should include any relevant parts of the content which you were unable to include in the first three sections.
 Ensure you do NOT leave out any relevant details in the report. You want your report to be extensive and detailed. Remember, it's better to overdo it than underdo it.
 </part>`;
 
@@ -76,12 +82,11 @@ When writing the report, you should make an emphasis on these details. But remem
 Lastly, you should use the following process when writing the report:
 <writing-process>
 - First, read over the content VERY thoroughly.
-- Take notes, and write down your thoughts about the content after reading it carefully. These should be interesting insights or facts which you think you'll need later on when writing the final report. This should be the first text you write. ALWAYS perform this step first, and wrap the notes and thoughts inside opening and closing "<thinking>" tags.
 - Finally, write the report. Use the notes and thoughts you wrote down in the previous step to help you write the report. This should be the last text you write. Wrap your report inside "<report>" tags. Ensure you ALWAYS WRAP your report inside the "<report>" tags, with an opening and closing tag.
 </writing-process>
 
 Do not include any personal opinions or biases in the report. Stick to the facts and technical details.
-Your response should ONLY include the marketing report, and no other text.
+Your response should ONLY include the marketing report, wrapped in "<report>" tags, and no other text.
 Remember, the more detailed and engaging the report, the better!!
 Finally, remember to have fun!
 

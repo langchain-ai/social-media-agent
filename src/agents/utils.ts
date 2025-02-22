@@ -561,3 +561,10 @@ export function filterLinksForPostContent(links: string[]): string {
   );
   return filteredLinks.join("\n\n");
 }
+
+/**
+ * Capitalizes the first letter of a string.
+ */
+export function capitalize(string: string): string {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+}

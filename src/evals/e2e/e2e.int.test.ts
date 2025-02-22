@@ -4,13 +4,13 @@ import { type SimpleEvaluator } from "langsmith/jest";
 import { INPUTS } from "./inputs.js";
 import { generatePostGraph } from "../../agents/generate-post/generate-post-graph.js";
 import { InMemoryStore, MemorySaver } from "@langchain/langgraph";
+import { HumanInterrupt } from "@langchain/langgraph/prebuilt";
 import {
   POST_TO_LINKEDIN_ORGANIZATION,
   TEXT_ONLY_MODE,
 } from "../../agents/generate-post/constants.js";
 import { removeUrls } from "../../agents/utils.js";
 import { GeneratePostAnnotation } from "../../agents/generate-post/generate-post-state.js";
-import { HumanInterrupt } from "../../agents/types.js";
 
 const checkGeneratePostResult: SimpleEvaluator = ({ expected, actual }) => {
   // Check the following:

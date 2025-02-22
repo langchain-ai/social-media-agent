@@ -5,9 +5,11 @@ import {
   POST_TO_LINKEDIN_ORGANIZATION,
   TEXT_ONLY_MODE,
 } from "../../constants.js";
-import { getScheduledDateSeconds } from "./find-date.js";
+import {
+  getScheduledDateSeconds,
+  getFutureDate,
+} from "../../../../utils/schedule-date/index.js";
 import { SlackClient } from "../../../../clients/slack.js";
-import { getFutureDate } from "./get-future-date.js";
 import { isTextOnly, shouldPostToLinkedInOrg } from "../../../utils.js";
 
 interface SendSlackMessageArgs {
@@ -76,10 +78,10 @@ export async function schedulePost(
     apiUrl: `http://localhost:${process.env.PORT}`,
   });
 
-  const afterSeconds = await getScheduledDateSeconds(
-    state.scheduleDate,
+  const afterSeconds = await getScheduledDateSeconds({
+    scheduleDate: state.scheduleDate,
     config,
-  );
+  });
 
   const thread = await client.threads.create();
   const run = await client.runs.create(thread.thread_id, "upload_post", {
@@ -106,7 +108,7 @@ export async function schedulePost(
       image: state.image,
     });
   } catch (e) {
-    console.error("Failed to schedule post", e);
+    console.error("Failed to send schedule post Slack message", e);
   }
 
   return {};

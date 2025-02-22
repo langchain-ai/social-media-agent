@@ -1,5 +1,5 @@
-import { TweetV2 } from "twitter-api-v2";
-import { extractUrls } from "../../agents/utils.js";
+import { TweetV2, TweetV2SingleResult } from "twitter-api-v2";
+import { extractUrls, imageUrlToBuffer } from "../../agents/utils.js";
 import { TweetV2WithURLs } from "../../agents/curate-data/types.js";
 
 /**
@@ -95,13 +95,17 @@ export async function resolveAndReplaceTweetTextLinks(
     }
   }
 
-  return {
-    content: updatedContent,
-    externalUrls: cleanedUrls
+  const externalUrlsSet = new Set(
+    cleanedUrls
       .filter(
         (url): url is { resolved: string; original: string } => !!url.resolved,
       )
       .map((url) => url.resolved),
+  );
+
+  return {
+    content: updatedContent,
+    externalUrls: Array.from(externalUrlsSet),
   };
 }
 
@@ -154,4 +158,78 @@ export async function resolveTweetsWithUrls(
   }
 
   return resolvedTweets;
+}
+
+/**
+ * Combines the text content of a parent tweet and its thread replies into a single string.
+ * For both parent tweet and replies, it checks for and uses note_tweet text if available,
+ * otherwise falls back to regular text content.
+ *
+ * @param parentTweet - The parent tweet object containing the initial tweet's data
+ * @param threadReplies - An array of reply tweets that form the thread
+ * @returns A string containing the combined text of the parent tweet and all replies,
+ *          separated by newlines
+ */
+export function getFullThreadText(
+  parentTweet: TweetV2SingleResult,
+  threadReplies: TweetV2[],
+): string {
+  let tweetContentText = "";
+
+  if (parentTweet.data.note_tweet?.text) {
+    tweetContentText = parentTweet.data.note_tweet.text;
+  } else {
+    tweetContentText = parentTweet.data.text;
+  }
+
+  threadReplies.forEach((r) => {
+    if (r.note_tweet?.text?.length) {
+      tweetContentText += `\n${r.note_tweet.text}`;
+    } else if (r.text?.length) {
+      tweetContentText += `\n${r.text}`;
+    }
+  });
+
+  return tweetContentText;
+}
+
+export async function getMediaUrls(
+  parentTweet: TweetV2SingleResult,
+  threadReplies: TweetV2[],
+): Promise<string[]> {
+  const mediaUrls: string[] = [];
+
+  if (parentTweet.includes?.media?.length) {
+    const parentMediaUrls = parentTweet.includes?.media
+      .filter((m) => (m.url && m.type === "photo") || m.type.includes("gif"))
+      .flatMap((m) => (m.url ? [m.url] : []));
+    mediaUrls.push(...parentMediaUrls);
+  }
+
+  const threadMediaKeys = threadReplies
+    .flatMap((r) => r.attachments?.media_keys)
+    .filter((m): m is string => !!m);
+  const threadMediaUrlPromises = threadMediaKeys.map(async (k) => {
+    const imgUrl = `https://pbs.twimg.com/media/${k}?format=jpg`;
+    try {
+      const { contentType } = await imageUrlToBuffer(imgUrl);
+      if (contentType.startsWith("image/")) {
+        return imgUrl;
+      }
+    } catch (e) {
+      console.error(
+        `Failed to get content type for Twitter media URL: ${imgUrl}\n`,
+        e,
+      );
+    }
+
+    return undefined;
+  });
+
+  const threadMediaUrls = (await Promise.all(threadMediaUrlPromises)).filter(
+    (m): m is string => !!m,
+  );
+  mediaUrls.push(...threadMediaUrls);
+
+  return mediaUrls;
 }

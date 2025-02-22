@@ -3,6 +3,7 @@
     "agentinbox",
     "checkpointer",
     "LANGSMITH",
+    "Repurposer",
     "reranked",
     "subreddits",
     "Supabase",

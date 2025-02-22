@@ -67,8 +67,8 @@ describe("Basic Twitter Auth", () => {
 
   it("Can fetch a thread using the original tweet", async () => {
     const thread = await client.getThreadReplies(
-      "1880269659070689496",
-      "3448284313",
+      "1857117443065540707",
+      "LangChainAI",
     );
     console.log("thread", thread?.length);
     console.dir(thread, { depth: null });

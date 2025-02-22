@@ -1,7 +1,7 @@
 import { ChatVertexAI } from "@langchain/google-vertexai-web";
 import { FindImagesAnnotation } from "../find-images-graph.js";
 import { chunkArray } from "../../utils.js";
-import { getImageMessageContents } from "../utils.js";
+import { getImageMessageContents } from "../../../utils/image-message.js";
 
 const RE_RANK_IMAGES_PROMPT = `You're a highly regarded marketing employee, working on crafting thoughtful and engaging content for your company's LinkedIn and Twitter pages.
 

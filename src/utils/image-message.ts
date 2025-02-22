@@ -1,9 +1,9 @@
 import {
-  BLACKLISTED_MIME_TYPES,
+  removeQueryParams,
   getMimeTypeFromUrl,
   imageUrlToBuffer,
-  removeQueryParams,
-} from "../utils.js";
+  BLACKLISTED_MIME_TYPES,
+} from "../agents/utils.js";
 
 export async function getImageMessageContents(
   imageChunk: string[],
@@ -23,7 +23,9 @@ export async function getImageMessageContents(
           mimeType = contentType;
         } catch (e) {
           console.warn(
-            "No mime type found, and failed to fetch content type:",
+            "No mime type found, and failed to fetch content type. File URI:\n",
+            fileUri,
+            "\nError:\n",
             e,
           );
         }

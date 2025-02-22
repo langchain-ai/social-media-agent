@@ -4,7 +4,7 @@ import {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   type NodeInterrupt,
 } from "@langchain/langgraph";
-import { HumanInterrupt, HumanResponse } from "../../types.js";
+import { HumanInterrupt, HumanResponse } from "@langchain/langgraph/prebuilt";
 import Arcade from "@arcadeai/arcadejs";
 
 const LINKEDIN_AUTHORIZATION_DOCS_URL =

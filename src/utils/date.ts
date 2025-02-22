@@ -2,6 +2,17 @@ import { nextSaturday, setHours, setMinutes, parse, isValid } from "date-fns";
 import { fromZonedTime, toZonedTime } from "date-fns-tz";
 import { DateType } from "../agents/types.js";
 
+export const PRIORITY_LEVELS = [
+  // The "p" priority levels are for community posts.
+  "p1",
+  "p2",
+  "p3",
+  // The "r" priority levels are for repurposed posts.
+  "r1",
+  "r2",
+  "r3",
+];
+
 /**
  * Converts a date string in any timezone to a UTC Date object
  * @param dateString - Date string in any timezone (e.g., "2024-01-01 12:00 PST" or "2024-01-01 12:00 America/Los_Angeles")
@@ -103,7 +114,7 @@ export function isValidDateString(dateString: string): boolean {
  */
 export function parseDateResponse(dateString: string): DateType | undefined {
   const cleanedDate = dateString.toLowerCase().trim();
-  if (["p1", "p2", "p3"].find((p) => cleanedDate === p)) {
+  if (PRIORITY_LEVELS.find((p) => cleanedDate === p)) {
     return cleanedDate as DateType;
   }
 

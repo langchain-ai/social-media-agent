@@ -2,7 +2,7 @@ import { interrupt, LangGraphRunnableConfig } from "@langchain/langgraph";
 import { GeneratePostAnnotation } from "../generate-post-state.js";
 import { getLinkedInAuthOrInterrupt } from "../../shared/auth/linkedin.js";
 import { getTwitterAuthOrInterrupt } from "../../shared/auth/twitter.js";
-import { HumanInterrupt, HumanResponse } from "../../types.js";
+import { HumanInterrupt, HumanResponse } from "@langchain/langgraph/prebuilt";
 import { shouldPostToLinkedInOrg } from "../../utils.js";
 
 export async function authSocialsPassthrough(

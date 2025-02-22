@@ -14,145 +14,46 @@ import {
   getNextSaturday,
   isMondayOrFriday,
   isWeekend,
-} from "./utils.js";
-import { DateType } from "../../../types.js";
-import { SlackClient } from "../../../../clients/slack.js";
+} from "./helpers.js";
+import { toZonedTime } from "date-fns-tz";
+import { DateType } from "../../agents/types.js";
+import { SlackClient } from "../../clients/slack.js";
+import {
+  FIRST_ALLOWED_P1_HOUR,
+  ALLOWED_P2_DAY_AND_TIMES_IN_UTC,
+  ALLOWED_P3_DAY_AND_TIMES_IN_UTC,
+  LAST_ALLOWED_P1_HOUR,
+  LAST_ALLOWED_P2_HOUR_WEEKDAY,
+  FIRST_ALLOWED_P2_HOUR_WEEKDAY,
+  FIRST_ALLOWED_P2_HOUR_WEEKEND,
+  LAST_ALLOWED_P2_HOUR_WEEKEND,
+  ALLOWED_P1_DAY_AND_TIMES_IN_UTC,
+  ALLOWED_R1_DAY_AND_TIMES_IN_UTC,
+  ALLOWED_R2_DAY_AND_TIMES_IN_UTC,
+  ALLOWED_R3_DAY_AND_TIMES_IN_UTC,
+  DEFAULT_TAKEN_DATES,
+} from "./constants.js";
+import { TakenScheduleDates } from "./types.js";
+
+/**
+ * Calculates a future date by adding seconds to a base date and formats it as MM/DD HH:MM AM/PM PST
+ * @param afterSeconds - Number of seconds to add to the base date
+ * @returns string representing the future date in format MM/DD HH:MM AM/PM PST
+ */
+export function getFutureDate(afterSeconds: number): string {
+  const baseDate = new Date();
+  const futureDate = new Date(baseDate.getTime() + afterSeconds * 1000);
+
+  // Convert to PST
+  const pstDate = toZonedTime(futureDate, "America/Los_Angeles");
+
+  // Format the date
+  return format(pstDate, "MM/dd hh:mm a").toUpperCase() + " PST";
+}
 
 export function validateAfterSeconds(afterSeconds: number): boolean {
   return afterSeconds >= 0;
 }
-
-export const ALLOWED_P1_DAY_AND_TIMES_IN_UTC = [
-  // Sunday 16:00 UTC (8AM PST)
-  {
-    day: 0,
-    hour: 16,
-  },
-  // Sunday 17:00 UTC (9AM PST)
-  {
-    day: 0,
-    hour: 17,
-  },
-  // Sunday 18:00 UTC (10AM PST)
-  {
-    day: 0,
-    hour: 18,
-  },
-  // Saturday 16:00 UTC (8AM PST)
-  {
-    day: 6,
-    hour: 16,
-  },
-  // Saturday 17:00 UTC (9AM PST)
-  {
-    day: 6,
-    hour: 17,
-  },
-  // Saturday 18:00 UTC (10AM PST)
-  {
-    day: 6,
-    hour: 18,
-  },
-];
-
-const LAST_ALLOWED_P1_HOUR = 18;
-const FIRST_ALLOWED_P1_HOUR = 16;
-
-export const ALLOWED_P2_DAY_AND_TIMES_IN_UTC = [
-  // Monday 16:00 UTC (8AM PST)
-  {
-    day: 1,
-    hour: 16,
-  },
-  // Monday 17:00 UTC (9AM PST)
-  {
-    day: 1,
-    hour: 17,
-  },
-  // Monday 18:00 UTC (10AM PST)
-  {
-    day: 1,
-    hour: 18,
-  },
-  // Friday 16:00 UTC (8AM PST)
-  {
-    day: 5,
-    hour: 16,
-  },
-  // Friday 17:00 UTC (9AM PST)
-  {
-    day: 5,
-    hour: 17,
-  },
-  // Friday 18:00 UTC (10AM PST)
-  {
-    day: 5,
-    hour: 18,
-  },
-  // Sunday 19:00 UTC (11AM PST)
-  {
-    day: 0,
-    hour: 19,
-  },
-  // Sunday 20:00 UTC (12PM PST)
-  {
-    day: 0,
-    hour: 20,
-  },
-  // Sunday 21:00 UTC (1PM PST)
-  {
-    day: 0,
-    hour: 21,
-  },
-  // Saturday 19:00 UTC (11AM PST)
-  {
-    day: 6,
-    hour: 19,
-  },
-  // Saturday 20:00 UTC (12PM PST)
-  {
-    day: 6,
-    hour: 20,
-  },
-  // Saturday 21:00 UTC (1PM PST)
-  {
-    day: 6,
-    hour: 21,
-  },
-];
-
-const FIRST_ALLOWED_P2_HOUR_WEEKDAY = 16;
-const LAST_ALLOWED_P2_HOUR_WEEKDAY = 18;
-const FIRST_ALLOWED_P2_HOUR_WEEKEND = 19;
-const LAST_ALLOWED_P2_HOUR_WEEKEND = 21;
-
-export const ALLOWED_P3_DAY_AND_TIMES_IN_UTC = [
-  // Saturday: 21, 22, 23
-  { day: 6, hour: 21 },
-  { day: 6, hour: 22 },
-  { day: 6, hour: 23 },
-  // Sunday: 0, 1, 21, 22, 23
-  { day: 0, hour: 0 },
-  { day: 0, hour: 1 },
-  { day: 0, hour: 21 },
-  { day: 0, hour: 22 },
-  { day: 0, hour: 23 },
-  // Monday: 0, 1
-  { day: 1, hour: 0 },
-  { day: 1, hour: 1 },
-];
-
-export type TakenScheduleDates = {
-  p1: Date[];
-  p2: Date[];
-  p3: Date[];
-};
-
-const DEFAULT_TAKEN_DATES: TakenScheduleDates = {
-  p1: [],
-  p2: [],
-  p3: [],
-};
 
 const NAMESPACE = ["taken_schedule_dates"];
 const KEY = "dates";
@@ -180,6 +81,9 @@ export async function getTakenScheduleDates(
     p1: storedDates?.p1?.map((d: string) => new Date(d)) || [],
     p2: storedDates?.p2?.map((d: string) => new Date(d)) || [],
     p3: storedDates?.p3?.map((d: string) => new Date(d)) || [],
+    r1: storedDates?.r1?.map((d: string) => new Date(d)) || [],
+    r2: storedDates?.r2?.map((d: string) => new Date(d)) || [],
+    r3: storedDates?.r3?.map((d: string) => new Date(d)) || [],
   };
 }
 
@@ -202,6 +106,9 @@ export async function putTakenScheduleDates(
     p1: takenDates.p1.map((d) => d.toISOString()),
     p2: takenDates.p2.map((d) => d.toISOString()),
     p3: takenDates.p3.map((d) => d.toISOString()),
+    r1: takenDates.r1.map((d) => d.toISOString()),
+    r2: takenDates.r2.map((d) => d.toISOString()),
+    r3: takenDates.r3.map((d) => d.toISOString()),
   };
   await store.put(NAMESPACE, KEY, {
     [TAKEN_DATES_KEY]: serializedDates,
@@ -506,29 +413,118 @@ function validateScheduleDate(date: Date, baseDate: Date): boolean {
   return validateAfterSeconds(afterSeconds);
 }
 
-export async function getScheduledDateSeconds(
-  scheduleDate: DateType,
-  config: LangGraphRunnableConfig,
-  baseDate: Date = new Date(),
-): Promise<number> {
-  if (isValid(scheduleDate)) {
-    const afterSeconds = getAfterSeconds(scheduleDate as Date, baseDate);
-    if (!validateAfterSeconds(afterSeconds)) {
-      throw new Error(
-        `Schedule date must be in the future. Instead, received: ${scheduleDate}`,
-      );
+interface FindAvailableRepurposeDatesRepurposer {
+  repurposedPriority: "r1" | "r2" | "r3";
+  baseDate: Date;
+  numberOfDates: number;
+  takenDates: TakenScheduleDates;
+}
+
+function normalizeSlots(
+  slots: { day: number; hour: number }[],
+): { day: number; hour: number }[] {
+  // Move “hour=0” to the previous day as “hour=24”
+  return slots.map((slot) => {
+    if (slot.hour === 0) {
+      return {
+        day: slot.day - 1,
+        hour: 24,
+      };
     }
-    return afterSeconds;
+    return slot;
+  });
+}
+
+// Optional little helper to avoid confusion when setting “hour=24”:
+function setUTCHoursExtended(base: Date, hour: number) {
+  // set to 00:00 first:
+  base.setUTCHours(0, 0, 0, 0);
+  // then add "hour" hours in milliseconds
+  base.setTime(base.getTime() + hour * 60 * 60 * 1000);
+}
+
+export function findAvailableRepurposeDates({
+  repurposedPriority,
+  baseDate,
+  numberOfDates,
+  takenDates: allTakenDates,
+}: FindAvailableRepurposeDatesRepurposer): Date[] {
+  const results: Date[] = [];
+  let dayOffset = 0;
+
+  const takenDates = allTakenDates[repurposedPriority];
+
+  // Pick which raw slots to use
+  const rawAllowedSlots =
+    repurposedPriority === "r1"
+      ? ALLOWED_R1_DAY_AND_TIMES_IN_UTC
+      : repurposedPriority === "r2"
+        ? ALLOWED_R2_DAY_AND_TIMES_IN_UTC
+        : ALLOWED_R3_DAY_AND_TIMES_IN_UTC;
+
+  // Normalize them so day+1, hour=0 becomes day, hour=24
+  const allowedSlots = normalizeSlots(rawAllowedSlots);
+
+  // We'll allow searching up to 365 days in the future to avoid infinite loops
+  while (results.length < numberOfDates && dayOffset < 365) {
+    // Anchor to the start of the "candidate day" in UTC:
+    const checkDate = new Date(baseDate.getTime());
+    checkDate.setUTCHours(0, 0, 0, 0);
+    checkDate.setUTCDate(checkDate.getUTCDate() + dayOffset);
+
+    const dayOfWeek = checkDate.getUTCDay();
+
+    // Gather all slots that match this dayOfWeek, e.g. day=1 => Monday
+    const sameDaySlots = allowedSlots
+      .filter((slot) => slot.day === dayOfWeek)
+      // Sort by hour ascending, so e.g. [22, 23, 24]
+      .sort((a, b) => a.hour - b.hour);
+
+    for (const slot of sameDaySlots) {
+      const candidate = new Date(checkDate.getTime());
+      // Instead of candidate.setUTCHours(slot.hour, 0, 0, 0):
+      setUTCHoursExtended(candidate, slot.hour);
+
+      // Ensure it’s strictly in the future
+      if (candidate <= baseDate) {
+        continue; // It's in the past, skip
+      }
+
+      // Check if already taken
+      const alreadyTaken = takenDates.some((taken) => {
+        return (
+          taken.getUTCFullYear() === candidate.getUTCFullYear() &&
+          taken.getUTCMonth() === candidate.getUTCMonth() &&
+          taken.getUTCDate() === candidate.getUTCDate() &&
+          taken.getUTCHours() === candidate.getUTCHours()
+        );
+      });
+
+      if (!alreadyTaken) {
+        results.push(candidate);
+        break; // We only want one slot per *UTC day* iteration
+      }
+    }
+
+    dayOffset++;
   }
 
-  const priority = scheduleDate as "p1" | "p2" | "p3";
-  if (!["p1", "p2", "p3"].includes(priority)) {
-    throw new Error(
-      `Invalid priority level. Expected p1, p2, or p3, but received: ${priority}`,
-    );
-  }
+  return results;
+}
 
-  const takenScheduleDates = await getTakenScheduleDates(config);
+interface FindAvailableBasicDateParams {
+  baseDate: Date;
+  config: LangGraphRunnableConfig;
+  priority: "p1" | "p2" | "p3";
+  takenScheduleDates: TakenScheduleDates;
+}
+
+async function findAvailableBasicDates({
+  baseDate,
+  config,
+  priority,
+  takenScheduleDates,
+}: FindAvailableBasicDateParams): Promise<Date> {
   let currentTime = baseDate;
   const currentDayUTCHours = baseDate.getUTCHours();
 
@@ -679,17 +675,113 @@ Run ID: ${config.configurable?.run_id || "No run ID found"}
     throw e;
   }
 
-  const isValidDate = validateScheduleDate(nextAvailDate, baseDate);
+  return nextAvailDate;
+}
 
-  if (!isValidDate) {
-    throw new Error(`FAILED TO SCHEDULE POST
+const isRepurposedPriority = (
+  priority: DateType,
+): priority is "r1" | "r2" | "r3" => {
+  return typeof priority === "string" && ["r1", "r2", "r3"].includes(priority);
+};
 
-Priority: ${priority}
-Schedule date: ${format(nextAvailDate, "MM/dd/yyyy hh:mm a z")}
-Base date: ${format(baseDate, "MM/dd/yyyy hh:mm a z")}`);
+const isBasicPriority = (
+  priority: DateType,
+): priority is "p1" | "p2" | "p3" => {
+  return typeof priority === "string" && ["p1", "p2", "p3"].includes(priority);
+};
+
+type GetScheduledBasicDateArgs = {
+  scheduleDate: DateType;
+  config: LangGraphRunnableConfig;
+  baseDate?: Date;
+};
+
+type GetScheduledRepurposeDateArgs = GetScheduledBasicDateArgs & {
+  numberOfDates: number;
+};
+
+export async function getScheduledDateSeconds(
+  args: GetScheduledBasicDateArgs,
+): Promise<number>;
+
+export async function getScheduledDateSeconds(
+  args: GetScheduledRepurposeDateArgs,
+): Promise<number[]>;
+
+export async function getScheduledDateSeconds(
+  args: GetScheduledBasicDateArgs | GetScheduledRepurposeDateArgs,
+): Promise<number | number[]> {
+  const { scheduleDate, config, baseDate, numberOfDates } = {
+    baseDate: new Date(),
+    numberOfDates: undefined,
+    ...args,
+  };
+  if (isValid(scheduleDate)) {
+    const afterSeconds = getAfterSeconds(scheduleDate as Date, baseDate);
+    if (!validateAfterSeconds(afterSeconds)) {
+      throw new Error(
+        `Schedule date must be in the future. Instead, received: ${scheduleDate}`,
+      );
+    }
+    return afterSeconds;
   }
 
-  takenScheduleDates[priority].push(nextAvailDate);
-  await putTakenScheduleDates(takenScheduleDates, config);
-  return getAfterSeconds(nextAvailDate, baseDate);
+  const takenScheduleDates = await getTakenScheduleDates(config);
+
+  if (isRepurposedPriority(scheduleDate) && numberOfDates !== undefined) {
+    const scheduleDates = findAvailableRepurposeDates({
+      repurposedPriority: scheduleDate,
+      baseDate,
+      numberOfDates,
+      takenDates: takenScheduleDates,
+    });
+
+    const isValidDate = scheduleDates.every((d) =>
+      validateScheduleDate(d, baseDate),
+    );
+    if (!isValidDate) {
+      throw new Error(`FAILED TO SCHEDULE POST
+  
+  Priority: ${scheduleDate}
+  Schedule dates: ${scheduleDates.map((d) => format(d, "MM/dd/yyyy hh:mm a z")).join(", ")}
+  Base date: ${format(baseDate, "MM/dd/yyyy hh:mm a z")}`);
+    }
+
+    takenScheduleDates[scheduleDate].push(...scheduleDates);
+    await putTakenScheduleDates(takenScheduleDates, config);
+    return scheduleDates.map((d) => getAfterSeconds(d, baseDate));
+  } else if (
+    isRepurposedPriority(scheduleDate) &&
+    numberOfDates === undefined
+  ) {
+    throw new Error(
+      "Must provide numberOfDates when scheduleDate is a repurposed priority",
+    );
+  }
+
+  if (isBasicPriority(scheduleDate)) {
+    const nextAvailDate = await findAvailableBasicDates({
+      baseDate,
+      config,
+      priority: scheduleDate,
+      takenScheduleDates,
+    });
+    const isValidDate = validateScheduleDate(nextAvailDate, baseDate);
+    if (!isValidDate) {
+      throw new Error(`FAILED TO SCHEDULE POST
+  
+  Priority: ${scheduleDate}
+  Schedule date: ${format(nextAvailDate, "MM/dd/yyyy hh:mm a z")}
+  Base date: ${format(baseDate, "MM/dd/yyyy hh:mm a z")}`);
+    }
+
+    takenScheduleDates[scheduleDate].push(nextAvailDate);
+    await putTakenScheduleDates(takenScheduleDates, config);
+    return getAfterSeconds(nextAvailDate, baseDate);
+  }
+
+  throw new Error(`INVALID SCHEDULE DATE: "${scheduleDate}"
+    
+Must be one of: "r1", "r2", "r3", "p1", "p2", "p3", or a valid date object.
+  `);
 }
