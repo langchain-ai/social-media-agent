@@ -107,7 +107,6 @@ async function getUrlForScreenshot(url: string): Promise<string | undefined> {
     const readmeContents = await getFileContents(url, readmePath);
     // HTML URLs are the public human-readable URL.
     return readmeContents.html_url || url;
-  } else {
-    return url;
   }
+  return url;
 }

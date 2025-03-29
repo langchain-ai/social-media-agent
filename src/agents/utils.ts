@@ -367,6 +367,7 @@ export type UrlType =
   | "general"
   | "twitter"
   | "reddit"
+  | "luma"
   | undefined;
 
 export function getUrlType(url: string): UrlType {
@@ -407,6 +408,10 @@ export function getUrlType(url: string): UrlType {
     parsedUrl.hostname.includes("redd.it")
   ) {
     return "reddit";
+  }
+
+  if (parsedUrl.host === "lu.ma") {
+    return "luma";
   }
 
   return "general";

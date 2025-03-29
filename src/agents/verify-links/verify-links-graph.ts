@@ -8,6 +8,7 @@ import { VerifyLinksGraphAnnotation } from "./verify-links-state.js";
 import { getUrlType } from "../utils.js";
 import { verifyRedditPostGraph } from "../verify-reddit-post/verify-reddit-post-graph.js";
 import { VerifyRedditPostAnnotation } from "../verify-reddit-post/verify-reddit-post-state.js";
+import { verifyLumaEvent } from "../shared/nodes/verify-luma.js";
 
 function routeLinkTypes(state: typeof VerifyLinksGraphAnnotation.State) {
   return state.links.map((link) => {
@@ -29,6 +30,11 @@ function routeLinkTypes(state: typeof VerifyLinksGraphAnnotation.State) {
     }
     if (type === "reddit") {
       return new Send("verifyRedditContent", {
+        link,
+      });
+    }
+    if (type === "luma") {
+      return new Send("verifyLumaEvent", {
         link,
       });
     }
@@ -54,6 +60,9 @@ const verifyLinksWorkflow = new StateGraph(VerifyLinksGraphAnnotation)
   .addNode("verifyRedditContent", verifyRedditPostGraph, {
     input: VerifyRedditPostAnnotation,
   })
+  .addNode("verifyLumaEvent", verifyLumaEvent, {
+    input: VerifyContentAnnotation,
+  })
   // Start node
   .addConditionalEdges(START, routeLinkTypes, [
     "verifyYouTubeContent",
@@ -61,12 +70,14 @@ const verifyLinksWorkflow = new StateGraph(VerifyLinksGraphAnnotation)
     "verifyGitHubContent",
     "verifyTweetSubGraph",
     "verifyRedditContent",
+    "verifyLumaEvent",
   ])
   .addEdge("verifyRedditContent", END)
   .addEdge("verifyYouTubeContent", END)
   .addEdge("verifyGeneralContent", END)
   .addEdge("verifyGitHubContent", END)
-  .addEdge("verifyTweetSubGraph", END);
+  .addEdge("verifyTweetSubGraph", END)
+  .addEdge("verifyLumaEvent", END);
 
 export const verifyLinksGraph = verifyLinksWorkflow.compile();
 verifyLinksGraph.name = "Verify Links Subgraph";

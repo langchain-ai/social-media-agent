@@ -139,7 +139,7 @@ export async function getUrlContents(url: string): Promise<{
 }> {
   const type = getUrlType(url);
 
-  if (type === "general") {
+  if (type === "general" || type === "luma") {
     return getGeneralContent(url);
   } else if (type === "youtube") {
     return getYouTubeContent(url);
