@@ -8,125 +8,125 @@ const INPUTS = [
   {
     inputs: {
       // TBD: Yes or no?
-      link: "https://github.com/FlowiseAI/Flowise"
+      link: "https://github.com/FlowiseAI/Flowise",
     },
     expected: {
       relevant: false,
-    }
+    },
   },
   {
     inputs: {
-      link: "https://github.com/realpython/materials"
+      link: "https://github.com/realpython/materials",
     },
     expected: {
       relevant: false,
-    }
+    },
   },
   {
     inputs: {
-      link: "https://github.com/NirDiamant/GenAI_Agents"
+      link: "https://github.com/NirDiamant/GenAI_Agents",
     },
     expected: {
       relevant: false,
-    }
+    },
   },
   {
     inputs: {
-    link: "https://github.com/Weasley18/DocVer"
+      link: "https://github.com/Weasley18/DocVer",
     },
     expected: {
       relevant: false,
-    }
+    },
   },
   {
     inputs: {
-    link: "https://github.com/plurai-ai/intellagent"
+      link: "https://github.com/plurai-ai/intellagent",
     },
     expected: {
       relevant: false,
-    }
+    },
   },
   {
     inputs: {
-      link: "https://github.com/ShayanTalaei/CHESS"
+      link: "https://github.com/ShayanTalaei/CHESS",
     },
     expected: {
       relevant: true,
-    }
+    },
   },
   {
     inputs: {
-      link: "https://github.com/datawhalechina/llm-universe"
+      link: "https://github.com/datawhalechina/llm-universe",
     },
     expected: {
       relevant: true,
-    }
+    },
   },
   {
     inputs: {
-      link: "https://github.com/NirDiamant/RAG_Techniques"
+      link: "https://github.com/NirDiamant/RAG_Techniques",
     },
     expected: {
       relevant: false,
-    }
+    },
   },
   {
     inputs: {
-      link: "https://github.com/gaudiy/langsmith-evaluation-helper"
+      link: "https://github.com/gaudiy/langsmith-evaluation-helper",
     },
     expected: {
       relevant: true,
-    }
+    },
   },
   {
     inputs: {
-      link: "https://github.com/starpig1129/DATAGEN"
+      link: "https://github.com/starpig1129/DATAGEN",
     },
     expected: {
       relevant: true,
-    }
+    },
   },
   {
     inputs: {
-      link: "https://github.com/samwit/agent_tutorials/tree/main/agent_write"
+      link: "https://github.com/samwit/agent_tutorials/tree/main/agent_write",
     },
     expected: {
       relevant: true,
-    }
+    },
   },
   {
     inputs: {
-      link: "https://github.com/kaarthik108/snowChat"
+      link: "https://github.com/kaarthik108/snowChat",
     },
     expected: {
       relevant: true,
-    }
+    },
   },
   {
     inputs: {
-      link: "https://github.com/ahmad2b/postbot3000"
+      link: "https://github.com/ahmad2b/postbot3000",
     },
     expected: {
       relevant: true,
-    }
+    },
   },
   {
     inputs: {
-      link: "https://github.com/elizabethsiegle/wnba-analytics-dash-ai-insights/tree/main"
+      link: "https://github.com/elizabethsiegle/wnba-analytics-dash-ai-insights/tree/main",
     },
     expected: {
       relevant: true,
-    }
+    },
   },
   {
     inputs: {
-      link: "https://github.com/souzatharsis/podcastfy"
+      link: "https://github.com/souzatharsis/podcastfy",
     },
     expected: {
       relevant: true,
-    }
+    },
   },
-]
+];
 
 const checkVerifyPostResult: SimpleEvaluator = ({ expected, actual }) => {
   const { pageContents } = actual as { pageContents?: string[] };

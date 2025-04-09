@@ -18,7 +18,7 @@ const OSS_COMPETITOR_LIST = [
   "Smolagents",
   "Mastra",
   "Autogen",
-  "Llama Index"
+  "Llama Index",
 ];
 
 export const CONTENT_VALIDATION_PROMPT = `This content will be used to generate engaging, informative and educational social media posts.

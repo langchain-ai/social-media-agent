@@ -33,8 +33,17 @@ type VerifyGitHubContentReturn = {
 
 const RELEVANCY_SCHEMA = z
   .object({
-    langchain_usage: z.string().describe("Describe the role LangChain's products/services play in this repository. Include how they're used, and if they play a meaningful role in the repository."),
-    competitors_analysis: z.string().optional().describe("Describe the role competitors play in this repository, if any. If no competitors are mentioned, you may leave this blank. If any are, include how they're used, and if they play a meaningful role in the repository."),
+    langchain_usage: z
+      .string()
+      .describe(
+        "Describe the role LangChain's products/services play in this repository. Include how they're used, and if they play a meaningful role in the repository.",
+      ),
+    competitors_analysis: z
+      .string()
+      .optional()
+      .describe(
+        "Describe the role competitors play in this repository, if any. If no competitors are mentioned, you may leave this blank. If any are, include how they're used, and if they play a meaningful role in the repository.",
+      ),
     reasoning: z
       .string()
       .describe(
