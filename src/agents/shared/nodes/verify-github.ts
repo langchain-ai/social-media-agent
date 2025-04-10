@@ -33,18 +33,29 @@ type VerifyGitHubContentReturn = {
 
 const RELEVANCY_SCHEMA = z
   .object({
+    langchain_usage: z
+      .string()
+      .describe(
+        "Describe the role LangChain's products/services play in this repository. Include how they're used, and if they play a meaningful role in the repository.",
+      ),
+    competitors_analysis: z
+      .string()
+      .optional()
+      .describe(
+        "Describe the role competitors play in this repository, if any. If no competitors are mentioned, you may leave this blank. If any are, include how they're used, and if they play a meaningful role in the repository.",
+      ),
     reasoning: z
       .string()
       .describe(
-        "Reasoning for why the content from the GitHub repository is or isn't relevant to your company's products.",
+        "Reasoning for why the content from the GitHub repository is or isn't relevant to your company's products. Include points from the langchain_usage and competitors_analysis in your final reasoning decision into why the repository is or isn't relevant.",
       ),
     relevant: z
       .boolean()
       .describe(
-        "Whether or not the content from the GitHub repository is relevant to your company's products.",
+        "Whether or not the content from the GitHub repository is relevant to your company's products. Only answer this field after reasoning on all the fields above (langchain_usage, competitors_analysis, reasoning).",
       ),
   })
-  .describe("The relevancy of the content to your company's products.");
+  .describe("The relevancy of the content to LangChain's products/services.");
 
 const REPO_DEPENDENCY_PROMPT = `Here are the dependencies of the repository. You should use the dependencies listed to determine if the repository is relevant.
 <repository-dependency-files>

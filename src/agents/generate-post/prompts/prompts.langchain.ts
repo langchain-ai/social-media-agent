@@ -9,12 +9,22 @@ Here is some context about the different LangChain products and services:
 - **LangSmith** - this is LangChain's SaaS product for building AI applications. It offers solutions for evaluating AI systems, observability, datasets and testing.
 </business-context>`;
 
+const OSS_COMPETITOR_LIST = [
+  "AI SDK",
+  "PydanticAI",
+  "CrewAI",
+  "OpenAI Agents SDK",
+  "OpenAI Swarm",
+  "Smolagents",
+  "Mastra",
+  "Autogen",
+  "Llama Index",
+];
+
 export const CONTENT_VALIDATION_PROMPT = `This content will be used to generate engaging, informative and educational social media posts.
 The following are rules to follow when determining whether or not to approve content as valid, or not:
-<validation-rules>
+<approval-conditions>
 - The content should be about a new product, tool, service, or similar.
-- You should NOT approve content from users who are requesting help, giving feedback, or otherwise not clearly about software which uses the LangChain ecosystem.
-- You should NOT approve content that is showing an error, or specific problematic issue with one of LangChain's products or services.
 - The content should be about AI, or software related to AI/LLMs in some way. LangChain is an AI software development company, so you should NOT approve content from users which are not at least somewhat related to AI.
 - Content which includes LangChain's products or services but is not focused on LangChain's products or services should be approved. As LangChain's products or services plays a part in the content, you should approve it.
 - The content must include some mention or usage of at least one of LangChain's products and services, or LangGraph's products and services. The following is a full list of LangChain products/services you should likely approve if mentioned:
@@ -28,7 +38,16 @@ The following are rules to follow when determining whether or not to approve con
   - Open Canvas
 - If the content outlines how it uses LangChain's products in the making of it, but LangChain is not the main focus, you should approve it.
 - We want to promote all content/products/services if they use LangChain's products to make them.
-</validation-rules>`;
+</approval-conditions>
+
+<rejection-conditions>
+- You should NOT approve content from users who are requesting help, giving feedback, or otherwise not clearly about software which uses the LangChain ecosystem.
+- You should NOT approve content that is showing an error, or specific problematic issue with one of LangChain's products or services.
+- Content which promotes heavily integrates with LangChain's competitors should be rejected. Some of the competitors to LangChain/LangGraph are:
+  - ${OSS_COMPETITOR_LIST.map((competitor) => `  - ${competitor}`).join("\n")}
+Content which mentions the competitors does not necessarily mean it should be rejected. However, if the content focuses on the competitors, or the competitors play a larger role than the LangChain products/services, it should be rejected.
+- Content which mentions LangChain's products/services, but only briefly, and it is clear they do NOT play any meaningful role in the content, should be rejected.
+</rejection-conditions>`;
 
 export const TWEET_EXAMPLES = `<example index="1">
 Podcastfy.ai 🎙️🤖

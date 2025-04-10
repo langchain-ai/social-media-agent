@@ -1,14 +1,10 @@
-// const timezoneMock = require("timezone-mock");
-require("dotenv").config();
+const dotenv = require("dotenv");
 
-// Mock the timezone to 'America/Los_Angeles'
-// timezoneMock.register("US/Pacific"); // Alternatively, use 'America/Los_Angeles'
+// Check for TEST_ENV environment variable to determine which .env file to load
+// Default to regular .env if not specified
 
-// Optional: Log the current timezone to verify
-// console.log(
-//   "Current Timezone:",
-//   Intl.DateTimeFormat().resolvedOptions().timeZone,
-// );
+const envFile =
+  process.env.TEST_ENV === "production" ? ".env.production" : ".env";
 
-// If you have any global configurations or mocks, add them here
-// For example, you can set up global variables, mock APIs, etc.
+// Load the appropriate .env file
+dotenv.config({ path: envFile });

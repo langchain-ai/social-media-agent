@@ -12,7 +12,7 @@ export default {
     ],
   },
   extensionsToTreatAsEsm: [".ts"],
-  setupFiles: ["dotenv/config", "./jest.setup.cjs"],
+  setupFiles: ["./jest.setup.cjs"],
   passWithNoTests: true,
   testTimeout: 20_000,
 };
