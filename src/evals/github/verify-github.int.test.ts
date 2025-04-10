@@ -7,7 +7,6 @@ import { SKIP_CONTENT_RELEVANCY_CHECK } from "../../agents/generate-post/constan
 const INPUTS = [
   {
     inputs: {
-      // TBD: Yes or no?
       link: "https://github.com/FlowiseAI/Flowise",
     },
     expected: {
