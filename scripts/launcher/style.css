@@ -1,0 +1,290 @@
+    /* Reset and base styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      height: 100%;
+      overflow: hidden;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f9fafb;
+      color: #111827;
+      line-height: 1.5;
+    }
+
+    /* Layout */
+    .container {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      width: 100%;
+      overflow: hidden;
+    }
+
+    .header {
+      padding: 20px 24px;
+      border-bottom: 1px solid #e5e7eb;
+      background-color: white;
+    }
+
+    .main-content {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    .form-column {
+      flex: 1;
+      padding: 24px;
+      overflow-y: auto;
+      border-right: 1px solid #e5e7eb;
+    }
+
+    .output-column {
+      flex: 2;
+      display: flex;
+      flex-direction: column;
+      padding: 24px;
+      overflow: hidden;
+    }
+
+    /* Tabs */
+    .tabs {
+      display: flex;
+      margin-bottom: 16px;
+    }
+
+    .tab-list {
+      display: flex;
+      gap: 8px;
+    }
+
+    .tab {
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      background: none;
+      border: none;
+      color: #4b5563;
+      transition: background-color 0.2s;
+    }
+
+    .tab.active {
+      background-color: #f3f4f6;
+      color: #111827;
+    }
+
+    .tab:hover:not(.active) {
+      background-color: #f9fafb;
+    }
+
+    /* Cards */
+    .card {
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      border: 1px solid #e5e7eb;
+      margin-bottom: 16px;
+      overflow: hidden;
+    }
+
+    .output-card {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    .card-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid #f3f4f6;
+    }
+
+    .card-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .card-description {
+      font-size: 14px;
+      color: #6b7280;
+    }
+
+    .card-content {
+      padding: 20px;
+    }
+
+    .output-card-content {
+      flex: 1;
+      padding: 20px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Form elements */
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 14px;
+      font-weight: 500;
+      margin-bottom: 8px;
+    }
+
+    .form-input,
+    .form-select,
+    .form-textarea {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 6px;
+      border: 1px solid #e5e7eb;
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .form-input:focus,
+    .form-select:focus,
+    .form-textarea:focus {
+      outline: none;
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+    }
+
+    .form-textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+
+    .form-hint {
+      font-size: 13px;
+      color: #6b7280;
+      margin-top: 6px;
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-weight: 500;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+      border: none;
+    }
+
+    .btn-primary {
+      background-color: #3b82f6;
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background-color: #2563eb;
+    }
+
+    .btn-success {
+      background-color: #10b981;
+      color: white;
+    }
+
+    .btn-success:hover {
+      background-color: #059669;
+    }
+
+    .btn-danger {
+      background-color: #ef4444;
+      color: white;
+    }
+
+    .btn-danger:hover {
+      background-color: #dc2626;
+    }
+
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* Output console */
+    .output-console {
+      background-color: #f9fafb;
+      border-radius: 6px;
+      padding: 16px;
+      font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
+      flex: 1;
+      overflow-y: auto;
+      color: #1f2937;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .output-console .empty {
+      color: #6b7280;
+    }
+
+    .output-line {
+      margin-bottom: 4px;
+      white-space: pre-wrap;
+    }
+
+    /* Tab content */
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    /* For multiple and notion tabs only */
+    #multiple-tab .global-settings,
+    #notion-tab .global-settings {
+      margin-bottom: 16px;
+    }
+
+    /* Auth link styles */
+    .auth-link-container {
+      background-color: #f9fafb;
+      border-radius: 6px;
+      padding: 16px;
+      margin-top: 16px;
+      border: 1px solid #e5e7eb;
+    }
+
+    .auth-link {
+      display: block;
+      background-color: white;
+      border: 1px solid #e5e7eb;
+      border-radius: 6px;
+      padding: 12px;
+      margin: 12px 0;
+      font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
+      font-size: 13px;
+      word-break: break-all;
+      color: #3b82f6;
+      text-decoration: none;
+    }
+
+    .auth-link:hover {
+      background-color: #f3f4f6;
+    }
+
+    .auth-buttons {
+      display: flex;
+      gap: 12px;
+      margin-top: 16px;
+    }
+  

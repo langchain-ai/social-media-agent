@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Social Media Agent Launcher</title>
+  <!-- Inter font -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1 style="font-size: 24px; font-weight: 700;">Social Media Agent Launcher</h1>
+    </div>
+
+    <div class="main-content">
+      <div class="form-column">
+        <div class="tabs">
+          <div class="tab-list">
+            <button class="tab active" data-tab="single">Single URL</button>
+            <button class="tab" data-tab="multiple">Multiple URLs</button>
+            <button class="tab" data-tab="notion">Notion</button>
+          </div>
+        </div>
+
+        <!-- Single URL Tab -->
+        <div class="tab-content active" id="single-tab">
+          <div class="card">
+            <div class="card-header">
+              <h2 class="card-title">Generate Post from URL</h2>
+              <p class="card-description">Enter a single URL to process</p>
+            </div>
+            <div class="card-content">
+              <div class="form-group">
+                <label for="single-url" class="form-label">URL</label>
+                <input id="single-url" type="text" class="form-input" placeholder="https://example.com/article">
+              </div>
+              <button id="generate-single" class="btn btn-primary">Generate Post</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Multiple URLs Tab -->
+        <div class="tab-content" id="multiple-tab">
+          <!-- Global Settings for Multiple URLs -->
+          <div class="card global-settings">
+            <div class="card-content">
+              <div class="form-group">
+                <label for="mode-multiple" class="form-label">Processing Mode</label>
+                <select id="mode-multiple" class="form-select">
+                  <option value="multi-post">Multi-Post Mode</option>
+                  <option value="single-post">Single-Post Mode</option>
+                </select>
+                <p class="form-hint">
+                  Multi-Post: Process each URL separately. Single-Post: Process all URLs together.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <h2 class="card-title">Generate Multiple Posts</h2>
+              <p class="card-description">Enter multiple URLs separated by commas</p>
+            </div>
+            <div class="card-content">
+              <div class="form-group">
+                <label for="multiple-urls" class="form-label">URLs</label>
+                <textarea id="multiple-urls" class="form-textarea" placeholder="https://example.com/article1, https://example.com/article2"></textarea>
+                <p class="form-hint">Enter multiple URLs separated by commas</p>
+              </div>
+              <button id="generate-multiple" class="btn btn-primary">Process URLs</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Notion Tab -->
+        <div class="tab-content" id="notion-tab">
+          <!-- Global Settings for Notion -->
+          <div class="card global-settings">
+            <div class="card-content">
+              <div class="form-group">
+                <label for="mode-notion" class="form-label">Processing Mode</label>
+                <select id="mode-notion" class="form-select">
+                  <option value="multi-post">Multi-Post Mode</option>
+                  <option value="single-post">Single-Post Mode</option>
+                </select>
+                <p class="form-hint">
+                  Multi-Post: Process each URL separately. Single-Post: Process all URLs together.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <h2 class="card-title">Ingest URLs from Notion</h2>
+              <p class="card-description">Extract and process links from a Notion page</p>
+            </div>
+            <div class="card-content">
+              <div class="form-group">
+                <label for="notion-url" class="form-label">Notion Page</label>
+                <input id="notion-url" type="text" class="form-input"
+                       placeholder="Enter the title of the Notion page to extract links from">
+              </div>
+              <button id="ingest-notion" class="btn btn-primary">Ingest URLs from Notion</button>
+
+              <!-- Auth Link Section -->
+              <div class="auth-link-container" id="auth-link-container">
+                <h3 style="font-size: 16px; font-weight: 600; margin-bottom: 8px;">Notion Authorization Required</h3>
+                <p style="font-size: 14px; color: #4b5563; margin-bottom: 12px;">
+                  To access your Notion pages, you need to authorize this application. Please click the link below and follow the instructions.
+                </p>
+                <a href="#" class="auth-link" id="notion-auth-link">
+                </a>
+                <p style="font-size: 14px; color: #4b5563; margin-bottom: 12px;">
+                  After authorization, click the Accept button below to continue. Click Cancel to stop the process.
+                </p>
+                <div class="auth-buttons">
+                  <button id="auth-accept" class="btn btn-success">Accept</button>
+                  <button id="auth-cancel" class="btn btn-danger">Cancel</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="output-column">
+        <div class="card output-card">
+          <div class="card-header">
+            <h2 class="card-title">Output</h2>
+          </div>
+          <div class="output-card-content">
+            <div id="output" class="output-console">
+              <div class="empty">Click Start to run generation...</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Tab switching functionality
+    const tabs = document.querySelectorAll('.tab');
+    const tabContents = document.querySelectorAll('.tab-content');
+
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        const tabId = tab.getAttribute('data-tab');
+
+        // Update active tab
+        tabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+
+        // Show active content
+        tabContents.forEach(content => {
+          content.classList.remove('active');
+          if (content.id === `${tabId}-tab`) {
+            content.classList.add('active');
+          }
+        });
+      });
+    });
+
+    // Processing functionality
+    let processing = false;
+    const outputElement = document.getElementById('output');
+
+    function setOutput(lines) {
+      outputElement.innerHTML = '';
+      lines.forEach(line => {
+        const div = document.createElement('div');
+        div.textContent = line;
+        div.className = 'output-line';
+        outputElement.appendChild(div);
+      });
+    }
+
+    function addToOutput(newElement) {
+      outputElement.appendChild(newElement);
+    }
+
+    function startProcessing() {
+      processing = true;
+      document.getElementById('generate-single').disabled = true;
+      document.getElementById('generate-multiple').disabled = true;
+      document.getElementById('ingest-notion').disabled = true;
+    }
+
+    function endProcessing() {
+      setTimeout(() => {
+        processing = false;
+        document.getElementById('generate-single').disabled = false;
+        document.getElementById('generate-multiple').disabled = false;
+        document.getElementById('ingest-notion').disabled = false;
+      }, 1500);
+    }
+
+    function showAuthPane(url) {
+      const authContainer = document.getElementById('auth-link-container');
+      const authLink = document.getElementById('notion-auth-link');
+      authLink.href = url;
+      authLink.textContent = url;
+      authLink.target = '_blank';
+      authContainer.style.display = 'block';
+    }
+
+    function hideAuthPane() {
+      const authContainer = document.getElementById('auth-link-container');
+      authContainer.style.display = 'none';
+    }
+
+    // Single URL processing
+    document.getElementById('generate-single').addEventListener('click', () => {
+      const url = document.getElementById('single-url').value;
+      if (!url) return;
+
+      startProcessing();
+      const mode = document.getElementById('mode-multiple').value;
+      const eventSource = new EventSource(encodeURI(`/submit-urls?url=${url}&mode=${mode}`));
+
+      eventSource.onmessage = function(event) {
+          const { type, data } = JSON.parse(event.data);
+          console.log("type", type);
+          const newElement = document.createElement("pre");
+          switch (type) {
+            case "message":
+              newElement.textContent = data;
+              addToOutput(newElement);
+              break;
+            case "url":
+              newElement.textContent = data.message;
+              const newLink = document.createElement("a");
+              newLink.href = data.url;
+              newLink.textContent = data.url;
+              newLink.target = "_blank";
+              newElement.appendChild(newLink);
+              addToOutput(newElement);
+              break;
+            case "error":
+              newElement.textContent = data;
+              newElement.style.color = "red";
+              addToOutput(newElement);
+              break;
+            case "end":
+              newElement.textContent = "Completed processing";
+              addToOutput(newElement);
+              eventSource.close();
+              endProcessing();
+              break;
+            default:
+              newElement.textContent = "Unknown event type, closing connection";
+              newElement.style.color = "red";
+              addToOutput(newElement);
+              eventSource.close();
+              endProcessing();
+              break;
+          }
+      };
+
+      // Log connection error
+      eventSource.onerror = function(event) {
+          console.log('Error occurred:', event);
+      };
+
+    });
+
+    // Multiple URLs processing
+    document.getElementById('generate-multiple').addEventListener('click', () => {
+      const multipleUrls = document.getElementById('multiple-urls').value;
+      if (!multipleUrls) return;
+
+      startProcessing();
+      const urls = multipleUrls.split(',').map(url => url.trim());
+      const mode = document.getElementById('mode-multiple').value;
+      const eventSource = new EventSource(encodeURI(`/submit-urls?urls=${multipleUrls}&mode=${mode}`));
+
+      eventSource.onmessage = function(event) {
+          const { type, data } = JSON.parse(event.data);
+          console.log("type", type);
+          const newElement = document.createElement("pre");
+          switch (type) {
+            case "message":
+              newElement.textContent = data;
+              addToOutput(newElement);
+              break;
+            case "url":
+              newElement.textContent = data.message;
+              const newLink = document.createElement("a");
+              newLink.href = data.url;
+              newLink.textContent = data.url;
+              newLink.target = "_blank";
+              newElement.appendChild(newLink);
+              addToOutput(newElement);
+              break;
+            case "error":
+              newElement.textContent = data;
+              newElement.style.color = "red";
+              addToOutput(newElement);
+              break;
+            case "end":
+              newElement.textContent = "Completed processing";
+              addToOutput(newElement);
+              eventSource.close();
+              endProcessing();
+              break;
+            default:
+              newElement.textContent = "Unknown event type, closing connection";
+              newElement.style.color = "red";
+              addToOutput(newElement);
+              eventSource.close();
+              endProcessing();
+              break;
+          }
+      };
+
+      // Log connection error
+      eventSource.onerror = function(event) {
+          console.log('Error occurred:', event);
+      };
+
+    });
+
+    // Notion ingestion
+    document.getElementById('ingest-notion').addEventListener('click', () => {
+      // Initialize the EventSource, listening for server updates
+      startProcessing();
+      const notionPageTitle = document.getElementById('notion-url').value;
+      const mode = document.getElementById('mode-notion').value;
+      const eventSource = new EventSource(encodeURI(`/submit-notion?notionPageTitle=${notionPageTitle}&mode=${mode}`));
+
+      // Listen for messages from the server
+      eventSource.onmessage = function(event) {
+          const { type, data } = JSON.parse(event.data);
+          console.log("type", type);
+          const newElement = document.createElement("pre");
+          switch (type) {
+            case "message":
+              newElement.textContent = data;
+              addToOutput(newElement);
+              break;
+            case "url":
+              newElement.textContent = data.message;
+              const newLink = document.createElement("a");
+              newLink.href = data.url;
+              newLink.textContent = data.url;
+              newLink.target = "_blank";
+              newElement.appendChild(newLink);
+              addToOutput(newElement);
+              break;
+            case "error":
+              newElement.textContent = data;
+              newElement.style.color = "red";
+              addToOutput(newElement);
+              break;
+            case "auth_required":
+              newElement.textContent = "Authorization required, please authorize and accept to retry";
+              newElement.style.color = "orange";
+              addToOutput(newElement);
+              eventSource.close();
+              endProcessing();
+              showAuthPane(data);
+              break;
+            case "end":
+              newElement.textContent = "Completed processing";
+              addToOutput(newElement);
+              eventSource.close();
+              endProcessing();
+              break;
+            default:
+              newElement.textContent = "Unknown event type, closing connection";
+              newElement.style.color = "red";
+              addToOutput(newElement);
+              eventSource.close();
+              endProcessing();
+              break;
+          }
+      };
+
+      // Log connection error
+      eventSource.onerror = function(event) {
+          console.log('Error occurred:', event);
+      };
+    });
+
+    // Auth buttons functionality
+    document.getElementById('auth-accept').addEventListener('click', () => {
+      hideAuthPane();
+      const ingestNotion = document.getElementById('ingest-notion');
+      ingestNotion.click();
+    });
+
+    document.getElementById('auth-cancel').addEventListener('click', () => {
+      hideAuthPane();
+      setOutput([
+        'Notion authorization cancelled',
+        'You need to authorize the application to access your Notion pages'
+      ]);
+    });
+
+    // Render commands
+    function initUI() {
+      hideAuthPane();
+    }
+    // Handle Notion integration
+    async function handleNotion() {
+      const output = document.getElementById('output');
+      output.textContent = 'Processing Notion request...';
+      const notionPageTitle = document.getElementById('notion-page-title').value;
+      const mode = document.getElementById('global-mode').value;
+      try {
+        const response = await fetch('/submit-notion', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            notionPageTitle: notionPageTitle,
+            mode: mode
+          }),
+        });
+        const data = await response.json();
+        if (data.status === 'auth_required') {
+          document.getElementById('notion-auth-url').textContent = data.authUrl;
+          document.getElementById('notion-auth').style.display = 'block';
+        } else {
+          output.textContent = data.output;
+        }
+      } catch (error) {
+        output.textContent = 'Error: ' + error.message;
+      }
+    }
+    // Handle Notion authorization
+    async function handleNotionAuth(action) {
+      const output = document.getElementById('output');
+      const authContainer = document.getElementById('notion-auth');
+      if (action === 'cancel') {
+        authContainer.style.display = 'none';
+        output.textContent = 'Notion authorization cancelled.';
+        return;
+      }
+      output.textContent = 'Checking authorization...';
+      try {
+        const response = await fetch('/check-notion-auth', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ command: 'ingest_from_notion' }),
+        });
+        const data = await response.json();
+        if (data.authUrl) {
+          // Still needs auth
+          output.textContent = 'Authorization still needed. Please visit the URL and try again.';
+          return;
+        }
+        // Auth successful, run the command
+        const notionPageTitle = document.getElementById('notion-page-title').value;
+        const mode = document.getElementById('global-mode').value;
+        const commandData = {
+          command: 'ingest_from_notion',
+          notionPageTitle: notionPageTitle,
+          mode: mode
+        };
+        const runResponse = await fetch('/run-command', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(commandData),
+        });
+        const runData = await runResponse.json();
+        output.textContent = runData.output;
+        authContainer.style.display = 'none';
+      } catch (error) {
+        output.textContent = 'Error: ' + error.message;
+      }
+    }
+    // Handle URL-based commands
+    async function handleURLs(command) {
+      const output = document.getElementById('output');
+      output.textContent = 'Running command...';
+      const cmd = availableCommands.find(c => c.id === command);
+      const mode = document.getElementById('global-mode').value;
+      let requestData = { mode };
+      if (cmd?.hasUrlParam) {
+        const urlInput = document.getElementById(`url-${command}`);
+        requestData.url = urlInput.value;
+      }
+      if (cmd?.hasMultipleUrls) {
+        const urlsInput = document.getElementById(`urls-${command}`);
+        requestData.urls = urlsInput.value;
+      }
+      try {
+        const response = await fetch('/submit-urls', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(requestData),
+        });
+        const data = await response.json();
+        output.textContent = data.output;
+      } catch (error) {
+        output.textContent = 'Error: ' + error.message;
+      }
+    }
+    // Initialize the UI
+    document.addEventListener('DOMContentLoaded', initUI);
+  </script>
+</body>
+</html>
+
+
+
+
+    <div class="section-title">Global Settings</div>
+    <div class="command-container">
+      <select id="global-mode" class="mode-selector">
+        <option value="multi-post" selected>Multi-Post Mode</option>
+        <option value="single-post">Single-Post Mode</option>
+      </select>
+      <div class="help-text">Multi-Post: Process each URL separately. Single-Post: Process all URLs together.</div>
+    </div>
+    <div class="section-title">Schedule Posts from Notion</div>
+    <div class="command-list" id="notion-section">
+      <div class="command-container">
+        <button class="command-button" onclick="handleNotion()">
+          Ingest URLs from Notion
+        </button>
+        <input type="text"
+               id="notion-page-title"
+               class="url-input"
+               placeholder="Enter Notion Page Title"
+               value="My Notion Page"
+        >
+        <div class="help-text">Enter the title of the Notion page to extract links from</div>
+        <div id="notion-auth" class="auth-container">
+          <div class="auth-url" id="notion-auth-url"></div>
+          <div class="auth-buttons">
+            <button class="auth-button auth-accept" onclick="handleNotionAuth('accept')">I've Authorized</button>
+            <button class="auth-button auth-cancel" onclick="handleNotionAuth('cancel')">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="section-title">Schedule Posts from URLs</div>
+    <div class="command-list" id="post-generation-section">
+      <!-- Post generation commands will be inserted here -->
+    </div>
+    <div id="output" class="output"></div>
