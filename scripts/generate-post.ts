@@ -38,7 +38,7 @@ async function invokeGraph(url: string) {
 
 // Parse command line arguments
 const args = process.argv.slice(2);
-const urlArg = args.find(arg => arg.startsWith('--url='));
+const urlArg = args.find((arg: string) => arg.startsWith('--url='));
 const url = urlArg ? urlArg.split('=')[1] : "https://blog.langchain.dev/customers-appfolio/";
 
 invokeGraph(url).catch(console.error);
