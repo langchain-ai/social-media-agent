@@ -5,7 +5,6 @@ import {
   SKIP_USED_URLS_CHECK,
   TEXT_ONLY_MODE,
 } from "../src/agents/generate-post/constants.js";
-import Arcade from "@arcadeai/arcadejs";
 
 /**
  * Generate posts based on multiple URLs.
