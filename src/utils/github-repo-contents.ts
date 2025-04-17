@@ -68,6 +68,45 @@ export async function getRepoContents(repoUrl: string): Promise<RepoContent[]> {
     const { owner, repo } = getOwnerRepoFromUrl(repoUrl);
 
     try {
+      // First, check if the repoUrl is a subdirectory (not the root directory)
+      // if it is, attempt to fetch a README.md file in the directory
+      if (repoUrl.includes("/tree/") || repoUrl.includes("/blob/")) {
+        // Extract the path after tree or blob
+        let fullPath = "";
+        if (repoUrl.includes("/tree/")) {
+          fullPath = repoUrl.split("/tree/").pop() || "";
+        } else if (repoUrl.includes("/blob/")) {
+          fullPath = repoUrl.split("/blob/").pop() || "";
+        }
+        
+        // Remove trailing slash if present
+        fullPath = fullPath.replace(/\/$/, "");
+        
+        // The first segment is the branch name, the rest is the actual path
+        const pathSegments = fullPath.split("/");
+        // Skip the branch name (first segment) and get the actual path
+        const path = pathSegments.slice(1).join("/");
+        
+        if (path) {
+          // This is not guaranteed to be a sub-directory, b/c it could be a top level file, but we should look anyways.
+          const subDirectoryResponse = await octokit.repos.getContent({
+            owner,
+            repo,
+            path,
+          });
+          
+          // Check if the response is for a single file (not an array)
+          if (!Array.isArray(subDirectoryResponse.data) && 'type' in subDirectoryResponse.data && subDirectoryResponse.data.type === "file") {
+            return [{
+              name: path.split('/').pop() || path, // Get the file name from the path
+              type: "file",
+              path: path,
+              size: subDirectoryResponse.data.size,
+            }];
+          }
+        }
+      }
+
       const response = await octokit.repos.getContent({
         owner,
         repo,
