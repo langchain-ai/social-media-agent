@@ -16,6 +16,7 @@ This repository contains an 'agent' which can take in a URL, and generate a Twit
   - [Slack](#setup-slack)
   - [GitHub](#setup-github)
 - [Usage](#usage)
+  - [Web UI](#web-ui)
   - [Generate Post](#generate-post)
   - [Setup Crons](#setup-crons)
   - [Prebuilt Scripts](#prebuilt-scripts)
@@ -47,7 +48,7 @@ To get started, you'll need the following API keys/software:
 - [Anthropic API](https://console.anthropic.com/) - General LLM
 - [LangSmith](https://smith.langchain.com/) - LangSmith API key required to run the LangGraph server locally (free)
 - [FireCrawl API](https://www.firecrawl.dev/) - Web scraping. New users get 500 credits for free
-- [Arcade](https://www.arcade.dev/) - Easy authentication for reading & writing to social media platforms
+- [Arcade](https://www.arcade.dev/) - Easy authentication & plug-and-play tools for social media integrations
 
 ## Setup Instructions
 
@@ -90,6 +91,9 @@ FIRECRAWL_API_KEY=
 
 # Arcade API key - used for fetching Tweets, and scheduling LinkedIn/Twitter posts
 ARCADE_API_KEY=
+# This will be used to connect to the Arcade service, it identifies the user so that we can
+# use the correct user's credentials to get content from Notion for the web UI
+ARCADE_USER_ID=
 ```
 
 If you plan to post to LinkedIn as an organization (rather than as yourself), you'll also need to set:
@@ -319,8 +323,6 @@ Ensure this is set as `GITHUB_TOKEN` in your `.env` file.
 
 # Usage
 
-## Generate Post
-
 Once all the setup steps have been completed, start your graph server by running:
 
 ```bash
@@ -329,6 +331,24 @@ yarn langgraph:in_mem:up
 
 > [!NOTE]
 > The first time running this command (or if a new version of `@langchain/langgraph-cli` has been released), it will ask you to accept an install for the CLI. Enter `y` to accept.
+
+## Web UI
+
+With the server running, you can execute the following command to serve a web-UI.
+
+This UI offers three straightforward ways to feed links to the agent:
+
+- **Single URL:** Paste one link, hit submit, and the agent starts processing.
+- **Multiple URLs:** Paste multiple links and choose either `single-post` or `multi-post` mode.
+- **Notion Integration:** Select a Notion page containing links, choose a mode, and ingest them all. The integration uses [Arcade](https://www.arcade.dev/) to authenticate to Notion and get content from the pages. No need to create a Notion API key!
+
+Modes:
+- `single-post`: All URLs provided will be used as context to generate one post
+- `multi-post`: The graph is invoked in a loop, and each URL will result in a post
+
+![Screenshot of the web UI](./static/SocialMediaAgent-ArcadeUI.png)
+
+## Generate Post
 
 Once the server is ready, you can execute the following command to generate a post:
 

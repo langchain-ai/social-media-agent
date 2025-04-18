@@ -47,7 +47,15 @@ yarn get:used_links
 This script will invoke the graph to generate a post. It defaults to a LangChain blog post, and typically used to demonstrate how the Social Media Agent works.
 
 ```bash
-yarn generate_post
+yarn generate_post --url=https://example.com
+```
+
+### Ingest Multiple URLs
+
+This script will invoke the graph to process multiple URLs. It has two modes of operation. `multi-post` will create one post per URL, `single-post` will use all the provided URLs as context to generate a single post.
+
+```bash
+yarn generate-multiple-posts --mode=<multi-post|single-post> --urls=<url1,url2,...>
 ```
 
 ### Delete Run(s) & Thread(s)
@@ -88,4 +96,12 @@ This script will list all cron jobs.
 
 ```bash
 yarn cron:list
+```
+
+### Launcher
+
+This hosts a local version of the Social Media Agent Launcher UI. This allows you to fire the graph on demand, and ingest URLs from a notion page.
+
+```bash
+yarn ui
 ```
