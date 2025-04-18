@@ -25,6 +25,7 @@ import { schedulePost } from "../shared/nodes/generate-post/schedule-post.js";
 import { rewritePost } from "../shared/nodes/generate-post/rewrite-post.js";
 import { Client } from "@langchain/langgraph-sdk";
 import { POST_TO_LINKEDIN_ORGANIZATION } from "./constants.js";
+import { rewritePostWithSplitUrl } from "./nodes/rewrite-with-split-url.js";
 
 function routeAfterGeneratingReport(
   state: GeneratePostState,
@@ -42,6 +43,7 @@ function rewriteOrEndConditionalEdge(
   | "schedulePost"
   | "updateScheduleDate"
   | "humanNode"
+  | "rewriteWithSplitUrl"
   | typeof END {
   if (state.next) {
     if (state.next === "unknownResponse") {
@@ -159,6 +161,8 @@ const generatePostBuilder = new StateGraph(
   .addNode("findImagesSubGraph", findImagesGraph)
   // Updated the scheduled date from the natural language response from the user.
   .addNode("updateScheduleDate", updateScheduledDate)
+  // Rewrite the post splitting the URL from the main body of the tweet
+  .addNode("rewriteWithSplitUrl", rewritePostWithSplitUrl)
 
   // Start node
   .addEdge(START, "authSocialsPassthrough")
@@ -205,6 +209,7 @@ const generatePostBuilder = new StateGraph(
   // Always route back to `humanNode` if the post was re-written or date was updated.
   .addEdge("rewritePost", "humanNode")
   .addEdge("updateScheduleDate", "humanNode")
+  .addEdge("rewriteWithSplitUrl", "humanNode")
 
   // If the schedule post is successful, end the graph.
   .addConditionalEdges("humanNode", rewriteOrEndConditionalEdge, [
@@ -212,6 +217,7 @@ const generatePostBuilder = new StateGraph(
     "schedulePost",
     "updateScheduleDate",
     "humanNode",
+    "rewriteWithSplitUrl",
     END,
   ])
   // Always end after scheduling the post.

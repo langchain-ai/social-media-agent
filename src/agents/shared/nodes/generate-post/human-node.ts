@@ -133,11 +133,20 @@ export async function humanNode<
     );
   }
 
+  const postArgs = state.complexPost
+    ? {
+        main_post: state.complexPost.main_post,
+        reply_post: state.complexPost.reply_post,
+      }
+    : {
+        post: state.post,
+      };
+
   const interruptValue: HumanInterrupt = {
     action_request: {
       action: "Schedule Twitter/LinkedIn post",
       args: {
-        post: state.post,
+        ...postArgs,
         date: defaultDateString,
         // Do not provide an image field if the mode is text only
         ...(!isTextOnlyMode && { image: state.image?.imageUrl ?? "" }),
@@ -199,11 +208,15 @@ export async function humanNode<
         userResponse: response.args,
         next: "rewritePost",
       } as Update;
-    }
-    if (route === "update_date") {
+    } else if (route === "update_date") {
       return {
         userResponse: response.args,
         next: "updateScheduleDate",
+      } as Update;
+    } else if (route === "rewrite_with_split_url") {
+      return {
+        userResponse: undefined,
+        next: "rewriteWithSplitUrl",
       } as Update;
     }
 
@@ -226,10 +239,17 @@ export async function humanNode<
 
   const castArgs = response.args.args as unknown as Record<string, string>;
 
-  const responseOrPost = castArgs.post;
-  if (!responseOrPost) {
+  const post = castArgs.post;
+  const complexPost =
+    castArgs.main_post && castArgs.reply_post
+      ? {
+          main_post: castArgs.main_post,
+          reply_post: castArgs.reply_post,
+        }
+      : undefined;
+  if (!post && !complexPost) {
     throw new Error(
-      `Unexpected response args value: ${responseOrPost}. Must be defined.\n\nResponse args:\n${JSON.stringify(response.args, null, 2)}`,
+      `Unexpected response args value: ${post}. Must be defined.\n\nResponse args:\n${JSON.stringify(response.args, null, 2)}`,
     );
   }
 
@@ -262,7 +282,8 @@ export async function humanNode<
   return {
     next: "schedulePost",
     scheduleDate: postDate,
-    post: responseOrPost,
+    ...(post ? { post } : {}),
+    ...(complexPost ? { complexPost } : {}),
     // TODO: Update so if the mime type is blacklisted, it re-routes to human node with an error message.
     image: imageState,
     userResponse: undefined,

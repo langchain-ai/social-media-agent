@@ -16,8 +16,10 @@ yarn-error.log
 **/.eslintcache
 
 .env
-.env.full
-.env.quickstart
+.env.*
+!.env.example
+!.env.*.example
+
 .ipynb_checkpoints
 
 # Screenshots taken during tests

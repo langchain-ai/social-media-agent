@@ -5,6 +5,7 @@ const ROUTE_RESPONSE_PROMPT = `You are an AI assistant tasked with routing a use
 
 1. Rewrite post - The user's response indicates they want to rewrite the generated post.
 2. Update scheduled date - The user wants to update the scheduled date for the post. This can either be a new date or a priority level (P1, P2, P3).
+3. Rewrite with split URL - Split the call to action URL in the post into a reply.
 
 Here is the generated post:
 <post>
@@ -47,19 +48,34 @@ Route: update_date
 Explanation: The user wants to change the posting date.
 
 Example 3:
+User: "Split the URL from the post"
+Route: rewrite_with_split_url
+Explanation: The user wants to split the post into two unique posts, one without the URL and the second with the URL.
+
+Example 4:
 User: "This should be a P1 priority."
 Route: update_date
 Explanation: The user wants to change the priority level of the post.
 
-Example 4:
+Example 5:
 User: "This should be a P0 priority."
 Route: unknown_response
 Explanation: P0 is not a valid priority level.
 
-Example 5:
+Example 6:
 User: "Hi! How are you?"
 Route: unknown_response
 Explanation: The user is engaging in general conversation, not a request to change the post.
+
+Example 7:
+User: "Can you split the post into two?"
+Route: rewrite_with_split_url
+Explanation: The user wants to split the post into two unique posts, one without the URL and the second with the URL.
+
+Once again, here is the users response:
+<user-response>
+{USER_RESPONSE}
+</user-response>
 
 Remember to always base your decision on the actual content of the user's response, not on these examples.`;
 
@@ -80,7 +96,12 @@ export async function routeResponse({
   });
 
   const routeSchema = z.object({
-    route: z.enum(["rewrite_post", "update_date", "unknown_response"]),
+    route: z.enum([
+      "rewrite_post",
+      "update_date",
+      "unknown_response",
+      "rewrite_with_split_url",
+    ]),
   });
   const modelWithSchema = model.withStructuredOutput(routeSchema, {
     name: "route",

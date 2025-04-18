@@ -8,6 +8,7 @@ import {
 } from "./constants.js";
 import { DateType } from "../types.js";
 import { VerifyLinksResultAnnotation } from "../verify-links/verify-links-state.js";
+import { ComplexPost } from "../shared/nodes/generate-post/types.js";
 
 export type LangChainProduct = "langchain" | "langgraph" | "langsmith";
 
@@ -38,6 +39,14 @@ export const GeneratePostAnnotation = Annotation.Root({
    */
   post: Annotation<string>,
   /**
+   * The complex post, if the user decides to split the URL from the main body.
+   *
+   * TODO: Refactor the post/complexPost state interfaces to use a single shared interface
+   * which includes images too.
+   * Tracking issue: https://github.com/langchain-ai/social-media-agent/issues/144
+   */
+  complexPost: Annotation<ComplexPost | undefined>,
+  /**
    * The date to schedule the post for.
    */
   scheduleDate: Annotation<DateType>,
@@ -54,6 +63,7 @@ export const GeneratePostAnnotation = Annotation.Root({
     | "rewritePost"
     | "updateScheduleDate"
     | "unknownResponse"
+    | "rewriteWithSplitUrl"
     | typeof END
     | undefined
   >,

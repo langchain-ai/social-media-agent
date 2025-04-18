@@ -23,6 +23,7 @@ import {
   TEXT_ONLY_MODE,
 } from "../generate-post/constants.js";
 import { SlackClient } from "../../clients/slack/client.js";
+import { ComplexPost } from "../shared/nodes/generate-post/types.js";
 
 async function getMediaFromImage(image?: {
   imageUrl: string;
@@ -38,6 +39,14 @@ async function getMediaFromImage(image?: {
 
 const UploadPostAnnotation = Annotation.Root({
   post: Annotation<string>,
+  /**
+   * The complex post, if the user decides to split the URL from the main body.
+   *
+   * TODO: Refactor the post/complexPost state interfaces to use a single shared interface
+   * which includes images too.
+   * Tracking issue: https://github.com/langchain-ai/social-media-agent/issues/144
+   */
+  complexPost: Annotation<ComplexPost | undefined>,
   image: Annotation<
     | {
         imageUrl: string;
@@ -65,7 +74,7 @@ interface PostUploadFailureToSlackArgs {
   uploadDestination: "twitter" | "linkedin";
   error: any;
   threadId: string;
-  postContent: string;
+  postContent: string | ComplexPost;
   image?: {
     imageUrl: string;
     mimeType: string;
@@ -86,6 +95,22 @@ async function postUploadFailureToSlack({
     return;
   }
   const slackClient = new SlackClient();
+
+  const postStr =
+    typeof postContent === "string"
+      ? `Post:
+\`\`\`
+${postContent}
+\`\`\``
+      : `Main post:
+\`\`\`
+${postContent.main_post}
+\`\`\`
+Reply post:
+\`\`\`
+${postContent.reply_post}
+\`\`\``;
+
   const slackMessageContent = `❌ FAILED TO UPLOAD POST TO ${uploadDestination.toUpperCase()} ❌
 
 Error message:
@@ -95,10 +120,7 @@ ${error}
 
 Thread ID: *${threadId}*
 
-Post:
-\`\`\`
-${postContent}
-\`\`\`
+${postStr}
 
 ${image ? `Image:\nURL: ${image.imageUrl}\nMIME type: ${image.mimeType}` : ""}
 `;
@@ -149,10 +171,23 @@ export async function uploadPost(
       mediaBuffer = await getMediaFromImage(state.image);
     }
 
-    await twitterClient.uploadTweet({
-      text: state.post,
-      ...(mediaBuffer && { media: mediaBuffer }),
-    });
+    if (state.complexPost) {
+      await twitterClient.uploadThread([
+        {
+          text: state.complexPost.main_post,
+          ...(mediaBuffer && { media: mediaBuffer }),
+        },
+        {
+          text: state.complexPost.reply_post,
+        },
+      ]);
+    } else {
+      await twitterClient.uploadTweet({
+        text: state.post,
+        ...(mediaBuffer && { media: mediaBuffer }),
+      });
+    }
+
     console.log("✅ Successfully uploaded Tweet ✅");
   } catch (e: any) {
     console.error("Failed to upload post:", e);
@@ -167,7 +202,7 @@ export async function uploadPost(
       error: errorString,
       threadId:
         config.configurable?.thread_id || "no thread id found in configurable",
-      postContent: state.post,
+      postContent: state.complexPost || state.post,
       image: state.image,
     });
   }
@@ -237,7 +272,7 @@ export async function uploadPost(
       error: errorString,
       threadId:
         config.configurable?.thread_id || "no thread id found in configurable",
-      postContent: state.post,
+      postContent: state.complexPost || state.post,
       image: state.image,
     });
   }

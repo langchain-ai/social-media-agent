@@ -1,13 +1,32 @@
-import { Annotation, END } from "@langchain/langgraph";
+import { Annotation } from "@langchain/langgraph";
 import { DateType } from "../../../types.js";
 import { IngestDataAnnotation } from "../../../ingest-data/ingest-data-state.js";
 import { VerifyLinksResultAnnotation } from "../../../verify-links/verify-links-state.js";
+
+export type ComplexPost = {
+  /**
+   * The main post content.
+   */
+  main_post: string;
+  /**
+   * The reply post content.
+   */
+  reply_post: string;
+};
 
 const BaseGeneratePostAnnotation = Annotation.Root({
   /**
    * The generated post for LinkedIn/Twitter.
    */
   post: Annotation<string>,
+  /**
+   * The complex post, if the user decides to split the URL from the main body.
+   *
+   * TODO: Refactor the post/complexPost state interfaces to use a single shared interface
+   * which includes images too.
+   * Tracking issue: https://github.com/langchain-ai/social-media-agent/issues/144
+   */
+  complexPost: Annotation<ComplexPost | undefined>,
   /**
    * The date to schedule the post for.
    */
@@ -35,14 +54,7 @@ const BaseGeneratePostAnnotation = Annotation.Root({
   /**
    * The node to execute next.
    */
-  next: Annotation<
-    | "schedulePost"
-    | "rewritePost"
-    | "unknownResponse"
-    | "updateScheduleDate"
-    | typeof END
-    | undefined
-  >,
+  next: Annotation<string | undefined>,
   /**
    * Response from the user for the post. Typically used to request
    * changes to be made to the post.

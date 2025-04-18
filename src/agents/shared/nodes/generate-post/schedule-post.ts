@@ -1,5 +1,9 @@
 import { LangGraphRunnableConfig } from "@langchain/langgraph";
-import { BaseGeneratePostState, BaseGeneratePostUpdate } from "./types.js";
+import {
+  BaseGeneratePostState,
+  BaseGeneratePostUpdate,
+  ComplexPost,
+} from "./types.js";
 import { Client } from "@langchain/langgraph-sdk";
 import {
   getScheduledDateSeconds,
@@ -17,7 +21,7 @@ interface SendSlackMessageArgs {
   afterSeconds: number | undefined;
   threadId: string;
   runId: string;
-  postContent: string;
+  postContent: string | ComplexPost;
   image?: {
     imageUrl: string;
     mimeType: string;
@@ -41,6 +45,21 @@ async function sendSlackMessage({
 
   const slackClient = new SlackClient();
 
+  const postStr =
+    typeof postContent === "string"
+      ? `Post:
+\`\`\`
+${postContent}
+\`\`\``
+      : `Main post:
+\`\`\`
+${postContent.main_post}
+\`\`\`
+Reply post:
+\`\`\`
+${postContent.reply_post}
+\`\`\``;
+
   const imageString = image?.imageUrl
     ? `Image:
 ${image?.imageUrl}`
@@ -52,10 +71,7 @@ Scheduled post for: *${afterSeconds ? getFutureDate(afterSeconds) : "now"}*
 Run ID: *${runId}*
 Thread ID: *${threadId}*
 
-Post:
-\`\`\`
-${postContent}
-\`\`\`
+${postStr}
 
 ${!isTextOnlyMode ? imageString : "Text only mode enabled. Image support has been disabled."}`;
 
@@ -88,6 +104,7 @@ export async function schedulePost<
   const run = await client.runs.create(thread.thread_id, "upload_post", {
     input: {
       post: state.post,
+      complexPost: state.complexPost,
       image: state.image,
     },
     config: {
@@ -105,7 +122,7 @@ export async function schedulePost<
       afterSeconds,
       threadId: thread.thread_id,
       runId: run.run_id,
-      postContent: state.post,
+      postContent: state.complexPost || state.post,
       image: state.image,
     });
   } catch (e) {

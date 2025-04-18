@@ -6,6 +6,7 @@ import {
   POST_TO_LINKEDIN_ORGANIZATION,
   TEXT_ONLY_MODE,
 } from "../generate-post/constants.js";
+import { ComplexPost } from "../shared/nodes/generate-post/types.js";
 
 export const CuratedPostInterruptAnnotation = Annotation.Root({
   /**
@@ -22,6 +23,14 @@ export const CuratedPostInterruptAnnotation = Annotation.Root({
    * The generated post for LinkedIn/Twitter.
    */
   post: Annotation<string>,
+  /**
+   * The complex post, if the user decides to split the URL from the main body.
+   *
+   * TODO: Refactor the post/complexPost state interfaces to use a single shared interface
+   * which includes images too.
+   * Tracking issue: https://github.com/langchain-ai/social-media-agent/issues/144
+   */
+  complexPost: Annotation<ComplexPost | undefined>,
   /**
    * The date to schedule the post for.
    */

@@ -1,6 +1,7 @@
 import Arcade from "@arcadeai/arcadejs";
 import { CreateTweetRequest, TwitterClientArgs } from "./types.js";
 import {
+  SendTweetV2Params,
   TweetV2,
   Tweetv2FieldsParams,
   TweetV2ListTweetsPaginator,
@@ -258,6 +259,52 @@ export class TwitterClient {
     if (response.errors) {
       throw new Error(
         `Error uploading tweet: ${JSON.stringify(response.errors, null)}`,
+      );
+    }
+    return response;
+  }
+
+  /**
+   * Posts a sequence of tweets as a thread, with optional media for each post.
+   * Works in both basic auth and Arcade auth modes.
+   *
+   * @param {CreateTweetRequest[]} posts - An array of tweet objects, each containing text and optional media.
+   * @returns {Promise<any[]>} A promise resolving to an array of Twitter API responses for each tweet in the thread.
+   * @throws {Error} If any tweet in the thread upload fails.
+   */
+  async uploadThread(posts: CreateTweetRequest[]) {
+    const postsInputPromise: Promise<SendTweetV2Params>[] = posts.map(
+      async (p) => {
+        let mediaIds: MediaIdStringArray | undefined = undefined;
+        if (p.media?.media) {
+          const mediaId = await this.uploadMedia(
+            p.media.media,
+            p.media.mimeType,
+          );
+          mediaIds = [mediaId];
+        }
+        const mediaInput = mediaIds
+          ? {
+              media: {
+                media_ids: mediaIds,
+              },
+            }
+          : {};
+
+        return {
+          text: p.text,
+          ...mediaInput,
+        };
+      },
+    );
+    const threadPostsInput = await Promise.all(postsInputPromise);
+    const response = await this.twitterClient.v2.tweetThread(threadPostsInput);
+    if (response.some((r) => r.errors)) {
+      throw new Error(
+        `Error uploading thread: ${JSON.stringify(
+          response.map((r) => r.errors),
+          null,
+        )}`,
       );
     }
     return response;
