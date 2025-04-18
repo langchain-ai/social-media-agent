@@ -25,7 +25,6 @@
     "start:auth": "yarn tsx src/clients/auth-server.ts",
     "generate_post": "yarn tsx scripts/generate-post.ts",
     "generate_multiple_posts": "yarn tsx scripts/generate-multiple-posts.ts",
-    "extract-notion-links": "yarn tsx scripts/extract-notion-links.ts",
     "cron:create": "yarn tsx scripts/crons/create-cron.ts",
     "cron:delete": "yarn tsx scripts/crons/delete-cron.ts",
     "cron:list": "yarn tsx scripts/crons/list-crons.ts",

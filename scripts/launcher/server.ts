@@ -4,7 +4,6 @@ import Arcade from "@arcadeai/arcadejs";
 import path, { resolve } from 'path';
 import fs from 'fs';
 import { fileURLToPath } from 'url';
-import { extractUrls } from '../../src/agents/utils.js';
 import dotenv from 'dotenv';
 
 // Load environment variables from .env file
@@ -275,7 +274,6 @@ const submitNotion: RequestHandler = async (req, res) => {
     // When client closes connection, stop sending events
   }
 
-
 };
 
 const sendEvent = (res: Response, type: string, data: any) => {
@@ -286,8 +284,6 @@ const sendEvent = (res: Response, type: string, data: any) => {
 router.get('/', getMainPage);
 router.get('/submit-urls', submitUrls);
 router.get('/submit-notion', submitNotion);
-app.get('/events', async (req, res) => {
-});
 
 app.use('/', router);
 
