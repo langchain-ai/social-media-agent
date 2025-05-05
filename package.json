@@ -24,6 +24,7 @@
     "test:all": "yarn test && yarn test:int && yarn lint:langgraph",
     "start:auth": "yarn tsx src/clients/auth-server.ts",
     "generate_post": "yarn tsx scripts/generate-post.ts",
+    "generate_multiple_posts": "yarn tsx scripts/generate-multiple-posts.ts",
     "cron:create": "yarn tsx scripts/crons/create-cron.ts",
     "cron:delete": "yarn tsx scripts/crons/delete-cron.ts",
     "cron:list": "yarn tsx scripts/crons/list-crons.ts",
@@ -32,7 +33,8 @@
     "get:used_links": "yarn tsx scripts/get-all-used-links.ts",
     "graph:delete:run_thread": "yarn tsx scripts/delete-run-thread.ts",
     "langgraph:up": "langgraph up --watch --port 54367",
-    "langgraph:in_mem:up": "npx @langchain/langgraph-cli dev --port 54367"
+    "langgraph:in_mem:up": "npx @langchain/langgraph-cli dev --port 54367",
+    "ui": "yarn tsx scripts/launcher/server.ts"
   },
   "dependencies": {
     "@arcadeai/arcadejs": "^1.0.0",

@@ -1,5 +1,5 @@
 [project]
-name = "langgraph-slack"
+name = "social-media-agent"
 version = "0.0.1"
 description = "Add your description here"
 readme = "README.md"
