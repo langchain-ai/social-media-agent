@@ -132,7 +132,8 @@ async function routeToCuratedInterruptOrContinue(
   if (config.configurable?.origin === "curate-data") {
     const postToLinkedInOrg = shouldPostToLinkedInOrg(config);
     const client = new Client({
-      apiUrl: `http://localhost:${process.env.PORT}`,
+      apiUrl:
+        process.env.LANGGRAPH_API_URL || `http://localhost:${process.env.PORT}`,
     });
 
     const { thread_id } = await client.threads.create();

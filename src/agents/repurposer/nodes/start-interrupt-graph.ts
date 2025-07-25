@@ -5,7 +5,8 @@ export async function startInterruptGraphRuns(
   state: RepurposerState,
 ): Promise<RepurposerUpdate> {
   const client = new Client({
-    apiUrl: `http://localhost:${process.env.PORT}`,
+    apiUrl:
+      process.env.LANGGRAPH_API_URL || `http://localhost:${process.env.PORT}`,
   });
 
   const runsPromise = await Promise.all(

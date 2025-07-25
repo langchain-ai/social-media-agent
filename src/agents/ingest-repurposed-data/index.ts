@@ -20,7 +20,8 @@ async function generatePostsFromMessages(
   config: LangGraphRunnableConfig,
 ) {
   const client = new Client({
-    apiUrl: `http://localhost:${process.env.PORT}`,
+    apiUrl:
+      process.env.LANGGRAPH_API_URL || `http://localhost:${process.env.PORT}`,
   });
 
   const postToLinkedInOrg = shouldPostToLinkedInOrg(config);

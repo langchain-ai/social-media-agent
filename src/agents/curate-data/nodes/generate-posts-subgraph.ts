@@ -116,7 +116,8 @@ export async function generatePostsSubgraph(
   const postToLinkedInOrg = shouldPostToLinkedInOrg(config);
 
   const client = new Client({
-    apiUrl: `http://localhost:${process.env.PORT}`,
+    apiUrl:
+      process.env.LANGGRAPH_API_URL || `http://localhost:${process.env.PORT}`,
   });
 
   const afterSecondsList = getAfterSeconds(state);
