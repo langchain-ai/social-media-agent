@@ -23,7 +23,7 @@ import { useArcadeAuth } from "../../utils.js";
  */
 export async function getArcadeTwitterAuthOrInterrupt(
   twitterUserId: string,
-  arcade: Arcade,
+  arcade: InstanceType<typeof Arcade>,
   options?: {
     returnInterrupt?: boolean;
   },

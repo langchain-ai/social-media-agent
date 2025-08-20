@@ -280,7 +280,7 @@ export class LinkedInClient {
    */
   static async authorizeUser(
     id: string,
-    client: Arcade,
+    client: InstanceType<typeof Arcade>,
     fields?: {
       postToOrganization?: boolean;
     },

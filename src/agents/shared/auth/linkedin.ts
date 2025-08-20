@@ -92,7 +92,7 @@ If you have already authorized and set the required configuration fields or envi
 
 async function getArcadeLinkedInAuthOrInterrupt(
   linkedInUserId: string,
-  arcade: Arcade,
+  arcade: InstanceType<typeof Arcade>,
   fields?: {
     returnInterrupt?: boolean;
     postToOrg?: boolean;

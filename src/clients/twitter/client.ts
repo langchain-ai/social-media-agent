@@ -114,7 +114,7 @@ export class TwitterClient {
    */
   static async authorizeUser(
     id: string,
-    client: Arcade,
+    client: InstanceType<typeof Arcade>,
   ): Promise<AuthorizeUserResponse> {
     const authRes = await client.auth.start(id, "x", {
       scopes: ["tweet.write", "users.read", "tweet.read", "offline.access"],
