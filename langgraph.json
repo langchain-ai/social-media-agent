@@ -18,5 +18,5 @@
   },
   "env": ".env",
   "dependencies": ["."],
-  "dockerfile_lines": ["RUN yarn add -D playwright@1.49.1 && npx playwright install --with-deps"]
+  "dockerfile_lines": ["RUN yarn add -D playwright@1.49.1 && npx playwright install"]
 }
