@@ -1,4 +1,5 @@
 {
+  "$schema": "https://langgra.ph/schema.json",
   "node_version": "20",
   "graphs": {
     "ingest_data": "./src/agents/ingest-data/ingest-data-graph.ts:graph",
@@ -18,8 +19,6 @@
   },
   "env": ".env",
   "dependencies": ["."],
-  "dockerfile_lines": [
-    "RUN npx -y @playwright/test install",
-    "RUN npx -y playwright@1.49.1 install --with-deps"
-  ]
+  "dockerfile_lines": ["RUN npx -y playwright@1.49.1 install --with-deps"],
+  "image_distro": "bookworm"
 }
