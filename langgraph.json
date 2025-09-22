@@ -18,5 +18,8 @@
   },
   "env": ".env",
   "dependencies": ["."],
-  "dockerfile_lines": ["RUN npx -y @playwright/test install", "RUN npx -y playwright@1.49.1 install --with-deps"]
+  "dockerfile_lines": [
+    "RUN npx -y @playwright/test install",
+    "RUN npx -y playwright@1.49.1 install --with-deps"
+  ]
 }
