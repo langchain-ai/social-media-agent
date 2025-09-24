@@ -11,7 +11,7 @@ import {
  * This may be modified to generate posts for other content.
  */
 async function invokeGraph() {
-  const link = "https://blog.langchain.dev/customers-appfolio/";
+  const link = "https://github.com/rguthaa/genai-usecases/tree/main";
 
   const client = new Client({
     apiUrl: process.env.LANGGRAPH_API_URL || "http://localhost:54367",

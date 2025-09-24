@@ -33,8 +33,8 @@ export async function backfill() {
   const res = await client.runs.create(thread.thread_id, "ingest_data", {
     config: {
       configurable: {
-        slackChannelId: "ADD_SLACK_CHANNEL_ID_HERE",
-        maxDaysHistory: 50, // Or change to desired number of days
+        slackChannelId: "C06BU7XF5S7",
+        maxDaysHistory: 60, // Or change to desired number of days
         [SKIP_CONTENT_RELEVANCY_CHECK]: true,
         [SKIP_USED_URLS_CHECK]: true,
       },
@@ -45,7 +45,7 @@ export async function backfill() {
   console.log(res);
 }
 
-// backfill().catch(console.error);
+backfill().catch(console.error);
 
 /**
  * Backfill with links instead of ingesting from Slack.
