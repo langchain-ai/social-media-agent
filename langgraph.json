@@ -1,6 +1,5 @@
 {
   "$schema": "https://langgra.ph/schema.json",
-  "python_version": "3.13",
   "node_version": "20",
   "graphs": {
     "ingest_data": "./src/agents/ingest-data/ingest-data-graph.ts:graph",
