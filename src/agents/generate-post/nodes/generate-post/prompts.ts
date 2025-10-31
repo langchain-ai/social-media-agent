@@ -26,6 +26,7 @@ Lastly, you should follow the process below when writing the LinkedIn/Twitter po
 Step 1. First, read over the marketing report VERY thoroughly.
 Step 2. Take notes, and write down your thoughts about the report after reading it carefully. This should include details you think will help make the post more engaging, and your initial thoughts about what to focus the post on, the style, etc. This should be the first text you write. Wrap the notes and thoughts inside a "<thinking>" tag.
 Step 3. Lastly, write the LinkedIn/Twitter post. Use the notes and thoughts you wrote down in the previous step to help you write the post. This should be the last text you write. Wrap your report inside a "<post>" tag. Ensure you write only ONE post for both LinkedIn and Twitter.
+  IMPORTANT: Ensure you ALWAYS include 'Made by the LangChain Community' at the end of the post, separated by a newline.
 </writing-process>
 
 Given these examples, rules, and the content provided by the user, curate a LinkedIn/Twitter post that is engaging and follows the structure of the examples provided.`;
