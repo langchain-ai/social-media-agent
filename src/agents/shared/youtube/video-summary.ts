@@ -34,7 +34,7 @@ async function generateVideoSummary(url: string): Promise<string> {
       {
         type: "media",
         mimeType: "video/mp4",
-        fileUri: url,
+        fileUri: url.startsWith("https://") ? url : `https://${url}`,
       },
     ],
   });
