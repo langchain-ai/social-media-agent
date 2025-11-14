@@ -26,7 +26,7 @@ export async function routeResponse(
   userResponse: string,
 ): Promise<z.infer<typeof routeResponseSchema>> {
   const model = new ChatAnthropic({
-    model: "claude-3-5-sonnet-latest",
+    model: "claude-sonnet-4-5",
     temperature: 0,
   }).bindTools(
     [

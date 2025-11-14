@@ -67,7 +67,7 @@ export async function determinePostType(
   state: SupervisorState,
 ): Promise<Partial<SupervisorState>> {
   const model = new ChatAnthropic({
-    model: "claude-3-5-sonnet-latest",
+    model: "claude-sonnet-4-5",
     temperature: 0,
   }).withStructuredOutput(postTypeSchema, {
     name: "postType",
