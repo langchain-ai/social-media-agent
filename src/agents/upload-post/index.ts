@@ -39,7 +39,7 @@ async function getMediaFromImage(image?: {
 
 function ensureSignature(text: string): string {
   const signature = "Made by the LangChain Community";
-  if (text.includes(signature)) {
+  if (text.toLowerCase().includes(signature.toLowerCase())) {
     return text;
   }
   return `${text}\n${signature}`;
