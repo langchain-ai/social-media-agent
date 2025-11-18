@@ -33,6 +33,8 @@ The following are rules to follow when determining whether or not to approve con
 export const TWEET_EXAMPLES = `<example index="1">
 Podcastfy.ai 🎙️🤖
 
+Made by the LangChain Community
+
 An Open Source API alternative to NotebookLM's podcast product
 
 Transforming Multimodal Content into Captivating Multilingual Audio Conversations with GenAI
@@ -43,6 +45,8 @@ https://podcastfy.ai
 <example index="2">
 🧱Complex SQL Joins with LangGraph and Waii
 
+Made by the LangChain Community
+
 Waii is a toolkit that provides text-to-SQL and text-to-chart capabilities
 
 This post focuses on Waii's approach to handling complex joins in databases, doing so within LangGraph
@@ -52,6 +56,8 @@ https://waii.com
 
 <example index="3">
 🌐 Build agents that can interact with any website
+
+Made by the LangChain Community
 
 Check out this video by @DendriteSystems showing how to build an agent that can interact with websites just like a human would!
 
@@ -68,6 +74,8 @@ This video demonstrates a workflow that:
 <example index="4">
 🚀RepoGPT: AI-Powered GitHub Assistant 
 
+Made by the LangChain Community
+
 RepoGPT is an open-source, AI-powered assistant
 
 Chat with your repositories using natural language to get insights, generate documentation, or receive code suggestions
@@ -77,6 +85,8 @@ https://repogpt.com
 
 <example index="5">
 ✈️AI Travel Agent
+
+Made by the LangChain Community
 
 This is one of the most comprehensive examples we've seen of a LangGraph agent. It's specifically designed to be a real world practical use case
 
@@ -97,13 +107,17 @@ The first part of the post is the header. This should be very short, no more tha
 </section>
 
 <section key="2">
+Below the header, but above the main content, you should include 'Made by the LangChain Community'.
+</section>
+
+<section key="3">
 This section will contain the main content of the post. The post body should contain a concise, high-level overview of the content/product/service outlines in the marketing report.
 It should focus on what the content does, or the problem it solves. Also include details on how the content implements LangChain's product(s) and why these products are important to the application.
 Ensure this is short, no more than 3 sentences. Optionally, if the content is very technical, you may include bullet points covering the main technical aspects of the content.
 You should NOT make the main focus of this on LangChain, but instead on the content itself. Remember, the content/product/service outlined in the marketing report is the main focus of this post.
 </section>
 
-<section key="3">
+<section key="4">
 The final section of the post should contain a call to action. This should be a short sentence that encourages the reader to click the link to the content being promoted. Optionally, you can include an emoji here.
 </section>
 

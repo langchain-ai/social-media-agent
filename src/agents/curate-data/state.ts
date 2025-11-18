@@ -11,6 +11,7 @@ import { RedditPostsWithExternalData } from "../verify-reddit-post/types.js";
 import { NUM_POSTS_PER_SUBREDDIT } from "./constants.js";
 import { Source } from "../supervisor/types.js";
 import { VerifyLinksResultAnnotation } from "../verify-links/verify-links-state.js";
+import { SKIP_CONTENT_RELEVANCY_CHECK } from "../generate-post/constants.js";
 
 export const CurateDataAnnotation = Annotation.Root({
   ...VerifyLinksResultAnnotation.spec,
@@ -79,6 +80,7 @@ export const CurateDataConfigurableAnnotation = Annotation.Root({
    * The number of posts to fetch per subreddit when ingesting Reddit posts.
    */
   [NUM_POSTS_PER_SUBREDDIT]: Annotation<number | undefined>(),
+  [SKIP_CONTENT_RELEVANCY_CHECK]: Annotation<boolean | undefined>(),
 });
 
 export type CurateDataState = typeof CurateDataAnnotation.State;

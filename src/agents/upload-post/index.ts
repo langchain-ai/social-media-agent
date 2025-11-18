@@ -37,6 +37,14 @@ async function getMediaFromImage(image?: {
   };
 }
 
+function ensureSignature(text: string): string {
+  const signature = "Made by the LangChain Community";
+  if (text.toLowerCase().includes(signature.toLowerCase())) {
+    return text;
+  }
+  return `${text}\n${signature}`;
+}
+
 const UploadPostAnnotation = Annotation.Root({
   post: Annotation<string>,
   /**
@@ -174,7 +182,7 @@ export async function uploadPost(
     if (state.complexPost) {
       await twitterClient.uploadThread([
         {
-          text: state.complexPost.main_post,
+          text: ensureSignature(state.complexPost.main_post),
           ...(mediaBuffer && { media: mediaBuffer }),
         },
         {
@@ -183,7 +191,7 @@ export async function uploadPost(
       ]);
     } else {
       await twitterClient.uploadTweet({
-        text: state.post,
+        text: ensureSignature(state.post),
         ...(mediaBuffer && { media: mediaBuffer }),
       });
     }
@@ -245,7 +253,7 @@ export async function uploadPost(
     if (!isTextOnlyMode && state.image) {
       await linkedInClient.createImagePost(
         {
-          text: state.post,
+          text: ensureSignature(state.post),
           imageUrl: state.image.imageUrl,
         },
         {
@@ -253,7 +261,7 @@ export async function uploadPost(
         },
       );
     } else {
-      await linkedInClient.createTextPost(state.post, {
+      await linkedInClient.createTextPost(ensureSignature(state.post), {
         postToOrganization: postToLinkedInOrg,
       });
     }
