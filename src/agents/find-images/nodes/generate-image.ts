@@ -1,3 +1,7 @@
+import { GoogleGenAI } from "@google/genai";
+import { imageUrlToBuffer } from "../../utils.js";
+
+const GEMINI_MODEL = "gemini-3-pro-image-preview";
 const GENERATE_IMAGE_PROMPT_TEMPLATE = `You are the **LangChain Brand Design Agent**. Your purpose is to process user input (Text + Image Reference) and generate a captivating, professional social media image that appeals to developers.
 
 ## 1. Core Objectives
@@ -7,10 +11,7 @@ const GENERATE_IMAGE_PROMPT_TEMPLATE = `You are the **LangChain Brand Design Age
 * **Constraint 1 (No Logos):** Do NOT generate the LangChain logo or any text-based logos.
 * **Constraint 2 (Minimal Text):** The image should be visually standalone. Avoid heavy text.
 * **Constraint 3 (Visual Consistency):** Strictly adhere to the Brand Guidelines listed below.
-* **Constraint 4 (Clean Output):** Do NOT include parenthetical information (e.g., font names, color hex codes) or technical specifications visibly within the image. The image text should be natural and design-focused, not instructional.
-* **Constraint 5 (No Watermarks):** Strictly do NOT generate a watermark or signature in the bottom right corner (or anywhere else).
-
----
+* **Constraint 4 (Clean Output):** NEVER render design instructions as visible text in the image like font names, hex codes, ex. ("100% leading" or "-2.5% tracking").
 
 ## 2. LangChain Brand Guidelines (Reference)
 
@@ -95,8 +96,6 @@ Use **RGB/HEX** values for digital screens.
     * Do not create new gradient combinations; use only approved sets.
     * Do not overlay gradients if they reduce legibility.
 
----
-
 ## 3. Image Generation Instructions
 
 Based on the guidelines above, generate the image using the following logic:
@@ -111,7 +110,7 @@ Based on the guidelines above, generate the image using the following logic:
         * **No Orphans:** Never leave a single word alone on the last line.
         * **Natural Breaks:** Break lines at natural phrase boundaries (e.g., "The platform for / reliable agents" rather than "The platform / for reliable agents").
         * **Shape:** Aim for a balanced text block. Avoid deep "steps" or awkward gaps on the right edge.
-    * **Font Specs:** Manrope font, -2.5% tracking, 100% leading.
+    * **Font Specs:** Use the Manrope typeface with tight, modern spacing.
 4.  **Apply Color & Backgrounds:**
     * **Background Strategy:** Select a background color based on the mood or content type, using the approved "100" (Light) or "400/500" (Dark) levels to ensure proper contrast.
     * **Approved Backgrounds:**
@@ -124,14 +123,97 @@ Based on the guidelines above, generate the image using the following logic:
         * **Orange 100** (#FFEEE5)
     * **Text Contrast:** If using a Dark background (400/500 level), use White or extremely light text. If using a Light background (100 level), use Dark Violet or Dark Grey text.
 5.  **Lighting:** Soft, professional studio lighting. No neon cyberpunk glows; keep it matte and modern.
-6.  **Output:** A high-resolution image suitable for Twitter/LinkedIn (16:9 or 1:1).
+6.  **Output:** A 16:9 high-resolution image suitable for Twitter/LinkedIn.
 
----
 
-## 4. Input
 
-### Post Content
-{CONTENT}
+# Post Content
+<post-content>
+{POST_CONTENT}
+</post-content>
+`;
 
-### Reference Images from Webpage
-{IMAGES_FROM_WEBPAGE}`;
+interface GoogleServiceAccountCredentials {
+  project_id: string;
+  client_email: string;
+  private_key: string;
+  [key: string]: unknown;
+}
+
+function parseCredentials(raw: string): GoogleServiceAccountCredentials | undefined {
+  try {
+    return JSON.parse(raw);
+  } catch {
+    return undefined;
+  }
+}
+
+export async function generateImageWithNanoBananaPro(
+  postContent: string,
+  imageUrls: string[],
+): Promise<string> {
+
+  const client = (() => {
+    if (!process.env.GOOGLE_VERTEX_AI_WEB_CREDENTIALS) {
+      throw new Error("GOOGLE_VERTEX_AI_WEB_CREDENTIALS is not set");
+    }
+
+    const rawCredentials = process.env.GOOGLE_VERTEX_AI_WEB_CREDENTIALS;
+    const credentials = parseCredentials(rawCredentials) ?? parseCredentials(decodeURIComponent(rawCredentials));
+
+    if (!credentials) {
+      throw new Error("GOOGLE_VERTEX_AI_WEB_CREDENTIALS contains invalid JSON.");
+    }
+
+    return new GoogleGenAI({
+      vertexai: true,
+      project: credentials.project_id,
+      googleAuthOptions: {
+        credentials,
+      },
+    });
+  })();
+
+  const prompt = GENERATE_IMAGE_PROMPT_TEMPLATE.replace(
+    "{POST_CONTENT}",
+    postContent,
+  )
+
+  const contents: Array<
+    | string
+    | { inlineData: { mimeType: string; data: string } }
+  > = [prompt];
+
+  // Add reference images from the original page (limit to 3 to avoid token limits)
+  const imageDataResults = await Promise.all(
+    imageUrls.slice(0, 3).map(async (url) => {
+      try {
+        const { buffer, contentType } = await imageUrlToBuffer(url);
+        return { inlineData: { mimeType: contentType, data: buffer.toString("base64") } };
+      } catch {
+        return null;
+      }
+    }),
+  );
+
+  contents.push(...imageDataResults.filter((d) => d !== null));
+
+  const response = await client.models.generateContent({
+    model: GEMINI_MODEL,
+    contents,
+    config: {
+      responseModalities: ["TEXT", "IMAGE"],
+      imageConfig: {
+        aspectRatio: "16:9",
+      },
+    },
+  });
+
+  if (!response.data) {
+    throw new Error("No image generated");
+  }
+
+  return response.data;
+}
+
+// TODO (vishnu): create function to call generateImageWithNanoBananaPro() 3 times, upload results to supabase and store in 
