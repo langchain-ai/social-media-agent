@@ -1,7 +1,10 @@
 import { GoogleGenAI } from "@google/genai";
-import { imageUrlToBuffer } from "../../utils.js";
+import { getMimeTypeFromUrl, imageUrlToBuffer } from "../../utils.js";
+import { FindImagesAnnotation } from "../find-images-graph.js";
+import { uploadImageBufferToSupabase } from "../helpers.js";
 
 const GEMINI_MODEL = "gemini-3-pro-image-preview";
+const NUM_IMAGE_CANDIDATES = 3;
 const GENERATE_IMAGE_PROMPT_TEMPLATE = `You are the **LangChain Brand Design Agent**. Your purpose is to process user input (Text + Image Reference) and generate a captivating, professional social media image that appeals to developers.
 
 ## 1. Core Objectives
@@ -151,7 +154,7 @@ function parseCredentials(raw: string): GoogleServiceAccountCredentials | undefi
 export async function generateImageWithNanoBananaPro(
   postContent: string,
   imageUrls: string[],
-): Promise<string> {
+): Promise<{ data: string; mimeType: string }> {
 
   const client = (() => {
     if (!process.env.GOOGLE_VERTEX_AI_WEB_CREDENTIALS) {
@@ -184,19 +187,19 @@ export async function generateImageWithNanoBananaPro(
     | { inlineData: { mimeType: string; data: string } }
   > = [prompt];
 
-  // Add reference images from the original page (limit to 3 to avoid token limits)
-  const imageDataResults = await Promise.all(
+  // Add reference images (limit to 3 to avoid token limits)
+  const referenceImageDataResultsWithOmissions = await Promise.all(
     imageUrls.slice(0, 3).map(async (url) => {
       try {
         const { buffer, contentType } = await imageUrlToBuffer(url);
         return { inlineData: { mimeType: contentType, data: buffer.toString("base64") } };
       } catch {
-        return null;
+        return undefined;
       }
     }),
   );
 
-  contents.push(...imageDataResults.filter((d) => d !== null));
+  contents.push(...referenceImageDataResultsWithOmissions.filter((d): d is NonNullable<typeof d> => d !== undefined));
 
   const response = await client.models.generateContent({
     model: GEMINI_MODEL,
@@ -209,11 +212,55 @@ export async function generateImageWithNanoBananaPro(
     },
   });
 
-  if (!response.data) {
+  const parts = response.candidates?.[0]?.content?.parts;
+  if (!parts) {
     throw new Error("No image generated");
   }
+  
+  const imagePart = parts.find((part) => part.inlineData?.mimeType?.startsWith("image/"));
+  if (!imagePart?.inlineData) {
+    throw new Error("No image data in response");
+  }
 
-  return response.data;
+  return {
+    data: imagePart.inlineData.data as string, // Safe to cast as string as we have checked that the data is base64 encoded.
+    mimeType: imagePart.inlineData.mimeType as string, // Safe to cast as string as we have checked that the MIME type is valid.
+  };
 }
 
-// TODO (vishnu): create function to call generateImageWithNanoBananaPro() 3 times, upload results to supabase and store in 
+export async function generateImageCandidatesForPost(state: typeof FindImagesAnnotation.State) {
+  const { post, imageOptions: imageUrls } = state;
+
+  if (!post) {
+    throw new Error("No post content available to generate images");
+  }
+
+  const imageDataResultsWithOmissions = await Promise.all(
+    Array.from({ length: NUM_IMAGE_CANDIDATES }, async () => {
+      try {
+        return await generateImageWithNanoBananaPro(post, imageUrls ?? []);
+      } catch {
+        return undefined;
+      }
+    }),
+  );
+
+  const validImageResults = imageDataResultsWithOmissions.filter((d): d is NonNullable<typeof d> => d !== undefined);
+
+  const uploadedUrlsWithOmissions = await Promise.all(
+    validImageResults.map(async ({ data }) => {
+      try {
+        const buffer = Buffer.from(data, "base64");
+        return await uploadImageBufferToSupabase(buffer, `nano-banana-pro`);
+      } catch (error) {
+        console.error("Failed to upload generated image", {error});
+        return undefined;
+      }
+    }),
+  );
+
+  const uploadedUrls = uploadedUrlsWithOmissions
+    .filter((url): url is NonNullable<typeof url> => url !== undefined);
+
+  return { image_candidates: uploadedUrls.map((url) => ({ imageUrl: url, mimeType: getMimeTypeFromUrl(url) })) };
+}
