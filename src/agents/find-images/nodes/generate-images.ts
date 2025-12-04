@@ -263,9 +263,12 @@ export async function generateImageCandidatesForPost(state: typeof FindImagesAnn
     .filter((url): url is NonNullable<typeof url> => url !== undefined);
 
   const generatedImages = uploadedUrls.map((url) => ({ imageUrl: url, mimeType: getMimeTypeFromUrl(url) }));
+  
+  const existingCandidatesArray = Array.isArray(existingCandidates) ? existingCandidates : [];
+  const imageUrlsArray = Array.isArray(imageUrls) ? imageUrls : [];
 
   return {
-    imageOptions: [...uploadedUrls, ...(imageUrls ?? [])],
-    image_candidates: [...generatedImages, ...(existingCandidates ?? [])],
+    imageOptions: [...uploadedUrls, ...imageUrlsArray],
+    image_candidates: [...generatedImages, ...existingCandidatesArray],
   };
 }

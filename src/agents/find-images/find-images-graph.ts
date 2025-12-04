@@ -23,11 +23,11 @@ export const FindImagesAnnotation = Annotation.Root({
   image_candidates: Annotation<Image[]>,
 });
 
-function validateImagesOrEnd(state: typeof FindImagesAnnotation.State) {
+function validateImagesOrGenerateDirectly(state: typeof FindImagesAnnotation.State) {
   if (state.imageOptions?.length) {
     return "validateImages";
   }
-  return END;
+  return "generateImageCandidates";
 }
 
 const findImagesWorkflow = new StateGraph(FindImagesAnnotation)
@@ -38,9 +38,9 @@ const findImagesWorkflow = new StateGraph(FindImagesAnnotation)
 
   .addEdge(START, "findImages")
 
-  .addConditionalEdges("findImages", validateImagesOrEnd, [
+  .addConditionalEdges("findImages", validateImagesOrGenerateDirectly, [
     "validateImages",
-    END,
+    "generateImageCandidates",
   ])
 
   .addEdge("validateImages", "reRankImages")
