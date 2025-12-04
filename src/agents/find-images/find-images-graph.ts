@@ -2,7 +2,7 @@ import { Annotation, END, START, StateGraph } from "@langchain/langgraph";
 import { findImages } from "./nodes/find-images.js";
 import { validateImages } from "./nodes/validate-images.js";
 import { reRankImages } from "./nodes/re-rank-images.js";
-import { generateImageCandidatesForPost } from "./nodes/generate-image.js";
+import { generateImageCandidatesForPost } from "./nodes/generate-images.js";
 import { VerifyLinksResultAnnotation } from "../verify-links/verify-links-state.js";
 import { Image } from "../types.js";
 
@@ -18,9 +18,9 @@ export const FindImagesAnnotation = Annotation.Root({
    */
   post: Annotation<string>,
   /**
-   * The generated image candidates.
+   * The image candidates for the post.
    */
-  generated_image_candidates: Annotation<Image[]>,
+  image_candidates: Annotation<Image[]>,
 });
 
 function validateImagesOrEnd(state: typeof FindImagesAnnotation.State) {

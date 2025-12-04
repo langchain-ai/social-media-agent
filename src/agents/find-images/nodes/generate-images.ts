@@ -229,7 +229,7 @@ export async function generateImageWithNanoBananaPro(
 }
 
 export async function generateImageCandidatesForPost(state: typeof FindImagesAnnotation.State) {
-  const { post, imageOptions: imageUrls } = state;
+  const { post, imageOptions: imageUrls, image_candidates: existingCandidates } = state;
 
   if (!post) {
     throw new Error("No post content available to generate images");
@@ -262,5 +262,10 @@ export async function generateImageCandidatesForPost(state: typeof FindImagesAnn
   const uploadedUrls = uploadedUrlsWithOmissions
     .filter((url): url is NonNullable<typeof url> => url !== undefined);
 
-  return { generated_image_candidates: uploadedUrls.map((url) => ({ imageUrl: url, mimeType: getMimeTypeFromUrl(url) })) };
+  const generatedImages = uploadedUrls.map((url) => ({ imageUrl: url, mimeType: getMimeTypeFromUrl(url) }));
+
+  return {
+    imageOptions: [...uploadedUrls, ...(imageUrls ?? [])],
+    image_candidates: [...generatedImages, ...(existingCandidates ?? [])],
+  };
 }
