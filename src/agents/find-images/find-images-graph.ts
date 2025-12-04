@@ -2,7 +2,7 @@ import { Annotation, END, START, StateGraph } from "@langchain/langgraph";
 import { findImages } from "./nodes/find-images.js";
 import { validateImages } from "./nodes/validate-images.js";
 import { reRankImages } from "./nodes/re-rank-images.js";
-import { generateImageCandidatesWithNanoBananaPro } from "./nodes/generate-image.js";
+import { generateImageCandidatesForPost } from "./nodes/generate-image.js";
 import { VerifyLinksResultAnnotation } from "../verify-links/verify-links-state.js";
 import { Image } from "../types.js";
 
@@ -18,9 +18,9 @@ export const FindImagesAnnotation = Annotation.Root({
    */
   post: Annotation<string>,
   /**
-   * The potential image candidates.
+   * The generated image candidates.
    */
-  image_candidates: Annotation<Image[]>,
+  generated_image_candidates: Annotation<Image[]>,
 });
 
 function validateImagesOrEnd(state: typeof FindImagesAnnotation.State) {
@@ -34,7 +34,7 @@ const findImagesWorkflow = new StateGraph(FindImagesAnnotation)
   .addNode("findImages", findImages)
   .addNode("validateImages", validateImages)
   .addNode("reRankImages", reRankImages)
-  .addNode("generateImageCandidates", generateImageCandidatesWithNanoBananaPro)
+  .addNode("generateImageCandidates", generateImageCandidatesForPost)
 
   .addEdge(START, "findImages")
 
