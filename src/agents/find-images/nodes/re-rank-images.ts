@@ -140,7 +140,7 @@ export async function reRankImages(state: typeof FindImagesAnnotation.State) {
             imageUrl: url,
             mimeType: getMimeTypeFromUrl(url),
           }))
-        : undefined,
+        : [],
     };
   }
 
