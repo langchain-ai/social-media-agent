@@ -262,5 +262,5 @@ export async function generateImageCandidatesForPost(state: typeof FindImagesAnn
   const uploadedUrls = uploadedUrlsWithOmissions
     .filter((url): url is NonNullable<typeof url> => url !== undefined);
 
-  return { image_candidates: uploadedUrls.map((url) => ({ imageUrl: url, mimeType: getMimeTypeFromUrl(url) })) };
+  return { generated_image_candidates: uploadedUrls.map((url) => ({ imageUrl: url, mimeType: getMimeTypeFromUrl(url) })) };
 }
