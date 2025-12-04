@@ -62,12 +62,12 @@ export async function reRankImages(state: typeof FindImagesAnnotation.State) {
   if (state.imageOptions && state.imageOptions.length < 2) {
     return {
       imageOptions: state.imageOptions,
-      image: state.imageOptions?.[0]
-        ? {
-            imageUrl: state.imageOptions[0],
-            mimeType: getMimeTypeFromUrl(state.imageOptions[0]),
-          }
-        : undefined,
+      image_candidates: state.imageOptions?.[0]
+      ? {
+          imageUrl: state.imageOptions[0],
+          mimeType: getMimeTypeFromUrl(state.imageOptions[0]),
+        }
+      : [],
     };
   }
 
@@ -135,11 +135,11 @@ export async function reRankImages(state: typeof FindImagesAnnotation.State) {
     );
     return {
       imageOptions: state.imageOptions,
-      image: state.imageOptions?.[0]
-        ? {
-            imageUrl: state.imageOptions[0],
-            mimeType: getMimeTypeFromUrl(state.imageOptions[0]),
-          }
+      image_candidates: state.imageOptions?.length
+        ? state.imageOptions.map((url) => ({
+            imageUrl: url,
+            mimeType: getMimeTypeFromUrl(url),
+          }))
         : undefined,
     };
   }
@@ -150,11 +150,13 @@ export async function reRankImages(state: typeof FindImagesAnnotation.State) {
 
   return {
     imageOptions: imageOptionsInOrder,
-    image: imageOptionsInOrder[0]
-      ? {
-          imageUrl: imageOptionsInOrder[0],
-          mimeType: getMimeTypeFromUrl(imageOptionsInOrder[0]),
-        }
+    image_candidates: imageOptionsInOrder.length
+      ? imageOptionsInOrder
+          .filter((url): url is string => url !== undefined)
+          .map((url) => ({
+            imageUrl: url,
+            mimeType: getMimeTypeFromUrl(url),
+          }))
       : undefined,
   };
 }
