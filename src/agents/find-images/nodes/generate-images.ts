@@ -264,7 +264,9 @@ export async function generateImageCandidatesForPost(state: typeof FindImagesAnn
     try {
       const result = await generateImageWithNanoBananaPro(post, imageUrls ?? []);
       imageResults.push(result);
-    } catch{}
+    } catch (error) {
+      console.error("Failed to generate image", {error, index});
+    }
     
     // Sleep 500ms between generations to avoid rate limiting
     await new Promise((resolve) => setTimeout(resolve, 500));
