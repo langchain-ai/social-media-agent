@@ -4,7 +4,6 @@ import { FindImagesAnnotation } from "../find-images-graph.js";
 import { uploadImageBufferToSupabase } from "../helpers.js";
 
 const GEMINI_MODEL = "gemini-3-pro-image-preview";
-const NUM_IMAGE_CANDIDATES = 3;
 
 const GENERATE_IMAGE_PROMPT_TEMPLATE = `You are the **LangChain Brand Design Agent**. Your purpose is to process user input (Text + Image Reference) and generate a captivating, professional social media image that appeals to developers.
 
@@ -165,9 +164,12 @@ Before finalizing the image, perform this mandatory self-check:
 `;
 
 const STYLE_VARIATIONS = [
-  `**Style Directive:** Use a LIGHT background from the palette (Violet 100, Blue 100, Green 100, or Orange 100). Focus on bold geometric shapes with strong contrast. Use WARM accent colors (Orange, Red tones).`,
-  `**Style Directive:** Use a DARK background from the palette (Violet 400, Green 500, or Blue 500). Create depth with layered abstract elements. Use COOL accent colors (Blue, Green tones).`,
-  `**Style Directive:** Use a VIOLET-dominant color scheme (Violet 100 or Violet 400 background). Emphasize flowing, interconnected node-like structures. Create visual movement with diagonal compositions.`,
+  `**Style Directive:** Violet 100 (#F8F7FF) background. Accent with Orange 300, Orange 400, and Red 300.`,
+  `**Style Directive:** Violet 400 (#332C54) background. Accent with Violet 200, Blue 300, and Green 300.`,
+  `**Style Directive:** Blue 100 (#E6F0F5) background. Accent with Blue 400, Green 400, and Violet 300.`,
+  `**Style Directive:** Blue 500 (#04305E) background. Accent with Blue 200, Violet 200, and Orange 200.`,
+  `**Style Directive:** Green 100 (#EBEBE5) background. Accent with Green 400, Orange 300, and Blue 400.`,
+  `**Style Directive:** Green 500 (#132D27) background. Accent with Green 200, Blue 300, and Violet 300.`,
 ];
 
 export async function generateImageWithNanoBananaPro(
@@ -275,7 +277,7 @@ export async function generateImageCandidatesForPost(state: typeof FindImagesAnn
 
   const imageResults: { data: string; mimeType: string }[] = [];
   
-  for (let index = 0; index < NUM_IMAGE_CANDIDATES; index++) {
+  for (let index = 0; index < STYLE_VARIATIONS.length; index++) {
     try {
       const result = await generateImageWithNanoBananaPro(post, imageUrls ?? [], index);
       imageResults.push(result);
