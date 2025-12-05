@@ -174,9 +174,17 @@ function parseCredentials(raw: string): GoogleServiceAccountCredentials | undefi
   }
 }
 
+// Variation prompts to encourage diversity across generated images
+const STYLE_VARIATIONS = [
+  `**Style Directive:** Use a LIGHT background from the palette (Violet 100, Blue 100, Green 100, or Orange 100). Focus on bold geometric shapes with strong contrast. Use WARM accent colors (Orange, Red tones).`,
+  `**Style Directive:** Use a DARK background from the palette (Violet 400, Green 500, or Blue 500). Create depth with layered abstract elements. Use COOL accent colors (Blue, Green tones).`,
+  `**Style Directive:** Use a VIOLET-dominant color scheme (Violet 100 or Violet 400 background). Emphasize flowing, interconnected node-like structures. Create visual movement with diagonal compositions.`,
+];
+
 export async function generateImageWithNanoBananaPro(
   postContent: string,
   imageUrls: string[],
+  variationIndex: number = 0,
 ): Promise<{ data: string; mimeType: string }> {
 
   const client = (() => {
@@ -200,10 +208,12 @@ export async function generateImageWithNanoBananaPro(
     });
   })();
 
+  const styleVariation = STYLE_VARIATIONS[variationIndex % STYLE_VARIATIONS.length];
+  
   const prompt = GENERATE_IMAGE_PROMPT_TEMPLATE.replace(
     "{POST_CONTENT}",
     postContent,
-  )
+  ) + `\n\n${styleVariation}`;
 
   const contents: Array<
     | string
@@ -224,10 +234,16 @@ export async function generateImageWithNanoBananaPro(
 
   contents.push(...referenceImageDataResultsWithOmissions.filter((d): d is NonNullable<typeof d> => d !== undefined));
 
+  // Use higher temperature for more creative/diverse outputs
+  // Vary temperature slightly per iteration for additional diversity
+  const baseTemperature = 1.2;
+  const temperatureVariation = variationIndex * 0.15; // 1.2, 1.35, 1.5 for indices 0, 1, 2
+  
   const response = await client.models.generateContent({
     model: GEMINI_MODEL,
     contents,
     config: {
+      temperature: baseTemperature + temperatureVariation,
       responseModalities: ["TEXT", "IMAGE"],
       imageConfig: {
         aspectRatio: "16:9",
@@ -262,7 +278,7 @@ export async function generateImageCandidatesForPost(state: typeof FindImagesAnn
   
   for (let index = 0; index < NUM_IMAGE_CANDIDATES; index++) {
     try {
-      const result = await generateImageWithNanoBananaPro(post, imageUrls ?? []);
+      const result = await generateImageWithNanoBananaPro(post, imageUrls ?? [], index);
       imageResults.push(result);
     } catch (error) {
       console.error("Failed to generate image", {error, index});
