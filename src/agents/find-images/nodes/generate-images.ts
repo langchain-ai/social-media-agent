@@ -6,7 +6,10 @@ import {
   sleep,
 } from "../../utils.js";
 import { FindImagesAnnotation } from "../find-images-graph.js";
-import { uploadImageBufferToSupabase } from "../helpers.js";
+import {
+  embedImageInTemplate,
+  uploadImageBufferToSupabase,
+} from "../helpers.js";
 
 const GEMINI_MODEL = "gemini-3-pro-image-preview";
 
@@ -320,10 +323,14 @@ export async function generateImageCandidatesForPost(
   }
 
   const uploadedUrlsWithOmissions = await Promise.all(
-    imageResults.map(async ({ data }) => {
+    imageResults.map(async ({ data, mimeType }) => {
       try {
-        const buffer = Buffer.from(data, "base64");
-        return await uploadImageBufferToSupabase(buffer, `nano-banana-pro`);
+        // Embed the generated image in the LangChain community template
+        const templatedBuffer = await embedImageInTemplate(data, mimeType);
+        return await uploadImageBufferToSupabase(
+          templatedBuffer,
+          `nano-banana-pro-templated`,
+        );
       } catch (error) {
         console.error("Failed to upload generated image", { error });
         return undefined;
