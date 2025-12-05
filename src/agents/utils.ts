@@ -657,3 +657,62 @@ function skipUsedUrlsCheckFunc(
 export const skipUsedUrlsCheck = traceable(skipUsedUrlsCheckFunc, {
   name: "skipUsedUrlsCheck",
 });
+
+export interface RetryWithTimeoutOptions {
+  /** Maximum number of retry attempts (default: 3) */
+  maxRetries?: number;
+  /** Base delay in milliseconds for exponential backoff (default: 3000) */
+  baseDelayMs?: number;
+  /** Timeout in milliseconds for each attempt (default: 120000) */
+  timeoutMs?: number;
+  /** Optional name for logging purposes */
+  name?: string;
+}
+
+/**
+ * Executes a callback with exponential retry backoff and timeout.
+ * 
+ * @param callback - The async function to execute
+ * @param options - Configuration options for retry behavior
+ * @returns The result of the callback
+ * @throws The last error if all retries are exhausted
+ */
+export async function retryWithTimeout<T>(
+  callback: () => Promise<T>,
+  options: RetryWithTimeoutOptions = {},
+): Promise<T> {
+  const {
+    maxRetries = 3,
+    baseDelayMs = 3000,
+    timeoutMs = 120_000,
+    name = "operation",
+  } = options;
+
+  let lastError: Error | undefined;
+
+  for (let attempt = 0; attempt < maxRetries; attempt++) {
+    try {
+      const callbackPromise = callback();
+
+      const timeoutPromise = new Promise<never>((_, reject) => {
+        setTimeout(
+          () => reject(new Error("Operation timed out")),
+          timeoutMs,
+        );
+      });
+
+      return await Promise.race([callbackPromise, timeoutPromise]);
+    } catch (error) {
+      lastError = error instanceof Error ? error : new Error(String(error));
+      console.warn("Retry attempt failed", { name, attempt: attempt + 1, maxRetries, error: lastError.message });
+
+      if (attempt < maxRetries - 1) {
+        const backoffMs = baseDelayMs * Math.pow(2, attempt);
+        console.log("Retrying operation", { name, backoffMs });
+        await sleep(backoffMs);
+      }
+    }
+  }
+
+  throw lastError ?? new Error("All retries exhausted");
+}

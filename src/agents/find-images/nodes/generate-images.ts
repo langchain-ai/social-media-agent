@@ -1,5 +1,5 @@
 import { GoogleGenAI } from "@google/genai";
-import { getMimeTypeFromUrl, imageUrlToBuffer } from "../../utils.js";
+import { getMimeTypeFromUrl, imageUrlToBuffer, retryWithTimeout, sleep } from "../../utils.js";
 import { FindImagesAnnotation } from "../find-images-graph.js";
 import { uploadImageBufferToSupabase } from "../helpers.js";
 
@@ -240,17 +240,25 @@ export async function generateImageWithNanoBananaPro(
   const baseTemperature = 1.2;
   const temperatureVariation = variationIndex * 0.15; // 1.2, 1.35, 1.5 for indices 0, 1, 2
   
-  const response = await client.models.generateContent({
-    model: GEMINI_MODEL,
-    contents,
-    config: {
-      temperature: baseTemperature + temperatureVariation,
-      responseModalities: ["TEXT", "IMAGE"],
-      imageConfig: {
-        aspectRatio: "16:9",
+  const response = await retryWithTimeout(
+    () => client.models.generateContent({
+      model: GEMINI_MODEL,
+      contents,
+      config: {
+        temperature: baseTemperature + temperatureVariation,
+        responseModalities: ["TEXT", "IMAGE"],
+        imageConfig: {
+          aspectRatio: "16:9",
+        },
       },
+    }),
+    {
+      maxRetries: 3,
+      baseDelayMs: 1000,
+      timeoutMs: 120_000,
+      name: "generateImageWithNanoBananaPro",
     },
-  });
+  );
 
   const parts = response.candidates?.[0]?.content?.parts;
   if (!parts) {
@@ -285,8 +293,7 @@ export async function generateImageCandidatesForPost(state: typeof FindImagesAnn
       console.error("Failed to generate image", {error, index});
     }
     
-    // Sleep 500ms between generations to avoid rate limiting
-    await new Promise((resolve) => setTimeout(resolve, 500));
+    await sleep(500);
   }
 
   const uploadedUrlsWithOmissions = await Promise.all(
