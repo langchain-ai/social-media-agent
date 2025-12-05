@@ -72,7 +72,7 @@ export async function reRankImages(state: typeof FindImagesAnnotation.State) {
   }
 
   const model = new ChatVertexAI({
-    model: "gemini-2.0-flash",
+    model: "gemini-2.5-pro",
     temperature: 0,
   });
 

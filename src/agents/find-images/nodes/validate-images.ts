@@ -133,7 +133,7 @@ export async function validateImages(
   const { imageOptions, report, post } = state;
 
   const model = new ChatVertexAI({
-    model: "gemini-2.0-flash",
+    model: "gemini-2.5-pro",
     temperature: 0,
   });
 
