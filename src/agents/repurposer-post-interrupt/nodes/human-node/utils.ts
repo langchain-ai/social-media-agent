@@ -26,7 +26,7 @@ The following image options are available. Select one by copying and pasting the
     
 ${imageOptions
   .map(
-    (url) => `URL: ${url}
+    (url, index) => `${index === 0 ? "**[DEFAULT]** " : ""}URL: ${url}
 Image: <details><summary>Click to view image</summary>
 
 ![](${url})

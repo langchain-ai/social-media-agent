@@ -21,6 +21,10 @@ export const FindAndGenerateImagesAnnotation = Annotation.Root({
    * The image candidates for the post.
    */
   image_candidates: Annotation<Image[]>,
+  /**
+   * The selected image to attach to the post (defaults to first generated image).
+   */
+  image: Annotation<Image | undefined>,
 });
 
 function validateImagesOrGenerateDirectly(

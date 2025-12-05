@@ -345,8 +345,11 @@ export async function generateImageCandidatesForPost(
     : [];
   const imageUrlsArray = Array.isArray(imageUrls) ? imageUrls : [];
 
+  const firstGeneratedImage = generatedImages[0];
+
   return {
     imageOptions: [...uploadedUrls, ...imageUrlsArray],
     image_candidates: [...generatedImages, ...existingCandidatesArray],
+    image: firstGeneratedImage,
   };
 }
