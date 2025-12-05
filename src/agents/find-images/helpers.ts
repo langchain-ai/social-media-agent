@@ -21,7 +21,8 @@ export async function uploadImageBufferToSupabase(
   }
 
   const extension = type.mime.split("/")[1];
-  const fileName = `${fileNamePrefix}-${Date.now()}.${extension}`;
+  const randomSuffix = Math.random().toString(36).substring(2, 8);
+  const fileName = `${fileNamePrefix}-${Date.now()}-${randomSuffix}.${extension}`;
 
   const { data, error } = await supabase.storage
     .from("images")
