@@ -224,52 +224,31 @@ export async function generateImageWithNanoBananaPro(
   if (validReferenceImages.length > 0) {
     contents.push(...validReferenceImages);
   }
-  
-  // Try with reference images first, fall back to text-only if images cause issues
-  let response: Awaited<ReturnType<typeof client.models.generateContent>>;
-  
-  const generateWithContents = (contentsToUse: typeof contents) =>
+
+  const generate = (contentsToUse: typeof contents) =>
     client.models.generateContent({
       model: GEMINI_MODEL,
       contents: contentsToUse,
       config: {
-        temperature: 1.2 + Math.random() * 0.6, // Random temperature between 1.2 and 1.8 for creative diversity
+        temperature: 1.2 + Math.random() * 0.6,
         responseModalities: ["TEXT", "IMAGE"],
-        imageConfig: {
-          aspectRatio: "16:9",
-        },
+        imageConfig: { aspectRatio: "16:9" },
       },
     });
 
-  const hasReferenceImages = contents.length > 1;
+  const retryOpts = { maxRetries: 3, baseDelayMs: 3000, timeoutMs: 120_000 };
 
-  try {
-    response = await retryWithTimeout(
-      () => generateWithContents(contents),
-      {
-        maxRetries: 3,
-        baseDelayMs: 3000,
-        timeoutMs: 120_000,
-        name: "generateImageWithNanoBananaPro",
-      },
-    );
-  } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : String(error);
-    if (hasReferenceImages && (errorMessage.includes("image is not valid") || errorMessage.includes("INVALID_ARGUMENT"))) {
-      console.warn("Reference images rejected by API, retrying with text-only prompt");
-      response = await retryWithTimeout(
-        () => generateWithContents([prompt]),
-        {
-          maxRetries: 3,
-          baseDelayMs: 3000,
-          timeoutMs: 120_000,
-          name: "generateImageWithNanoBananaPro (text-only)",
-        },
-      );
-    } else {
-      throw error;
+  const response = await retryWithTimeout(() => generate(contents), retryOpts).catch(async (error) => {
+    const msg = error instanceof Error ? error.message : String(error);
+    const isImageError = msg.includes("image is not valid") || msg.includes("INVALID_ARGUMENT");
+    
+    if (contents.length > 1 && isImageError) {
+      console.warn("Reference images rejected, retrying text-only");
+      return retryWithTimeout(() => generate([prompt]), retryOpts);
     }
-  }
+    
+    throw error;
+  });
 
   const parts = response.candidates?.[0]?.content?.parts;
   if (!parts) {
