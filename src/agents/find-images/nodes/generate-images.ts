@@ -222,28 +222,41 @@ export async function generateImageWithNanoBananaPro(
   > = [prompt];
 
   // Add reference images (limit to 3 to avoid token limits)
-  const referenceImageDataResultsWithOmissions = await Promise.all(
+  const referenceImagesWithOmissions = await Promise.all(
     imageUrls.slice(0, 3).map(async (url) => {
       try {
         const { buffer, contentType } = await imageUrlToBuffer(url);
+
+        if (!contentType.startsWith("image/")) {
+          console.warn("Skipping non-image content type", { url, contentType });
+          return undefined;
+        }
+        
         return { inlineData: { mimeType: contentType, data: buffer.toString("base64") } };
-      } catch {
+      } catch (error) {
+        console.warn("Failed to load reference image", { url, error });
         return undefined;
       }
     }),
   );
 
-  contents.push(...referenceImageDataResultsWithOmissions.filter((d): d is NonNullable<typeof d> => d !== undefined));
+  const validReferenceImages = referenceImagesWithOmissions.filter((d): d is NonNullable<typeof d> => d !== undefined);
+  
+  if (validReferenceImages.length > 0) {
+    contents.push(...validReferenceImages);
+  }
 
   // Use higher temperature for more creative/diverse outputs
-  // Vary temperature slightly per iteration for additional diversity
   const baseTemperature = 1.2;
   const temperatureVariation = variationIndex * 0.15; // 1.2, 1.35, 1.5 for indices 0, 1, 2
   
-  const response = await retryWithTimeout(
-    () => client.models.generateContent({
+  // Try with reference images first, fall back to text-only if images cause issues
+  let response: Awaited<ReturnType<typeof client.models.generateContent>>;
+  
+  const generateWithContents = (contentsToUse: typeof contents) =>
+    client.models.generateContent({
       model: GEMINI_MODEL,
-      contents,
+      contents: contentsToUse,
       config: {
         temperature: baseTemperature + temperatureVariation,
         responseModalities: ["TEXT", "IMAGE"],
@@ -251,14 +264,43 @@ export async function generateImageWithNanoBananaPro(
           aspectRatio: "16:9",
         },
       },
-    }),
-    {
-      maxRetries: 3,
-      baseDelayMs: 1000,
-      timeoutMs: 120_000,
-      name: "generateImageWithNanoBananaPro",
-    },
-  );
+    });
+
+  const hasReferenceImages = contents.length > 1;
+  console.log("Starting image generation", { 
+    hasReferenceImages, 
+    contentsCount: contents.length,
+    variationIndex 
+  });
+
+  try {
+    response = await retryWithTimeout(
+      () => generateWithContents(contents),
+      {
+        maxRetries: 3,
+        baseDelayMs: 3000,
+        timeoutMs: 120_000,
+        name: "generateImageWithNanoBananaPro",
+      },
+    );
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    // Only fallback to text-only if we had reference images AND got an invalid image error
+    if (hasReferenceImages && (errorMessage.includes("image is not valid") || errorMessage.includes("INVALID_ARGUMENT"))) {
+      console.warn("Reference images rejected by API, retrying with text-only prompt");
+      response = await retryWithTimeout(
+        () => generateWithContents([prompt]),
+        {
+          maxRetries: 3,
+          baseDelayMs: 3000,
+          timeoutMs: 120_000,
+          name: "generateImageWithNanoBananaPro (text-only)",
+        },
+      );
+    } else {
+      throw error;
+    }
+  }
 
   const parts = response.candidates?.[0]?.content?.parts;
   if (!parts) {
