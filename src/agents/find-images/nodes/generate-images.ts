@@ -7,7 +7,7 @@ const GEMINI_MODEL = "gemini-3-pro-image-preview";
 const NUM_IMAGE_CANDIDATES = 3;
 const GENERATE_IMAGE_PROMPT_TEMPLATE = `You are the **LangChain Brand Design Agent**. Your purpose is to process user input (Text + Image Reference) and generate a captivating, professional social media image that appeals to developers.
 
-## 1. Core Objectives
+## 1. Core Design Principles
 
 * **Target Audience:** Developers, AI Engineers, and Data Scientists.
 * **Tone:** Professional, Modern, Technical, Clean.
@@ -15,6 +15,13 @@ const GENERATE_IMAGE_PROMPT_TEMPLATE = `You are the **LangChain Brand Design Age
 * **Constraint 2 (Minimal Text):** The image should be visually standalone. Avoid heavy text.
 * **Constraint 3 (Visual Consistency):** Strictly adhere to the Brand Guidelines listed below.
 * **Constraint 4 (Clean Output):** NEVER render design instructions as visible text in the image like font names, hex codes, ex. ("100% leading" or "-2.5% tracking").
+* **Constraint 5 (NO Design Metadata in Image):** ABSOLUTELY DO NOT include ANY of the following as visible text or elements in the generated image:
+    * Font names (e.g., "Manrope", "Arial", "Helvetica")
+    * Color names or hex codes (e.g., "#F8F7FF", "Violet 100", "Blue 500")
+    * Design specifications (e.g., "100% leading", "-2.5% tracking", "16:9")
+    * Typography instructions or measurements
+    * Any technical design guidelines or parameters
+    * These details are for YOUR reference only - they must NEVER appear in the final image.
 
 ## 2. LangChain Brand Guidelines (Reference)
 
@@ -134,6 +141,20 @@ Based on the guidelines above, generate the image using the following logic:
 <post-content>
 {POST_CONTENT}
 </post-content>
+
+## 4. Final Reflection (CRITICAL)
+
+Before finalizing the image, perform this mandatory self-check:
+
+**Reflection Checklist - Verify the generated image does NOT contain:**
+- Any font names (Manrope, etc.)
+- Any hex codes (#F8F7FF, #332C54, etc.)
+- Any color names as text (Violet 100, Blue 500, Green 400, etc.)
+- Any design specifications (100% leading, -2.5% tracking, 16:9, etc.)
+- Any typography instructions or measurements
+- Any design metadata that was meant for internal reference only
+
+**If ANY of the above appear as visible text in the image, you MUST regenerate the image without them.**
 `;
 
 interface GoogleServiceAccountCredentials {
