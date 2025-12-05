@@ -1,4 +1,4 @@
-import { GoogleGenAI } from "@google/genai";
+import { GoogleGenAI, Part } from "@google/genai";
 import { getMimeTypeFromUrl, imageUrlToBuffer, retryWithTimeout, sleep } from "../../utils.js";
 import { FindImagesAnnotation } from "../find-images-graph.js";
 import { uploadImageBufferToSupabase } from "../helpers.js";
@@ -137,13 +137,6 @@ Based on the guidelines above, generate the image using the following logic:
 5.  **Lighting:** Soft, professional studio lighting. No neon cyberpunk glows; keep it matte and modern.
 6.  **Output:** A 16:9 high-resolution image suitable for Twitter/LinkedIn.
 
-
-
-# Post Content
-<post-content>
-{POST_CONTENT}
-</post-content>
-
 ## 4. Final Reflection (CRITICAL)
 
 Before finalizing the image, perform this mandatory self-check:
@@ -159,6 +152,16 @@ Before finalizing the image, perform this mandatory self-check:
 - Any parrot imagery (the LangChain logo is a parrot - it must NEVER appear)
 
 **If ANY of the above appear as visible text in the image, you MUST regenerate the image without them.**
+
+## 5. Input
+
+<style-variation>
+{STYLE_VARIATION}
+</style-variation>
+
+<post-content>
+{POST_CONTENT}
+</post-content>
 `;
 
 const STYLE_VARIATIONS = [
@@ -191,15 +194,11 @@ export async function generateImageWithNanoBananaPro(
 
   const styleVariation = STYLE_VARIATIONS[variationIndex % STYLE_VARIATIONS.length];
   
-  const prompt = GENERATE_IMAGE_PROMPT_TEMPLATE.replace(
-    "{POST_CONTENT}",
-    postContent,
-  ) + `\n\n${styleVariation}`;
+  const prompt = GENERATE_IMAGE_PROMPT_TEMPLATE
+    .replace("{STYLE_VARIATION}", styleVariation)
+    .replace("{POST_CONTENT}", postContent);
 
-  const contents: Array<
-    | string
-    | { inlineData: { mimeType: string; data: string } }
-  > = [prompt];
+  const contents: (string | Part)[] = [prompt];
 
   // Add reference images (limit to 3 to avoid token limits)
   const referenceImagesWithOmissions = await Promise.all(
@@ -225,10 +224,6 @@ export async function generateImageWithNanoBananaPro(
   if (validReferenceImages.length > 0) {
     contents.push(...validReferenceImages);
   }
-
-  // Use higher temperature for more creative/diverse outputs
-  const baseTemperature = 1.2;
-  const temperatureVariation = variationIndex * 0.15; // 1.2, 1.35, 1.5 for indices 0, 1, 2
   
   // Try with reference images first, fall back to text-only if images cause issues
   let response: Awaited<ReturnType<typeof client.models.generateContent>>;
@@ -238,7 +233,7 @@ export async function generateImageWithNanoBananaPro(
       model: GEMINI_MODEL,
       contents: contentsToUse,
       config: {
-        temperature: baseTemperature + temperatureVariation,
+        temperature: 1.2 + Math.random() * 0.6, // Random temperature between 1.2 and 1.8 for creative diversity
         responseModalities: ["TEXT", "IMAGE"],
         imageConfig: {
           aspectRatio: "16:9",
@@ -247,11 +242,6 @@ export async function generateImageWithNanoBananaPro(
     });
 
   const hasReferenceImages = contents.length > 1;
-  console.log("Starting image generation", { 
-    hasReferenceImages, 
-    contentsCount: contents.length,
-    variationIndex 
-  });
 
   try {
     response = await retryWithTimeout(
@@ -265,7 +255,6 @@ export async function generateImageWithNanoBananaPro(
     );
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
-    // Only fallback to text-only if we had reference images AND got an invalid image error
     if (hasReferenceImages && (errorMessage.includes("image is not valid") || errorMessage.includes("INVALID_ARGUMENT"))) {
       console.warn("Reference images rejected by API, retrying with text-only prompt");
       response = await retryWithTimeout(
