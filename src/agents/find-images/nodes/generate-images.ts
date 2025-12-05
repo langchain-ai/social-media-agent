@@ -11,7 +11,7 @@ const GENERATE_IMAGE_PROMPT_TEMPLATE = `You are the **LangChain Brand Design Age
 
 * **Target Audience:** Developers, AI Engineers, and Data Scientists.
 * **Tone:** Professional, Modern, Technical, Clean.
-* **Constraint 1 (No Logos):** Do NOT generate the LangChain logo or any text-based logos.
+* **Constraint 1 (No Logos):** Do NOT generate the LangChain logo (a parrot) or any text-based logos. NEVER render a parrot in any form.
 * **Constraint 2 (Minimal Text):** The image should be visually standalone. Avoid heavy text.
 * **Constraint 3 (Visual Consistency):** Strictly adhere to the Brand Guidelines listed below.
 * **Constraint 4 (Clean Output):** NEVER render design instructions as visible text in the image like font names, hex codes, ex. ("100% leading" or "-2.5% tracking").
@@ -155,6 +155,7 @@ Before finalizing the image, perform this mandatory self-check:
 - Any typography instructions or measurements
 - Any design metadata that was meant for internal reference only
 - "Made by LangChain Community" or similar attribution text
+- Any parrot imagery (the LangChain logo is a parrot - it must NEVER appear)
 
 **If ANY of the above appear as visible text in the image, you MUST regenerate the image without them.**
 `;
