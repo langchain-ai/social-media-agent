@@ -21,6 +21,7 @@ const GENERATE_IMAGE_PROMPT_TEMPLATE = `You are the **LangChain Brand Design Age
     * Design specifications (e.g., "100% leading", "-2.5% tracking", "16:9")
     * Typography instructions or measurements
     * Any technical design guidelines or parameters
+    * "Made by LangChain Community" or similar attribution text
     * These details are for YOUR reference only - they must NEVER appear in the final image.
 
 ## 2. LangChain Brand Guidelines (Reference)
@@ -153,6 +154,7 @@ Before finalizing the image, perform this mandatory self-check:
 - Any design specifications (100% leading, -2.5% tracking, 16:9, etc.)
 - Any typography instructions or measurements
 - Any design metadata that was meant for internal reference only
+- "Made by LangChain Community" or similar attribution text
 
 **If ANY of the above appear as visible text in the image, you MUST regenerate the image without them.**
 `;
