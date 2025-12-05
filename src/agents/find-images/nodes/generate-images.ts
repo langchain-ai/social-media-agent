@@ -5,6 +5,7 @@ import { uploadImageBufferToSupabase } from "../helpers.js";
 
 const GEMINI_MODEL = "gemini-3-pro-image-preview";
 const NUM_IMAGE_CANDIDATES = 3;
+
 const GENERATE_IMAGE_PROMPT_TEMPLATE = `You are the **LangChain Brand Design Agent**. Your purpose is to process user input (Text + Image Reference) and generate a captivating, professional social media image that appeals to developers.
 
 ## 1. Core Design Principles
@@ -160,22 +161,6 @@ Before finalizing the image, perform this mandatory self-check:
 **If ANY of the above appear as visible text in the image, you MUST regenerate the image without them.**
 `;
 
-interface GoogleServiceAccountCredentials {
-  project_id: string;
-  client_email: string;
-  private_key: string;
-  [key: string]: unknown;
-}
-
-function parseCredentials(raw: string): GoogleServiceAccountCredentials | undefined {
-  try {
-    return JSON.parse(raw);
-  } catch {
-    return undefined;
-  }
-}
-
-// Variation prompts to encourage diversity across generated images
 const STYLE_VARIATIONS = [
   `**Style Directive:** Use a LIGHT background from the palette (Violet 100, Blue 100, Green 100, or Orange 100). Focus on bold geometric shapes with strong contrast. Use WARM accent colors (Orange, Red tones).`,
   `**Style Directive:** Use a DARK background from the palette (Violet 400, Green 500, or Blue 500). Create depth with layered abstract elements. Use COOL accent colors (Blue, Green tones).`,
@@ -193,12 +178,7 @@ export async function generateImageWithNanoBananaPro(
       throw new Error("GOOGLE_VERTEX_AI_WEB_CREDENTIALS is not set");
     }
 
-    const rawCredentials = process.env.GOOGLE_VERTEX_AI_WEB_CREDENTIALS;
-    const credentials = parseCredentials(rawCredentials) ?? parseCredentials(decodeURIComponent(rawCredentials));
-
-    if (!credentials) {
-      throw new Error("GOOGLE_VERTEX_AI_WEB_CREDENTIALS contains invalid JSON.");
-    }
+    const credentials = JSON.parse(process.env.GOOGLE_VERTEX_AI_WEB_CREDENTIALS);
 
     return new GoogleGenAI({
       vertexai: true,
