@@ -23,7 +23,9 @@ export const FindImagesAnnotation = Annotation.Root({
   image_candidates: Annotation<Image[]>,
 });
 
-function validateImagesOrGenerateDirectly(state: typeof FindImagesAnnotation.State) {
+function validateImagesOrGenerateDirectly(
+  state: typeof FindImagesAnnotation.State,
+) {
   if (state.imageOptions?.length) {
     return "validateImages";
   }

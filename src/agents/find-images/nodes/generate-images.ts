@@ -1,5 +1,10 @@
 import { GoogleGenAI, Part } from "@google/genai";
-import { getMimeTypeFromUrl, imageUrlToBuffer, retryWithTimeout, sleep } from "../../utils.js";
+import {
+  getMimeTypeFromUrl,
+  imageUrlToBuffer,
+  retryWithTimeout,
+  sleep,
+} from "../../utils.js";
 import { FindImagesAnnotation } from "../find-images-graph.js";
 import { uploadImageBufferToSupabase } from "../helpers.js";
 
@@ -177,13 +182,14 @@ export async function generateImageWithNanoBananaPro(
   imageUrls: string[],
   variationIndex: number = 0,
 ): Promise<{ data: string; mimeType: string }> {
-
   const client = (() => {
     if (!process.env.GOOGLE_VERTEX_AI_WEB_CREDENTIALS) {
       throw new Error("GOOGLE_VERTEX_AI_WEB_CREDENTIALS is not set");
     }
 
-    const credentials = JSON.parse(process.env.GOOGLE_VERTEX_AI_WEB_CREDENTIALS);
+    const credentials = JSON.parse(
+      process.env.GOOGLE_VERTEX_AI_WEB_CREDENTIALS,
+    );
 
     return new GoogleGenAI({
       vertexai: true,
@@ -194,11 +200,13 @@ export async function generateImageWithNanoBananaPro(
     });
   })();
 
-  const styleVariation = STYLE_VARIATIONS[variationIndex % STYLE_VARIATIONS.length];
-  
-  const prompt = GENERATE_IMAGE_PROMPT_TEMPLATE
-    .replace("{STYLE_VARIATION}", styleVariation)
-    .replace("{POST_CONTENT}", postContent);
+  const styleVariation =
+    STYLE_VARIATIONS[variationIndex % STYLE_VARIATIONS.length];
+
+  const prompt = GENERATE_IMAGE_PROMPT_TEMPLATE.replace(
+    "{STYLE_VARIATION}",
+    styleVariation,
+  ).replace("{POST_CONTENT}", postContent);
 
   const contents: (string | Part)[] = [prompt];
 
@@ -212,8 +220,13 @@ export async function generateImageWithNanoBananaPro(
           console.warn("Skipping non-image content type", { url, contentType });
           return undefined;
         }
-        
-        return { inlineData: { mimeType: contentType, data: buffer.toString("base64") } };
+
+        return {
+          inlineData: {
+            mimeType: contentType,
+            data: buffer.toString("base64"),
+          },
+        };
       } catch (error) {
         console.warn("Failed to load reference image", { url, error });
         return undefined;
@@ -221,8 +234,10 @@ export async function generateImageWithNanoBananaPro(
     }),
   );
 
-  const validReferenceImages = referenceImagesWithOmissions.filter((d): d is NonNullable<typeof d> => d !== undefined);
-  
+  const validReferenceImages = referenceImagesWithOmissions.filter(
+    (d): d is NonNullable<typeof d> => d !== undefined,
+  );
+
   if (validReferenceImages.length > 0) {
     contents.push(...validReferenceImages);
   }
@@ -240,15 +255,19 @@ export async function generateImageWithNanoBananaPro(
 
   const retryOpts = { maxRetries: 3, baseDelayMs: 3000, timeoutMs: 120_000 };
 
-  const response = await retryWithTimeout(() => generate(contents), retryOpts).catch(async (error) => {
+  const response = await retryWithTimeout(
+    () => generate(contents),
+    retryOpts,
+  ).catch(async (error) => {
     const msg = error instanceof Error ? error.message : String(error);
-    const isImageError = msg.includes("image is not valid") || msg.includes("INVALID_ARGUMENT");
-    
+    const isImageError =
+      msg.includes("image is not valid") || msg.includes("INVALID_ARGUMENT");
+
     if (contents.length > 1 && isImageError) {
       console.warn("Reference images rejected, retrying text-only");
       return retryWithTimeout(() => generate([prompt]), retryOpts);
     }
-    
+
     throw error;
   });
 
@@ -256,8 +275,10 @@ export async function generateImageWithNanoBananaPro(
   if (!parts) {
     throw new Error("No image generated");
   }
-  
-  const imagePart = parts.find((part) => part.inlineData?.mimeType?.startsWith("image/"));
+
+  const imagePart = parts.find((part) =>
+    part.inlineData?.mimeType?.startsWith("image/"),
+  );
   if (!imagePart?.inlineData) {
     throw new Error("No image data in response");
   }
@@ -268,23 +289,33 @@ export async function generateImageWithNanoBananaPro(
   };
 }
 
-export async function generateImageCandidatesForPost(state: typeof FindImagesAnnotation.State) {
-  const { post, imageOptions: imageUrls, image_candidates: existingCandidates } = state;
+export async function generateImageCandidatesForPost(
+  state: typeof FindImagesAnnotation.State,
+) {
+  const {
+    post,
+    imageOptions: imageUrls,
+    image_candidates: existingCandidates,
+  } = state;
 
   if (!post) {
     throw new Error("No post content available to generate images");
   }
 
   const imageResults: { data: string; mimeType: string }[] = [];
-  
+
   for (let index = 0; index < STYLE_VARIATIONS.length; index++) {
     try {
-      const result = await generateImageWithNanoBananaPro(post, imageUrls ?? [], index);
+      const result = await generateImageWithNanoBananaPro(
+        post,
+        imageUrls ?? [],
+        index,
+      );
       imageResults.push(result);
     } catch (error) {
-      console.error("Failed to generate image", {error, index});
+      console.error("Failed to generate image", { error, index });
     }
-    
+
     await sleep(500);
   }
 
@@ -294,18 +325,24 @@ export async function generateImageCandidatesForPost(state: typeof FindImagesAnn
         const buffer = Buffer.from(data, "base64");
         return await uploadImageBufferToSupabase(buffer, `nano-banana-pro`);
       } catch (error) {
-        console.error("Failed to upload generated image", {error});
+        console.error("Failed to upload generated image", { error });
         return undefined;
       }
     }),
   );
 
-  const uploadedUrls = uploadedUrlsWithOmissions
-    .filter((url): url is NonNullable<typeof url> => url !== undefined);
+  const uploadedUrls = uploadedUrlsWithOmissions.filter(
+    (url): url is NonNullable<typeof url> => url !== undefined,
+  );
 
-  const generatedImages = uploadedUrls.map((url) => ({ imageUrl: url, mimeType: getMimeTypeFromUrl(url) }));
-  
-  const existingCandidatesArray = Array.isArray(existingCandidates) ? existingCandidates : [];
+  const generatedImages = uploadedUrls.map((url) => ({
+    imageUrl: url,
+    mimeType: getMimeTypeFromUrl(url),
+  }));
+
+  const existingCandidatesArray = Array.isArray(existingCandidates)
+    ? existingCandidates
+    : [];
   const imageUrlsArray = Array.isArray(imageUrls) ? imageUrls : [];
 
   return {

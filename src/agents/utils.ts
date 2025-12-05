@@ -671,7 +671,7 @@ export interface RetryWithTimeoutOptions {
 
 /**
  * Executes a callback with exponential retry backoff and timeout.
- * 
+ *
  * @param callback - The async function to execute
  * @param options - Configuration options for retry behavior
  * @returns The result of the callback
@@ -695,16 +695,18 @@ export async function retryWithTimeout<T>(
       const callbackPromise = callback();
 
       const timeoutPromise = new Promise<never>((_, reject) => {
-        setTimeout(
-          () => reject(new Error("Operation timed out")),
-          timeoutMs,
-        );
+        setTimeout(() => reject(new Error("Operation timed out")), timeoutMs);
       });
 
       return await Promise.race([callbackPromise, timeoutPromise]);
     } catch (error) {
       lastError = error instanceof Error ? error : new Error(String(error));
-      console.warn("Retry attempt failed", { name, attempt: attempt + 1, maxRetries, error: lastError.message });
+      console.warn("Retry attempt failed", {
+        name,
+        attempt: attempt + 1,
+        maxRetries,
+        error: lastError.message,
+      });
 
       if (attempt < maxRetries - 1) {
         const backoffMs = baseDelayMs * Math.pow(2, attempt);

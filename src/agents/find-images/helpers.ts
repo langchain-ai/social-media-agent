@@ -38,7 +38,7 @@ export async function uploadImageBufferToSupabase(
       name: error.name,
       stack: error.stack,
     });
-    
+
     throw error;
   }
 
@@ -52,4 +52,3 @@ export async function uploadImageBufferToSupabase(
 
   return signedUrlData.signedUrl;
 }
-

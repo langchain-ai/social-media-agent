@@ -63,11 +63,11 @@ export async function reRankImages(state: typeof FindImagesAnnotation.State) {
     return {
       imageOptions: state.imageOptions,
       image_candidates: state.imageOptions?.[0]
-      ? {
-          imageUrl: state.imageOptions[0],
-          mimeType: getMimeTypeFromUrl(state.imageOptions[0]),
-        }
-      : [],
+        ? {
+            imageUrl: state.imageOptions[0],
+            mimeType: getMimeTypeFromUrl(state.imageOptions[0]),
+          }
+        : [],
     };
   }
 

@@ -62,7 +62,9 @@ function rewriteOrEndConditionalEdge(
 async function condenseOrHumanConditionalEdge(
   state: GeneratePostState,
   config: LangGraphRunnableConfig,
-): Promise<"condensePost" | "humanNode" | "findAndGenerateImagesSubGraph" | typeof END> {
+): Promise<
+  "condensePost" | "humanNode" | "findAndGenerateImagesSubGraph" | typeof END
+> {
   const cleanedPost = removeUrls(state.post || "");
   if (cleanedPost.length > 280 && state.condenseCount <= 3) {
     return "condensePost";
