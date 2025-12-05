@@ -258,20 +258,20 @@ export async function generateImageCandidatesForPost(state: typeof FindImagesAnn
     throw new Error("No post content available to generate images");
   }
 
-  const imageDataResultsWithOmissions = await Promise.all(
-    Array.from({ length: NUM_IMAGE_CANDIDATES }, async () => {
-      try {
-        return await generateImageWithNanoBananaPro(post, imageUrls ?? []);
-      } catch {
-        return undefined;
-      }
-    }),
-  );
-
-  const validImageResults = imageDataResultsWithOmissions.filter((d): d is NonNullable<typeof d> => d !== undefined);
+  const imageResults: { data: string; mimeType: string }[] = [];
+  
+  for (let index = 0; index < NUM_IMAGE_CANDIDATES; index++) {
+    try {
+      const result = await generateImageWithNanoBananaPro(post, imageUrls ?? []);
+      imageResults.push(result);
+    } catch{}
+    
+    // Sleep 500ms between generations to avoid rate limiting
+    await new Promise((resolve) => setTimeout(resolve, 500));
+  }
 
   const uploadedUrlsWithOmissions = await Promise.all(
-    validImageResults.map(async ({ data }) => {
+    imageResults.map(async ({ data }) => {
       try {
         const buffer = Buffer.from(data, "base64");
         return await uploadImageBufferToSupabase(buffer, `nano-banana-pro`);
