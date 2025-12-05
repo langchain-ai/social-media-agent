@@ -5,7 +5,7 @@ import {
   retryWithTimeout,
   sleep,
 } from "../../utils.js";
-import { FindImagesAnnotation } from "../find-images-graph.js";
+import { FindAndGenerateImagesAnnotation } from "../find-and-generate-images-graph.js";
 import { uploadImageBufferToSupabase } from "../helpers.js";
 
 const GEMINI_MODEL = "gemini-3-pro-image-preview";
@@ -290,7 +290,7 @@ export async function generateImageWithNanoBananaPro(
 }
 
 export async function generateImageCandidatesForPost(
-  state: typeof FindImagesAnnotation.State,
+  state: typeof FindAndGenerateImagesAnnotation.State,
 ) {
   const {
     post,

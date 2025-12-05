@@ -6,7 +6,7 @@ import { generateImageCandidatesForPost } from "./nodes/generate-images.js";
 import { VerifyLinksResultAnnotation } from "../verify-links/verify-links-state.js";
 import { Image } from "../types.js";
 
-export const FindImagesAnnotation = Annotation.Root({
+export const FindAndGenerateImagesAnnotation = Annotation.Root({
   ...VerifyLinksResultAnnotation.spec,
   /**
    * The report generated on the content of the message. Used
@@ -24,7 +24,7 @@ export const FindImagesAnnotation = Annotation.Root({
 });
 
 function validateImagesOrGenerateDirectly(
-  state: typeof FindImagesAnnotation.State,
+  state: typeof FindAndGenerateImagesAnnotation.State,
 ) {
   if (state.imageOptions?.length) {
     return "validateImages";
@@ -32,7 +32,7 @@ function validateImagesOrGenerateDirectly(
   return "generateImageCandidates";
 }
 
-const findImagesWorkflow = new StateGraph(FindImagesAnnotation)
+const findAndGenerateImagesWorkflow = new StateGraph(FindAndGenerateImagesAnnotation)
   .addNode("findImages", findImages)
   .addNode("validateImages", validateImages)
   .addNode("reRankImages", reRankImages)
@@ -51,5 +51,5 @@ const findImagesWorkflow = new StateGraph(FindImagesAnnotation)
 
   .addEdge("generateImageCandidates", END);
 
-export const findImagesGraph = findImagesWorkflow.compile();
-findImagesGraph.name = "Find Images Graph";
+export const findAndGenerateImagesGraph = findAndGenerateImagesWorkflow.compile();
+findAndGenerateImagesGraph.name = "Find And Generate Images Graph";
