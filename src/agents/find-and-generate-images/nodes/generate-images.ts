@@ -159,13 +159,11 @@ Before finalizing the image, perform this mandatory self-check:
 
 ## 5. Input
 
-<style-variation>
+### Style Variation
 {STYLE_VARIATION}
-</style-variation>
 
-<post-content>
+### Post Content
 {POST_CONTENT}
-</post-content>
 `;
 
 const STYLE_VARIATIONS = [
