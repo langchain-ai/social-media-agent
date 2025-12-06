@@ -170,7 +170,7 @@ export async function validateImages(state: RepurposerState): Promise<{
   const { imageOptions, originalContent } = state;
 
   const model = new ChatVertexAI({
-    model: "gemini-2.0-pro-exp-02-05",
+    model: "gemini-2.5-pro",
     temperature: 0,
   });
 

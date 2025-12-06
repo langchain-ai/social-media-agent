@@ -2,7 +2,7 @@
 // import { type SimpleEvaluator } from "langsmith/jest";
 // import { GeneratePostAnnotation } from "../../agents/generate-post/generate-post-state.js";
 // import { TEST_EACH_INPUTS_OUTPUTS } from "./inputs.js";
-// import { validateImages } from "../../agents/find-images/nodes/validate-images.js";
+// import { validateImages } from "../../agents/find-and-generate-images/nodes/validate-images.js";
 
 // const checkCorrectImages: SimpleEvaluator = ({ expected, actual }) => {
 //   const expectedImageOptions = expected.imageOptions as string[];

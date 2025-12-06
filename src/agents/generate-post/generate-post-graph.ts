@@ -21,7 +21,7 @@ import {
 } from "../utils.js";
 import { verifyLinksGraph } from "../verify-links/verify-links-graph.js";
 import { authSocialsPassthrough } from "./nodes/auth-socials.js";
-import { findImagesGraph } from "../find-images/find-images-graph.js";
+import { findAndGenerateImagesGraph } from "../find-and-generate-images/find-and-generate-images-graph.js";
 import { updateScheduledDate } from "../shared/nodes/update-scheduled-date.js";
 import { getSavedUrls } from "../shared/stores/post-subject-urls.js";
 import { humanNode } from "../shared/nodes/generate-post/human-node.js";
@@ -62,7 +62,9 @@ function rewriteOrEndConditionalEdge(
 async function condenseOrHumanConditionalEdge(
   state: GeneratePostState,
   config: LangGraphRunnableConfig,
-): Promise<"condensePost" | "humanNode" | "findImagesSubGraph" | typeof END> {
+): Promise<
+  "condensePost" | "humanNode" | "findAndGenerateImagesSubGraph" | typeof END
+> {
   const cleanedPost = removeUrls(state.post || "");
   if (cleanedPost.length > 280 && state.condenseCount <= 3) {
     return "condensePost";
@@ -72,7 +74,7 @@ async function condenseOrHumanConditionalEdge(
   if (isTextOnlyMode) {
     return routeToCuratedInterruptOrContinue(state, config);
   }
-  return "findImagesSubGraph";
+  return "findAndGenerateImagesSubGraph";
 }
 
 /**
@@ -173,7 +175,7 @@ const generatePostBuilder = new StateGraph(
   // Generates a report on the content.
   .addNode("generateContentReport", generateContentReport)
   // Finds images in the content.
-  .addNode("findImagesSubGraph", findImagesGraph)
+  .addNode("findAndGenerateImagesSubGraph", findAndGenerateImagesGraph)
   // Updated the scheduled date from the natural language response from the user.
   .addNode("updateScheduleDate", updateScheduledDate)
   // Rewrite the post splitting the URL from the main body of the tweet
@@ -200,7 +202,7 @@ const generatePostBuilder = new StateGraph(
   // and if so, condense it. Otherwise, route to the human node.
   .addConditionalEdges("generatePost", condenseOrHumanConditionalEdge, [
     "condensePost",
-    "findImagesSubGraph",
+    "findAndGenerateImagesSubGraph",
     "humanNode",
     END,
   ])
@@ -209,14 +211,14 @@ const generatePostBuilder = new StateGraph(
   // has been generated because the image validator requires the post content.
   .addConditionalEdges("condensePost", condenseOrHumanConditionalEdge, [
     "condensePost",
-    "findImagesSubGraph",
+    "findAndGenerateImagesSubGraph",
     "humanNode",
     END,
   ])
 
   // After finding images, we are done and can interrupt for the human to respond.
   .addConditionalEdges(
-    "findImagesSubGraph",
+    "findAndGenerateImagesSubGraph",
     routeToCuratedInterruptOrContinue,
     ["humanNode", END],
   )

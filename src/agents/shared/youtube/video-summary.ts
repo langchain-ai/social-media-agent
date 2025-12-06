@@ -21,7 +21,7 @@ Ensure to include in your report if this video is relevant to your company's pro
 
 async function generateVideoSummary(url: string): Promise<string> {
   const model = new ChatVertexAI({
-    model: "gemini-2.0-flash",
+    model: "gemini-2.5-pro",
     temperature: 0,
   });
 

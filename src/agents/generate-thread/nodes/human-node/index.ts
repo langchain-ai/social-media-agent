@@ -22,7 +22,7 @@ function constructDescription({
   threadPosts,
 }: ConstructDescriptionArgs): string {
   const imageOptionsText = imageOptions?.length
-    ? `## Image Options\n\nThe following image options are available. Select one by copying and pasting the URL into the 'image' field.\n\n${imageOptions.map((url) => `URL: ${url}\nImage: <details><summary>Click to view image</summary>\n\n![](${url})\n</details>\n`).join("\n")}`
+    ? `## Image Options\n\nThe following image options are available. Select one by copying and pasting the URL into the 'image' field.\n\n${imageOptions.map((url, index) => `${index === 0 ? "**[DEFAULT]** " : ""}URL: ${url}\nImage: <details><summary>Click to view image</summary>\n\n![](${url})\n</details>\n`).join("\n")}`
     : "";
 
   const unknownResponseString = unknownResponseDescription

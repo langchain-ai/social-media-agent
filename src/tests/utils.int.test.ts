@@ -10,8 +10,8 @@ import {
   GITHUB_BROWSER_CONTEXT_OPTIONS,
   GITHUB_SCREENSHOT_OPTIONS,
 } from "../agents/generate-post/constants.js";
-import { parseResult } from "../agents/find-images/nodes/validate-images.js";
-import { takeScreenshotAndUpload } from "../agents/find-images/screenshot.js";
+import { parseResult } from "../agents/find-and-generate-images/nodes/validate-images.js";
+import { takeScreenshotAndUpload } from "../agents/find-and-generate-images/screenshot.js";
 
 describe("GitHub utils", () => {
   it("Can fetch the files and folders of a public GitHub repo", async () => {

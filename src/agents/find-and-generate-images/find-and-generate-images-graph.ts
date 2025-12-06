@@ -2,10 +2,11 @@ import { Annotation, END, START, StateGraph } from "@langchain/langgraph";
 import { findImages } from "./nodes/find-images.js";
 import { validateImages } from "./nodes/validate-images.js";
 import { reRankImages } from "./nodes/re-rank-images.js";
+import { generateImageCandidatesForPost } from "./nodes/generate-images.js";
 import { VerifyLinksResultAnnotation } from "../verify-links/verify-links-state.js";
 import { Image } from "../types.js";
 
-export const FindImagesAnnotation = Annotation.Root({
+export const FindAndGenerateImagesAnnotation = Annotation.Root({
   ...VerifyLinksResultAnnotation.spec,
   /**
    * The report generated on the content of the message. Used
@@ -17,33 +18,45 @@ export const FindImagesAnnotation = Annotation.Root({
    */
   post: Annotation<string>,
   /**
-   * The main image for the post
+   * The image candidates for the post.
+   */
+  image_candidates: Annotation<Image[]>,
+  /**
+   * The selected image to attach to the post (defaults to first generated image).
    */
   image: Annotation<Image | undefined>,
 });
 
-function validateImagesOrEnd(state: typeof FindImagesAnnotation.State) {
+function validateImagesOrGenerateDirectly(
+  state: typeof FindAndGenerateImagesAnnotation.State,
+) {
   if (state.imageOptions?.length) {
     return "validateImages";
   }
-  return END;
+  return "generateImageCandidates";
 }
 
-const findImagesWorkflow = new StateGraph(FindImagesAnnotation)
+const findAndGenerateImagesWorkflow = new StateGraph(
+  FindAndGenerateImagesAnnotation,
+)
   .addNode("findImages", findImages)
   .addNode("validateImages", validateImages)
   .addNode("reRankImages", reRankImages)
+  .addNode("generateImageCandidates", generateImageCandidatesForPost)
 
   .addEdge(START, "findImages")
 
-  .addConditionalEdges("findImages", validateImagesOrEnd, [
+  .addConditionalEdges("findImages", validateImagesOrGenerateDirectly, [
     "validateImages",
-    END,
+    "generateImageCandidates",
   ])
 
   .addEdge("validateImages", "reRankImages")
 
-  .addEdge("reRankImages", END);
+  .addEdge("reRankImages", "generateImageCandidates")
 
-export const findImagesGraph = findImagesWorkflow.compile();
-findImagesGraph.name = "Find Images Graph";
+  .addEdge("generateImageCandidates", END);
+
+export const findAndGenerateImagesGraph =
+  findAndGenerateImagesWorkflow.compile();
+findAndGenerateImagesGraph.name = "Find And Generate Images Graph";

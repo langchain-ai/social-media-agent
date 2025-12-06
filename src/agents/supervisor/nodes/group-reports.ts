@@ -92,7 +92,7 @@ export async function groupReports(
   state: SupervisorState,
 ): Promise<Partial<SupervisorState>> {
   const model = new ChatVertexAI({
-    model: "gemini-2.0-flash",
+    model: "gemini-2.5-pro",
     temperature: 0,
   }).withStructuredOutput(responseSchema, {
     name: "groupSimilarReports",
