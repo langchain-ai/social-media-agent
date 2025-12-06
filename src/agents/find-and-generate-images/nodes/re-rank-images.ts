@@ -57,7 +57,9 @@ export function parseResult(result: string): number[] {
     .filter((n) => !isNaN(n));
 }
 
-export async function reRankImages(state: typeof FindAndGenerateImagesAnnotation.State) {
+export async function reRankImages(
+  state: typeof FindAndGenerateImagesAnnotation.State,
+) {
   // No need to re-rank if less than 2 images
   if (state.imageOptions && state.imageOptions.length < 2) {
     return {

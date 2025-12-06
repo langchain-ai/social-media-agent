@@ -32,7 +32,9 @@ function checkIsGitHubImageUrl(url: string): boolean {
   }
 }
 
-export async function findImages(state: typeof FindAndGenerateImagesAnnotation.State) {
+export async function findImages(
+  state: typeof FindAndGenerateImagesAnnotation.State,
+) {
   const { pageContents, imageOptions, relevantLinks } = state;
   const link = relevantLinks?.[0] || undefined;
   if (!link || !relevantLinks?.length) {

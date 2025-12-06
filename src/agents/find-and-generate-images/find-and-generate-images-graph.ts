@@ -36,7 +36,9 @@ function validateImagesOrGenerateDirectly(
   return "generateImageCandidates";
 }
 
-const findAndGenerateImagesWorkflow = new StateGraph(FindAndGenerateImagesAnnotation)
+const findAndGenerateImagesWorkflow = new StateGraph(
+  FindAndGenerateImagesAnnotation,
+)
   .addNode("findImages", findImages)
   .addNode("validateImages", validateImages)
   .addNode("reRankImages", reRankImages)
@@ -55,5 +57,6 @@ const findAndGenerateImagesWorkflow = new StateGraph(FindAndGenerateImagesAnnota
 
   .addEdge("generateImageCandidates", END);
 
-export const findAndGenerateImagesGraph = findAndGenerateImagesWorkflow.compile();
+export const findAndGenerateImagesGraph =
+  findAndGenerateImagesWorkflow.compile();
 findAndGenerateImagesGraph.name = "Find And Generate Images Graph";
