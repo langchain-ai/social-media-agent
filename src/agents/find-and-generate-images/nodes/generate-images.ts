@@ -24,18 +24,52 @@ const GENERATE_IMAGE_PROMPT_TEMPLATE = {
       visual_consistency: "Strictly adhere to the Brand Guidelines.",
       clean_output:
         "NEVER render design instructions as visible text in the image.",
+      no_parenthetical_labels: {
+        severity: "CRITICAL",
+        description: "NEVER add parenthetical annotations or labels to diagram elements.",
+        strictly_forbidden: [
+          "Text in parentheses under or next to components",
+          "Labels like (AI), (Code), (Reliable), (Input), (Output)",
+          "Descriptive subtitles in parentheses such as (Flexible Intelligence), (Deterministic), (BigQuery)",
+          "Any text wrapped in ( ) characters as annotations",
+          "Category or type labels in parentheses beneath node names",
+        ],
+        rule: "If a node needs a label, use ONLY a simple name WITHOUT any parenthetical suffix.",
+      },
+      no_color_legends_or_hex_codes: {
+        severity: "CRITICAL",
+        description: "NEVER include color legends, swatches, or hex codes anywhere in the image.",
+        strictly_forbidden: [
+          "Color legend boxes or keys showing which colors mean what",
+          "Color swatches with labels like 'Blue 400 (#066998)'",
+          "ANY hex code in ANY format: #FFFFFF, #066998, #366666, etc.",
+          "Color names with numbers like 'Violet 300', 'Green 400', 'Blue 500'",
+          "ANY text starting with # followed by letters/numbers",
+        ],
+        rule: "The brand color palette is for YOUR internal use only. NEVER show it to viewers.",
+      },
+      no_langchain_community_attribution: {
+        severity: "CRITICAL",
+        description: "NEVER include any LangChain community attribution.",
+        strictly_forbidden: [
+          "LangChain Community",
+          "LangChain Community Project",
+          "Made by LangChain Community",
+          "Any variation of LangChain Community attribution text",
+        ],
+        rule: "This is a clean social media image. NO LangChain Community attribution text of any kind.",
+      },
       no_design_metadata_in_image: {
+        severity: "CRITICAL",
         description:
-          "ABSOLUTELY DO NOT include ANY of the following as visible text or elements in the generated image:",
+          "ABSOLUTELY DO NOT include ANY of the following as visible text or elements:",
         forbidden_elements: [
-          "Font names (e.g., Manrope, Arial, Helvetica)",
-          "Color names or hex codes (e.g., #F8F7FF, Violet 100, Blue 500)",
-          "Design specifications (e.g., 100% leading, -2.5% tracking, 16:9)",
+          "Font names (Manrope, Arial, Helvetica, etc.)",
+          "Design specifications (100% leading, -2.5% tracking, 16:9, etc.)",
           "Typography instructions or measurements",
           "Any technical design guidelines or parameters",
-          "Made by LangChain Community or similar attribution text",
         ],
-        note: "These details are for YOUR reference only - they must NEVER appear in the final image.",
+        note: "All design details in this prompt are for YOUR reference only - they must NEVER appear in the final image.",
       },
     },
   },
@@ -128,7 +162,7 @@ const GENERATE_IMAGE_PROMPT_TEMPLATE = {
     step_2_visual_style: {
       base_style: "Geometric, Abstract, and Clean",
       architecture_diagram_aesthetic:
-        "Lean toward visuals that resemble system architecture diagrams, flowcharts, or technical schematics - think data pipelines, agent workflows, or component relationships.",
+        "Lean toward visuals that resemble system architecture diagrams.",
       visual_elements: [
         "Isometric shapes",
         "Nodes",
@@ -136,8 +170,6 @@ const GENERATE_IMAGE_PROMPT_TEMPLATE = {
         "Directional arrows",
         "Modular blocks",
       ],
-      creative_freedom:
-        "Feel free to interpret creatively, the diagram style is a guiding direction, not a strict constraint.",
       avoid: "Photorealistic humans. Use abstract representations of technology.",
     },
     step_3_title_generation: {
@@ -172,19 +204,20 @@ const GENERATE_IMAGE_PROMPT_TEMPLATE = {
   },
   final_reflection: {
     description:
-      "CRITICAL: Before finalizing the image, perform this mandatory self-check.",
-    verify_image_does_not_contain: [
-      "Any font names (Manrope, etc.)",
-      "Any hex codes (#F8F7FF, #332C54, etc.)",
-      "Any color names as text (Violet 100, Blue 500, Green 400, etc.)",
-      "Any design specifications (100% leading, -2.5% tracking, 16:9, etc.)",
-      "Any typography instructions or measurements",
-      "Any design metadata that was meant for internal reference only",
-      "Made by LangChain Community or similar attribution text",
-      "Any parrot imagery (the LangChain logo is a parrot - it must NEVER appear)",
+      "CRITICAL: Before finalizing the image, perform this MANDATORY self-check. SCAN THE ENTIRE IMAGE.",
+    absolute_zero_tolerance: [
+      "COLOR LEGENDS OR SWATCHES - NO boxes showing 'Blue 400 (#066998)' or similar color keys",
+      "HEX CODES - NO text starting with # like #066998, #366666, #8C81F0, #F8F7FF anywhere",
+      "COLOR NAMES WITH NUMBERS - NO 'Violet 300', 'Blue 400', 'Green 500' text",
+      "LANGCHAIN COMMUNITY ATTRIBUTION - NO 'LangChain Community', 'LangChain Community Project', 'Made by LangChain Community'",
+      "PARENTHESES - NO labels like (AI), (Code), (Input), (Output), (Reliable)",
+      "FONT NAMES - Any font names (Manrope, etc.)",
+      "DESIGN SPECIFICATIONS - Any design specifications (100% leading, -2.5% tracking, 16:9, etc.)",
+      "TYPOGRAPHY INSTRUCTIONS OR MEASUREMENTS - Any typography instructions or measurements",
+      "PARROT IMAGERY - Any parrot imagery (the LangChain logo)",
     ],
     action:
-      "If ANY of the above appear as visible text in the image, you MUST regenerate the image without them.",
+      "STOP AND CHECK: Does the image contain ANY color legend, hex code, or LangChain Community attribution text? If YES, you MUST regenerate without them. These are FATAL errors.",
   },
   input: {
     report: "{REPORT}",
@@ -246,7 +279,7 @@ export async function generateImageWithNanoBananaPro(
   const styleVariation =
     STYLE_VARIATIONS[variationIndex % STYLE_VARIATIONS.length];
 
-  const prompt = getPromptString(styleVariation, report, post);
+  const prompt = getPromptString(report, post, styleVariation);
 
   const contents: (string | Part)[] = [prompt];
 
