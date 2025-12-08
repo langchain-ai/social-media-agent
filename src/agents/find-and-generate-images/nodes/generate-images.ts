@@ -124,7 +124,7 @@ const GENERATE_IMAGE_PROMPT_TEMPLATE = {
   },
   image_generation_instructions: {
     step_1_analyze_input:
-      "Read the user's text and image reference. Extract the core technical concept.",
+      "Read and understand the report (detailed context), post (final social media text), and image references.",
     step_2_visual_style: {
       base_style: "Geometric, Abstract, and Clean",
       architecture_diagram_aesthetic:
@@ -137,7 +137,7 @@ const GENERATE_IMAGE_PROMPT_TEMPLATE = {
         "Modular blocks",
       ],
       creative_freedom:
-        "Feel free to interpret creatively - the diagram style is a guiding direction, not a strict constraint.",
+        "Feel free to interpret creatively, the diagram style is a guiding direction, not a strict constraint.",
       avoid: "Photorealistic humans. Use abstract representations of technology.",
     },
     step_3_title_generation: {
@@ -187,8 +187,9 @@ const GENERATE_IMAGE_PROMPT_TEMPLATE = {
       "If ANY of the above appear as visible text in the image, you MUST regenerate the image without them.",
   },
   input: {
+    report: "{REPORT}",
+    post: "{POST}",
     style_variation: "{STYLE_VARIATION}",
-    post_content: "{POST_CONTENT}",
   },
 };
 
@@ -202,19 +203,25 @@ const STYLE_VARIATIONS = [
 ];
 
 
-const getPromptString = (styleVariation: string, postContent: string): string => {
+const getPromptString = (
+  report: string,
+  post: string,
+  styleVariation: string,
+): string => {
   const promptWithInput = {
     ...GENERATE_IMAGE_PROMPT_TEMPLATE,
     input: {
+      report,
+      post,
       style_variation: styleVariation,
-      post_content: postContent,
     },
   };
   return JSON.stringify(promptWithInput, null, 2);
 };
 
 export async function generateImageWithNanoBananaPro(
-  postContent: string,
+  report: string,
+  post: string,
   imageUrls: string[],
   variationIndex: number = 0,
 ): Promise<{ data: string; mimeType: string }> {
@@ -239,13 +246,13 @@ export async function generateImageWithNanoBananaPro(
   const styleVariation =
     STYLE_VARIATIONS[variationIndex % STYLE_VARIATIONS.length];
 
-  const prompt = getPromptString(styleVariation, postContent);
+  const prompt = getPromptString(styleVariation, report, post);
 
   const contents: (string | Part)[] = [prompt];
 
-  // Add reference images (limit to 3 to avoid token limits)
+  // Add reference images (limit to 2 to avoid token limits)
   const referenceImagesWithOmissions = await Promise.all(
-    imageUrls.slice(0, 3).map(async (url) => {
+    imageUrls.slice(0, 2).map(async (url) => {
       try {
         const { buffer, contentType } = await imageUrlToBuffer(url);
 
@@ -326,6 +333,7 @@ export async function generateImageCandidatesForPost(
   state: typeof FindAndGenerateImagesAnnotation.State,
 ) {
   const {
+    report,
     post,
     imageOptions: imageUrls,
     image_candidates: existingCandidates,
@@ -340,6 +348,7 @@ export async function generateImageCandidatesForPost(
   for (let index = 0; index < STYLE_VARIATIONS.length; index++) {
     try {
       const result = await generateImageWithNanoBananaPro(
+        report,
         post,
         imageUrls ?? [],
         index,
