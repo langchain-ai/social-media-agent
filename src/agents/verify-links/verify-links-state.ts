@@ -9,7 +9,7 @@ export const VerifyLinksGraphSharedAnnotation = Annotation.Root({
   links: Annotation<string[]>,
 });
 
-const sharedLinksReducer = (
+export const sharedLinksReducer = (
   state: string[] | undefined,
   update: string[] | undefined,
 ) => {

@@ -1,39 +1,46 @@
 import { describe, it, expect } from "@jest/globals";
-
-const sharedLinksReducer = (
-  state: string[] | undefined,
-  update: string[] | undefined,
-) => {
-  if (update === undefined) return undefined;
-  const resultSet = new Set<string>();
-  update.filter((u): u is string => !!u).forEach((link) => resultSet.add(link));
-  (state || []).forEach((link) => resultSet.add(link));
-  return Array.from(resultSet);
-};
+import { sharedLinksReducer } from "./verify-links-state.js";
 
 describe("sharedLinksReducer", () => {
   it("should place update items first, followed by state items", () => {
-    const state = ["existing1", "existing2", "existing3"];
-    const update = ["new1", "new2", "existing1", "existing2", "existing3"];
+    const state = [
+      "https://example.com/existing1.png",
+      "https://example.com/existing2.png",
+      "https://example.com/existing3.png",
+    ];
+    const update = [
+      "https://example.com/new1.png",
+      "https://example.com/new2.png",
+      "https://example.com/existing1.png",
+      "https://example.com/existing2.png",
+      "https://example.com/existing3.png",
+    ];
 
     const result = sharedLinksReducer(state, update);
 
-    expect(result?.[0]).toBe("new1");
-    expect(result?.[1]).toBe("new2");
+    expect(result?.[0]).toBe("https://example.com/new1.png");
+    expect(result?.[1]).toBe("https://example.com/new2.png");
     expect(result).toHaveLength(5);
     expect(result).toEqual([
-      "new1",
-      "new2",
-      "existing1",
-      "existing2",
-      "existing3",
+      "https://example.com/new1.png",
+      "https://example.com/new2.png",
+      "https://example.com/existing1.png",
+      "https://example.com/existing2.png",
+      "https://example.com/existing3.png",
     ]);
   });
 
   it("should put generated images before existing images when mimicking generateImageCandidatesForPost", () => {
-    const existingImageOptions = ["found1.jpg", "screenshot.png", "found2.jpg"];
+    const existingImageOptions = [
+      "https://example.com/found1.jpg",
+      "https://example.com/screenshot.png",
+      "https://example.com/found2.jpg",
+    ];
 
-    const generatedUrls = ["generated1.jpg", "generated2.jpg"];
+    const generatedUrls = [
+      "https://example.com/generated1.jpg",
+      "https://example.com/generated2.jpg",
+    ];
     const updateFromGenerateNode = [...generatedUrls, ...existingImageOptions];
 
     const result = sharedLinksReducer(
@@ -41,29 +48,46 @@ describe("sharedLinksReducer", () => {
       updateFromGenerateNode,
     );
 
-    expect(result?.[0]).toBe("generated1.jpg");
-    expect(result?.[1]).toBe("generated2.jpg");
-    expect(result?.[2]).toBe("found1.jpg");
-    expect(result?.[3]).toBe("screenshot.png");
-    expect(result?.[4]).toBe("found2.jpg");
+    expect(result?.[0]).toBe("https://example.com/generated1.jpg");
+    expect(result?.[1]).toBe("https://example.com/generated2.jpg");
+    expect(result?.[2]).toBe("https://example.com/found1.jpg");
+    expect(result?.[3]).toBe("https://example.com/screenshot.png");
+    expect(result?.[4]).toBe("https://example.com/found2.jpg");
   });
 
   it("should handle undefined state", () => {
-    const result = sharedLinksReducer(undefined, ["new1", "new2"]);
-    expect(result).toEqual(["new1", "new2"]);
+    const result = sharedLinksReducer(undefined, [
+      "https://example.com/new1.png",
+      "https://example.com/new2.png",
+    ]);
+    expect(result).toEqual([
+      "https://example.com/new1.png",
+      "https://example.com/new2.png",
+    ]);
   });
 
   it("should return undefined when update is undefined", () => {
-    const result = sharedLinksReducer(["existing"], undefined);
+    const result = sharedLinksReducer(
+      ["https://example.com/existing.png"],
+      undefined,
+    );
     expect(result).toBeUndefined();
   });
 
   it("should deduplicate items", () => {
-    const state = ["a", "b"];
-    const update = ["b", "c", "a"];
+    const state = ["https://example.com/a.png", "https://example.com/b.png"];
+    const update = [
+      "https://example.com/b.png",
+      "https://example.com/c.png",
+      "https://example.com/a.png",
+    ];
 
     const result = sharedLinksReducer(state, update);
 
-    expect(result).toEqual(["b", "c", "a"]);
+    expect(result).toEqual([
+      "https://example.com/b.png",
+      "https://example.com/c.png",
+      "https://example.com/a.png",
+    ]);
   });
 });
