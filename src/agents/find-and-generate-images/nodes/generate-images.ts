@@ -16,14 +16,25 @@ const GENERATE_IMAGE_PROMPT_TEMPLATE = {
     "Process user input (Text + Image Reference) and generate a captivating, professional social media image that appeals to developers.",
   core_design_principles: {
     target_audience: ["Developers", "AI Engineers", "Data Scientists"],
-    tone: ["Professional", "Modern", "Technical", "Clean"],
+    tone: ["Professional", "Modern", "Technical", "Clean", "Simple", "Flat"],
     constraints: {
-      no_logos:
-        "Do NOT generate the LangChain logo (a parrot) or any text-based logos. NEVER render a parrot in any form.",
       minimal_text: "The image should be visually standalone. Avoid heavy text.",
       visual_consistency: "Strictly adhere to the Brand Guidelines.",
       clean_output:
         "NEVER render design instructions as visible text in the image.",
+      flat_2d_only: {
+        severity: "CRITICAL",
+        description: "Generate ONLY flat 2D diagrams. Think clean vector illustrations or whiteboard sketches.",
+        strictly_forbidden: [
+          "3D shapes or perspective",
+          "Isometric projections",
+          "Drop shadows, glows, or lighting effects",
+          "Gradients on shapes (backgrounds may use subtle gradients)",
+          "Reflections, shine, or glossy effects",
+          "Textures or patterns on elements",
+          "Depth or layering effects",
+        ],
+      },
       no_parenthetical_labels: {
         severity: "CRITICAL",
         description: "NEVER add parenthetical annotations or labels to diagram elements.",
@@ -58,6 +69,15 @@ const GENERATE_IMAGE_PROMPT_TEMPLATE = {
           "Any variation of LangChain Community attribution text",
         ],
         rule: "This is a clean social media image. NO LangChain Community attribution text of any kind.",
+      },
+      no_parrot_imagery: {
+        severity: "CRITICAL",
+        description: "Do NOT generate the LangChain logo (a parrot) or any text-based parrot imagery. NEVER render a parrot in any form.",
+        strictly_forbidden: [
+          "A parrot",
+          "The LangChain logo (a parrot)",
+          "Any text-based parrot imagery",
+        ],
       },
       no_design_metadata_in_image: {
         severity: "CRITICAL",
@@ -160,17 +180,27 @@ const GENERATE_IMAGE_PROMPT_TEMPLATE = {
     step_1_analyze_input:
       "Read and understand the report (detailed context), post (final social media text), and image references.",
     step_2_visual_style: {
-      base_style: "Geometric, Abstract, and Clean",
+      base_style: "Flat 2D, Geometric, and Minimal",
       architecture_diagram_aesthetic:
-        "Lean toward visuals that resemble system architecture diagrams.",
+        "Create clean, simple diagrams that resemble technical flowcharts or system architecture diagrams. Think whiteboard sketches or documentation-style visuals.",
       visual_elements: [
-        "Isometric shapes",
-        "Nodes",
-        "Connecting lines",
-        "Directional arrows",
-        "Modular blocks",
+        "Simple 2D shapes (rectangles, circles, rounded boxes)",
+        "Clean nodes with solid fills",
+        "Thin connecting lines",
+        "Simple directional arrows",
+        "Flat modular blocks",
       ],
-      avoid: "Photorealistic humans. Use abstract representations of technology.",
+      strictly_avoid: [
+        "3D effects, depth, or perspective",
+        "Isometric projections",
+        "Drop shadows or glows",
+        "Gradients on shapes (use solid colors)",
+        "Reflections or shine effects",
+        "Complex textures or patterns",
+        "Photorealistic elements",
+        "Overly detailed or busy compositions",
+      ],
+      style_reference: "Aim for the simplicity of hand-drawn whiteboard diagrams or clean SVG illustrations.",
     },
     step_3_title_generation: {
       guideline:
@@ -199,13 +229,16 @@ const GENERATE_IMAGE_PROMPT_TEMPLATE = {
         "Dark background (400/500): use White or extremely light text. Light background (100): use Dark Violet or Dark Grey text.",
     },
     step_5_lighting:
-      "Soft, professional studio lighting. No neon cyberpunk glows; keep it matte and modern.",
+      "No lighting effects. This is a flat 2D diagram - treat it like a vector illustration with no shadows, highlights, or ambient occlusion.",
     step_6_output: "A 16:9 high-resolution image suitable for Twitter/LinkedIn.",
   },
   final_reflection: {
     description:
       "CRITICAL: Before finalizing the image, perform this MANDATORY self-check. SCAN THE ENTIRE IMAGE.",
     absolute_zero_tolerance: [
+      "3D EFFECTS - NO isometric views, depth, perspective, shadows, or any 3D rendering",
+      "GRADIENTS ON SHAPES - Use only solid flat colors on diagram elements",
+      "COMPLEX EFFECTS - NO glows, reflections, textures, or shine",
       "COLOR LEGENDS OR SWATCHES - NO boxes showing 'Blue 400 (#066998)' or similar color keys",
       "HEX CODES - NO text starting with # like #066998, #366666, #8C81F0, #F8F7FF anywhere",
       "COLOR NAMES WITH NUMBERS - NO 'Violet 300', 'Blue 400', 'Green 500' text",
@@ -217,7 +250,7 @@ const GENERATE_IMAGE_PROMPT_TEMPLATE = {
       "PARROT IMAGERY - Any parrot imagery (the LangChain logo)",
     ],
     action:
-      "STOP AND CHECK: Does the image contain ANY color legend, hex code, or LangChain Community attribution text? If YES, you MUST regenerate without them. These are FATAL errors.",
+      "STOP AND CHECK: Is this a clean, flat 2D diagram? Does it contain ANY 3D effects, color legends, hex codes, or LangChain Community text? If YES, you MUST regenerate. These are FATAL errors.",
   },
   input: {
     report: "{REPORT}",
