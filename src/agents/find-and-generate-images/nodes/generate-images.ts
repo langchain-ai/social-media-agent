@@ -18,13 +18,15 @@ const GENERATE_IMAGE_PROMPT_TEMPLATE = {
     target_audience: ["Developers", "AI Engineers", "Data Scientists"],
     tone: ["Professional", "Modern", "Technical", "Clean", "Simple", "Flat"],
     constraints: {
-      minimal_text: "The image should be visually standalone. Avoid heavy text.",
+      minimal_text:
+        "The image should be visually standalone. Avoid heavy text.",
       visual_consistency: "Strictly adhere to the Brand Guidelines.",
       clean_output:
         "NEVER render design instructions as visible text in the image.",
       flat_2d_only: {
         severity: "CRITICAL",
-        description: "Generate ONLY flat 2D diagrams. Think clean vector illustrations or whiteboard sketches.",
+        description:
+          "Generate ONLY flat 2D diagrams. Think clean vector illustrations or whiteboard sketches.",
         strictly_forbidden: [
           "3D shapes or perspective",
           "Isometric projections",
@@ -37,7 +39,8 @@ const GENERATE_IMAGE_PROMPT_TEMPLATE = {
       },
       no_parenthetical_labels: {
         severity: "CRITICAL",
-        description: "NEVER add parenthetical annotations or labels to diagram elements.",
+        description:
+          "NEVER add parenthetical annotations or labels to diagram elements.",
         strictly_forbidden: [
           "Text in parentheses under or next to components",
           "Labels like (AI), (Code), (Reliable), (Input), (Output)",
@@ -49,7 +52,8 @@ const GENERATE_IMAGE_PROMPT_TEMPLATE = {
       },
       no_color_legends_or_hex_codes: {
         severity: "CRITICAL",
-        description: "NEVER include color legends, swatches, or hex codes anywhere in the image.",
+        description:
+          "NEVER include color legends, swatches, or hex codes anywhere in the image.",
         strictly_forbidden: [
           "Color legend boxes or keys showing which colors mean what",
           "Color swatches with labels like 'Blue 400 (#066998)'",
@@ -72,7 +76,8 @@ const GENERATE_IMAGE_PROMPT_TEMPLATE = {
       },
       no_parrot_imagery: {
         severity: "CRITICAL",
-        description: "Do NOT generate the LangChain logo (a parrot) or any text-based parrot imagery. NEVER render a parrot in any form.",
+        description:
+          "Do NOT generate the LangChain logo (a parrot) or any text-based parrot imagery. NEVER render a parrot in any form.",
         strictly_forbidden: [
           "A parrot",
           "The LangChain logo (a parrot)",
@@ -159,7 +164,8 @@ const GENERATE_IMAGE_PROMPT_TEMPLATE = {
     },
     usage_rules: {
       color_pairing: {
-        contrast: "Always use high-contrast pairings (Dark on Light, Light on Dark)",
+        contrast:
+          "Always use high-contrast pairings (Dark on Light, Light on Dark)",
         prohibited: [
           "Low contrast (e.g., light text on light backgrounds)",
           "Brand colors on black backgrounds (unless specifically approved)",
@@ -200,7 +206,8 @@ const GENERATE_IMAGE_PROMPT_TEMPLATE = {
         "Photorealistic elements",
         "Overly detailed or busy compositions",
       ],
-      style_reference: "Aim for the simplicity of hand-drawn whiteboard diagrams or clean SVG illustrations.",
+      style_reference:
+        "Aim for the simplicity of hand-drawn whiteboard diagrams or clean SVG illustrations.",
     },
     step_3_title_generation: {
       guideline:
@@ -209,7 +216,8 @@ const GENERATE_IMAGE_PROMPT_TEMPLATE = {
         no_orphans: "Never leave a single word alone on the last line",
         natural_breaks:
           "Break lines at natural phrase boundaries (e.g., 'The platform for / reliable agents' rather than 'The platform / for reliable agents')",
-        shape: "Aim for a balanced text block. Avoid deep steps or awkward gaps on the right edge",
+        shape:
+          "Aim for a balanced text block. Avoid deep steps or awkward gaps on the right edge",
       },
       font_specs: "Use the Manrope typeface with tight, modern spacing",
     },
@@ -230,7 +238,8 @@ const GENERATE_IMAGE_PROMPT_TEMPLATE = {
     },
     step_5_lighting:
       "No lighting effects. This is a flat 2D diagram - treat it like a vector illustration with no shadows, highlights, or ambient occlusion.",
-    step_6_output: "A 16:9 high-resolution image suitable for Twitter/LinkedIn.",
+    step_6_output:
+      "A 16:9 high-resolution image suitable for Twitter/LinkedIn.",
   },
   final_reflection: {
     description:
@@ -267,7 +276,6 @@ const STYLE_VARIATIONS = [
   `Green 100 (#EBEBE5) background. Accent with Green 400, Orange 300, and Blue 400.`,
   `Green 500 (#132D27) background. Accent with Green 200, Blue 300, and Violet 300.`,
 ];
-
 
 const getPromptString = (
   report: string,

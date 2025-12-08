@@ -15,23 +15,32 @@ describe("sharedLinksReducer", () => {
   it("should place update items first, followed by state items", () => {
     const state = ["existing1", "existing2", "existing3"];
     const update = ["new1", "new2", "existing1", "existing2", "existing3"];
-    
+
     const result = sharedLinksReducer(state, update);
-    
+
     expect(result?.[0]).toBe("new1");
     expect(result?.[1]).toBe("new2");
     expect(result).toHaveLength(5);
-    expect(result).toEqual(["new1", "new2", "existing1", "existing2", "existing3"]);
+    expect(result).toEqual([
+      "new1",
+      "new2",
+      "existing1",
+      "existing2",
+      "existing3",
+    ]);
   });
 
   it("should put generated images before existing images when mimicking generateImageCandidatesForPost", () => {
     const existingImageOptions = ["found1.jpg", "screenshot.png", "found2.jpg"];
-    
+
     const generatedUrls = ["generated1.jpg", "generated2.jpg"];
     const updateFromGenerateNode = [...generatedUrls, ...existingImageOptions];
-    
-    const result = sharedLinksReducer(existingImageOptions, updateFromGenerateNode);
-    
+
+    const result = sharedLinksReducer(
+      existingImageOptions,
+      updateFromGenerateNode,
+    );
+
     expect(result?.[0]).toBe("generated1.jpg");
     expect(result?.[1]).toBe("generated2.jpg");
     expect(result?.[2]).toBe("found1.jpg");
@@ -52,10 +61,9 @@ describe("sharedLinksReducer", () => {
   it("should deduplicate items", () => {
     const state = ["a", "b"];
     const update = ["b", "c", "a"];
-    
+
     const result = sharedLinksReducer(state, update);
-    
+
     expect(result).toEqual(["b", "c", "a"]);
   });
 });
-
