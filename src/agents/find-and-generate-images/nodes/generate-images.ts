@@ -6,7 +6,10 @@ import {
   sleep,
 } from "../../utils.js";
 import { FindAndGenerateImagesAnnotation } from "../find-and-generate-images-graph.js";
-import { embedImageInTemplate, uploadImageBufferToSupabase } from "../helpers.js";
+import {
+  embedImageInTemplate,
+  uploadImageBufferToSupabase,
+} from "../helpers.js";
 
 const GEMINI_MODEL = "gemini-3-pro-image-preview";
 
@@ -273,7 +276,7 @@ const STYLE_VARIATIONS = [
   `Violet 100 (#F8F7FF) background. Accent with Orange 300, Orange 400, and Red 300.`,
   `Violet 100 (#F8F7FF) background. Accent with Violet 200, Blue 300, and Green 300.`,
   `Violet 100 (#F8F7FF) background. Accent with Violet 200, Blue 300, and Green 300.`,
-  `Blue 500 (#04305E) background. Accent with Blue 200, Violet 200, and Orange 200.`, 
+  `Blue 500 (#04305E) background. Accent with Blue 200, Violet 200, and Orange 200.`,
   `Blue 500 (#04305E) background. Accent with Blue 300, Green 300, and Violet 200.`,
   `Green 500 (#132D27) background. Accent with Green 200, Blue 300, and Violet 300.`,
 ];

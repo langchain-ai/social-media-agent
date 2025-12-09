@@ -31,8 +31,6 @@ export async function embedImageInTemplate(
   );
 
   // Calculate transform matrix to scale image to fill the pattern box
-  // Pattern box is 2659x1496 (16:9), image is 1376x768 (16:9)
-  // In objectBoundingBox coordinates (0-1), scale factors map image coords to pattern coords
   const imageWidth = 1376;
   const imageHeight = 768;
   const scaleX = 1 / imageWidth;
