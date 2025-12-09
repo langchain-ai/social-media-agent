@@ -99,6 +99,18 @@ const GENERATE_IMAGE_PROMPT_TEMPLATE = {
         ],
         note: "All design details in this prompt are for YOUR reference only - they must NEVER appear in the final image.",
       },
+      no_all_caps_text: {
+        severity: "CRITICAL",
+        description:
+          "NEVER generate text in all capital letters. Use proper sentence case or title case for all text in the image.",
+        strictly_forbidden: [
+          "Text rendered in ALL CAPS",
+          "Words or phrases in uppercase letters",
+          "Headlines or titles in all capital letters",
+          "Labels or annotations in all caps",
+        ],
+        rule: "All text must use proper capitalization: sentence case for body text, title case for headlines. NO ALL CAPS TEXT.",
+      },
     },
   },
   brand_guidelines: {
@@ -127,6 +139,7 @@ const GENERATE_IMAGE_PROMPT_TEMPLATE = {
         "Do not stretch, squash, or distort text proportions",
         "Do not rotate or skew text",
         "Do not apply drop shadows, glows, or outlines",
+        "Do not use all capital letters - use proper sentence case or title case",
       ],
     },
     color_palette: {
@@ -223,6 +236,7 @@ const GENERATE_IMAGE_PROMPT_TEMPLATE = {
           "Aim for a balanced text block. Avoid deep steps or awkward gaps on the right edge",
       },
       font_specs: "Use the Manrope typeface with tight, modern spacing",
+      capitalization: "Use title case or sentence case. NEVER use all capital letters for any text.",
     },
     step_4_colors_and_backgrounds: {
       strategy:
@@ -260,6 +274,7 @@ const GENERATE_IMAGE_PROMPT_TEMPLATE = {
       "DESIGN SPECIFICATIONS - Any design specifications (100% leading, -2.5% tracking, 16:9, etc.)",
       "TYPOGRAPHY INSTRUCTIONS OR MEASUREMENTS - Any typography instructions or measurements",
       "PARROT IMAGERY - Any parrot imagery (the LangChain logo)",
+      "ALL CAPS TEXT - NO text in all capital letters. Use proper sentence case or title case only.",
     ],
     action:
       "STOP AND CHECK: Is this a clean, flat 2D diagram? Does it contain ANY 3D effects, color legends, hex codes, or LangChain Community text? If YES, you MUST regenerate. These are FATAL errors.",
