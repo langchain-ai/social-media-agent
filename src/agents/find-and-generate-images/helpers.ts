@@ -1,5 +1,5 @@
 import { fileTypeFromBuffer } from "file-type";
-import { chromium } from "playwright";
+import sharp from "sharp";
 import { createSupabaseClient } from "../../utils/supabase.js";
 import { COMMUNITY_TEMPLATE_SVG } from "./community-template.js";
 
@@ -7,7 +7,7 @@ const SIGNED_URL_EXPIRY = 60 * 60 * 24 * 180; // 180 days
 
 /**
  * Embed a generated image into the LangChain community template SVG
- * and render it to a PNG buffer using Playwright.
+ * and render it to a PNG buffer using Sharp.
  * @param imageBase64 The base64-encoded image data to embed
  * @param mimeType The MIME type of the image (e.g., "image/png", "image/jpeg")
  * @returns {Promise<Buffer>} A buffer containing the rendered PNG image
@@ -42,40 +42,12 @@ export async function embedImageInTemplate(
     `transform="matrix(${scaleX} 0 0 ${scaleY} 0 0)"`,
   );
 
-  const browser = await chromium.launch({ headless: true });
-  const context = await browser.newContext({
-    viewport: { width: 3000, height: 3000 },
-  });
-  const page = await context.newPage();
+  const pngBuffer = await sharp(Buffer.from(modifiedSvg))
+    .png()
+    .resize(3000, 3000)
+    .toBuffer();
 
-  try {
-    const htmlContent = `
-      <!DOCTYPE html>
-      <html>
-        <head>
-          <style>
-            body { margin: 0; padding: 0; }
-            svg { display: block; width: 3000px; height: 3000px; }
-          </style>
-        </head>
-        <body>
-          ${modifiedSvg}
-        </body>
-      </html>
-    `;
-
-    await page.setContent(htmlContent, { waitUntil: "networkidle" });
-
-    const screenshot = await page.screenshot({
-      type: "png",
-      fullPage: true,
-    });
-
-    return Buffer.from(screenshot);
-  } finally {
-    await context.close();
-    await browser.close();
-  }
+  return pngBuffer;
 }
 
 /**
