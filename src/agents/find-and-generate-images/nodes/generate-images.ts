@@ -236,7 +236,8 @@ const GENERATE_IMAGE_PROMPT_TEMPLATE = {
           "Aim for a balanced text block. Avoid deep steps or awkward gaps on the right edge",
       },
       font_specs: "Use the Manrope typeface with tight, modern spacing",
-      capitalization: "Use title case or sentence case. NEVER use all capital letters for any text.",
+      capitalization:
+        "Use title case or sentence case. NEVER use all capital letters for any text.",
     },
     step_4_colors_and_backgrounds: {
       strategy:
