@@ -35,3 +35,6 @@ src/clients/reddit/.secrets/
 __pycache__/
 .mypy_cache/
 .ruff_cache/
+
+# macOS
+.DS_Store
