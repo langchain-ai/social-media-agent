@@ -6,7 +6,10 @@ import {
   sleep,
 } from "../../utils.js";
 import { FindAndGenerateImagesAnnotation } from "../find-and-generate-images-graph.js";
-import { uploadImageBufferToSupabase } from "../helpers.js";
+import {
+  embedImageInTemplate,
+  uploadImageBufferToSupabase,
+} from "../helpers.js";
 
 const GEMINI_MODEL = "gemini-3-pro-image-preview";
 
@@ -96,6 +99,18 @@ const GENERATE_IMAGE_PROMPT_TEMPLATE = {
         ],
         note: "All design details in this prompt are for YOUR reference only - they must NEVER appear in the final image.",
       },
+      no_all_caps_text: {
+        severity: "CRITICAL",
+        description:
+          "NEVER generate text in all capital letters. Use proper sentence case or title case for all text in the image.",
+        strictly_forbidden: [
+          "Text rendered in ALL CAPS",
+          "Words or phrases in uppercase letters",
+          "Headlines or titles in all capital letters",
+          "Labels or annotations in all caps",
+        ],
+        rule: "All text must use proper capitalization: sentence case for body text, title case for headlines. NO ALL CAPS TEXT.",
+      },
     },
   },
   brand_guidelines: {
@@ -124,6 +139,7 @@ const GENERATE_IMAGE_PROMPT_TEMPLATE = {
         "Do not stretch, squash, or distort text proportions",
         "Do not rotate or skew text",
         "Do not apply drop shadows, glows, or outlines",
+        "Do not use all capital letters - use proper sentence case or title case",
       ],
     },
     color_palette: {
@@ -220,6 +236,8 @@ const GENERATE_IMAGE_PROMPT_TEMPLATE = {
           "Aim for a balanced text block. Avoid deep steps or awkward gaps on the right edge",
       },
       font_specs: "Use the Manrope typeface with tight, modern spacing",
+      capitalization:
+        "Use title case or sentence case. NEVER use all capital letters for any text.",
     },
     step_4_colors_and_backgrounds: {
       strategy:
@@ -257,6 +275,7 @@ const GENERATE_IMAGE_PROMPT_TEMPLATE = {
       "DESIGN SPECIFICATIONS - Any design specifications (100% leading, -2.5% tracking, 16:9, etc.)",
       "TYPOGRAPHY INSTRUCTIONS OR MEASUREMENTS - Any typography instructions or measurements",
       "PARROT IMAGERY - Any parrot imagery (the LangChain logo)",
+      "ALL CAPS TEXT - NO text in all capital letters. Use proper sentence case or title case only.",
     ],
     action:
       "STOP AND CHECK: Is this a clean, flat 2D diagram? Does it contain ANY 3D effects, color legends, hex codes, or LangChain Community text? If YES, you MUST regenerate. These are FATAL errors.",
@@ -270,10 +289,11 @@ const GENERATE_IMAGE_PROMPT_TEMPLATE = {
 
 const STYLE_VARIATIONS = [
   `Violet 100 (#F8F7FF) background. Accent with Orange 300, Orange 400, and Red 300.`,
-  `Violet 400 (#332C54) background. Accent with Violet 200, Blue 300, and Green 300.`,
-  `Blue 100 (#E6F0F5) background. Accent with Blue 400, Green 400, and Violet 300.`,
+  `Violet 100 (#F8F7FF) background. Accent with Orange 300, Orange 400, and Red 300.`,
+  `Violet 100 (#F8F7FF) background. Accent with Violet 200, Blue 300, and Green 300.`,
+  `Violet 100 (#F8F7FF) background. Accent with Violet 200, Blue 300, and Green 300.`,
   `Blue 500 (#04305E) background. Accent with Blue 200, Violet 200, and Orange 200.`,
-  `Green 100 (#EBEBE5) background. Accent with Green 400, Orange 300, and Blue 400.`,
+  `Blue 500 (#04305E) background. Accent with Blue 300, Green 300, and Violet 200.`,
   `Green 500 (#132D27) background. Accent with Green 200, Blue 300, and Violet 300.`,
 ];
 
@@ -436,10 +456,14 @@ export async function generateImageCandidatesForPost(
   }
 
   const uploadedUrlsWithOmissions = await Promise.all(
-    imageResults.map(async ({ data }) => {
+    imageResults.map(async ({ data, mimeType }) => {
       try {
-        const buffer = Buffer.from(data, "base64");
-        return await uploadImageBufferToSupabase(buffer, `nano-banana-pro`);
+        // Embed the generated image in the LangChain community template
+        const templatedBuffer = await embedImageInTemplate(data, mimeType);
+        return await uploadImageBufferToSupabase(
+          templatedBuffer,
+          `nano-banana-pro-templated`,
+        );
       } catch (error) {
         console.error("Failed to upload generated image", { error });
         return undefined;

@@ -63,6 +63,7 @@
     "passport": "^0.7.0",
     "passport-twitter": "^1.0.4",
     "playwright": "^1.49.1",
+    "sharp": "^0.34.5",
     "snoowrap": "^1.23.0",
     "twitter-api-v2": "^1.18.2",
     "uuid": "^11.0.4",
