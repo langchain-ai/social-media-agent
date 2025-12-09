@@ -16,49 +16,48 @@ export async function embedImageInTemplate(
   imageBase64: string,
   mimeType: string,
 ): Promise<Buffer> {
-  // Create a data URL for the generated image
   const imageDataUrl = `data:${mimeType};base64,${imageBase64}`;
 
-  // The template has a rounded box adjusted for nano banana's 16:9 aspect ratio:
-  // Path: M404 500C404 477.356 422.356 459 445 459H1476C1498.64 459 1517 477.356 1517 500V1080H404V500Z
-  // This creates a centered box from (404, 459) to (1517, 1080) with rounded top corners
-  // Width: 1113, Height: 621 (aspect ratio ~1.79, matching nano banana's 1376x768)
-
-  // Replace the placeholder image data URL while keeping the SVG structure
-  // The image element is inside <defs> and referenced by a pattern
-  const modifiedSvg = COMMUNITY_TEMPLATE_SVG.replace(
-    /xlink:href="data:image\/png;base64,[^"]+"/,
+  // Replace the placeholder image data URL with the actual generated image
+  const svgWithImage = COMMUNITY_TEMPLATE_SVG.replace(
+    /xlink:href="data:image\/[^"]+"/,
     `xlink:href="${imageDataUrl}"`,
-  )
-    // Update the image dimensions to match nano banana output (1376x768)
-    .replace(
-      /<image id="image0_212_4239" width="256" height="256"/,
-      `<image id="image0_212_4239" width="1376" height="768"`,
-    )
-    // Update the pattern transform to properly scale the image to fill the box
-    // For objectBoundingBox: scaleX = 1/width, scaleY = 1/height
-    // 1/1376 ≈ 0.000726744, 1/768 ≈ 0.001302083
-    .replace(
-      /transform="matrix\([^)]+\)"/,
-      `transform="matrix(0.000726744 0 0 0.001302083 0 0)"`,
-    );
+  );
 
-  // Use Playwright to render the SVG to PNG
+  // Update image dimensions from placeholder (256x256) to 16:9 output (1376x768)
+  const svgWithDimensions = svgWithImage.replace(
+    /<image id="image0_386_2969" width="256" height="256" preserveAspectRatio="none"/,
+    `<image id="image0_386_2969" width="1376" height="768" preserveAspectRatio="none"`,
+  );
+
+  // Calculate transform matrix to scale image to fill the pattern box
+  // Pattern box is 2659x1496 (16:9), image is 1376x768 (16:9)
+  // In objectBoundingBox coordinates (0-1), scale factors map image coords to pattern coords
+  const imageWidth = 1376;
+  const imageHeight = 768;
+  const scaleX = 1 / imageWidth;
+  const scaleY = 1 / imageHeight;
+
+  // Apply transform matrix: scale image to fill pattern, no translation needed (both 16:9)
+  const modifiedSvg = svgWithDimensions.replace(
+    /transform="matrix\([^)]+\)"/,
+    `transform="matrix(${scaleX} 0 0 ${scaleY} 0 0)"`,
+  );
+
   const browser = await chromium.launch({ headless: true });
   const context = await browser.newContext({
-    viewport: { width: 1920, height: 1080 },
+    viewport: { width: 3000, height: 3000 },
   });
   const page = await context.newPage();
 
   try {
-    // Set the SVG content as an HTML page
     const htmlContent = `
       <!DOCTYPE html>
       <html>
         <head>
           <style>
             body { margin: 0; padding: 0; }
-            svg { display: block; }
+            svg { display: block; width: 3000px; height: 3000px; }
           </style>
         </head>
         <body>
@@ -69,10 +68,9 @@ export async function embedImageInTemplate(
 
     await page.setContent(htmlContent, { waitUntil: "networkidle" });
 
-    // Take a screenshot of the SVG
     const screenshot = await page.screenshot({
       type: "png",
-      clip: { x: 0, y: 0, width: 1920, height: 1080 },
+      fullPage: true,
     });
 
     return Buffer.from(screenshot);
