@@ -1,5 +1,5 @@
 import { ChatVertexAI } from "@langchain/google-vertexai-web";
-import { FindImagesAnnotation } from "../find-images-graph.js";
+import { FindAndGenerateImagesAnnotation } from "../find-and-generate-images-graph.js";
 import { chunkArray, imageUrlToBuffer, isValidUrl } from "../../utils.js";
 import { getImageMessageContents } from "../../../utils/image-message.js";
 
@@ -126,7 +126,7 @@ async function filterImageUrls(imageOptions: string[]): Promise<{
 }
 
 export async function validateImages(
-  state: typeof FindImagesAnnotation.State,
+  state: typeof FindAndGenerateImagesAnnotation.State,
 ): Promise<{
   imageOptions: string[] | undefined;
 }> {

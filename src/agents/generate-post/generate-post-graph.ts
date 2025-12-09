@@ -21,7 +21,7 @@ import {
 } from "../utils.js";
 import { verifyLinksGraph } from "../verify-links/verify-links-graph.js";
 import { authSocialsPassthrough } from "./nodes/auth-socials.js";
-import { findImagesGraph } from "../find-images/find-images-graph.js";
+import { findAndGenerateImagesGraph } from "../find-and-generate-images/find-and-generate-images-graph.js";
 import { updateScheduledDate } from "../shared/nodes/update-scheduled-date.js";
 import { getSavedUrls } from "../shared/stores/post-subject-urls.js";
 import { humanNode } from "../shared/nodes/generate-post/human-node.js";
@@ -175,7 +175,7 @@ const generatePostBuilder = new StateGraph(
   // Generates a report on the content.
   .addNode("generateContentReport", generateContentReport)
   // Finds images in the content.
-  .addNode("findAndGenerateImagesSubGraph", findImagesGraph)
+  .addNode("findAndGenerateImagesSubGraph", findAndGenerateImagesGraph)
   // Updated the scheduled date from the natural language response from the user.
   .addNode("updateScheduleDate", updateScheduledDate)
   // Rewrite the post splitting the URL from the main body of the tweet

@@ -1,5 +1,5 @@
 import { ChatVertexAI } from "@langchain/google-vertexai-web";
-import { FindImagesAnnotation } from "../find-images-graph.js";
+import { FindAndGenerateImagesAnnotation } from "../find-and-generate-images-graph.js";
 import { chunkArray, getMimeTypeFromUrl } from "../../utils.js";
 import { getImageMessageContents } from "../../../utils/image-message.js";
 
@@ -57,7 +57,9 @@ export function parseResult(result: string): number[] {
     .filter((n) => !isNaN(n));
 }
 
-export async function reRankImages(state: typeof FindImagesAnnotation.State) {
+export async function reRankImages(
+  state: typeof FindAndGenerateImagesAnnotation.State,
+) {
   // No need to re-rank if less than 2 images
   if (state.imageOptions && state.imageOptions.length < 2) {
     return {

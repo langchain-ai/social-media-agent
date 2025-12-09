@@ -7,7 +7,7 @@ import {
   getUrlType,
 } from "../../utils.js";
 import { takeScreenshotAndUpload } from "../screenshot.js";
-import { FindImagesAnnotation } from "../find-images-graph.js";
+import { FindAndGenerateImagesAnnotation } from "../find-and-generate-images-graph.js";
 import { validate } from "uuid";
 
 function checkIsGitHubImageUrl(url: string): boolean {
@@ -32,7 +32,9 @@ function checkIsGitHubImageUrl(url: string): boolean {
   }
 }
 
-export async function findImages(state: typeof FindImagesAnnotation.State) {
+export async function findImages(
+  state: typeof FindAndGenerateImagesAnnotation.State,
+) {
   const { pageContents, imageOptions, relevantLinks } = state;
   const link = relevantLinks?.[0] || undefined;
   if (!link || !relevantLinks?.length) {
