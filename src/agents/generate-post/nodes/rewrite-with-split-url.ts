@@ -38,7 +38,7 @@ export async function rewritePostWithSplitUrl(
   state: GeneratePostState,
 ): Promise<GeneratePostUpdate> {
   const postModel = new ChatAnthropic({
-    model: "claude-3-7-sonnet-latest",
+    model: "claude-sonnet-4-5",
     temperature: 0,
   }).bindTools(
     [

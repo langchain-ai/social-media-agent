@@ -25,7 +25,7 @@ async function verifyContentIsRelevantFunc(
   },
 ): Promise<boolean> {
   const relevancyModel = new ChatAnthropic({
-    model: "claude-3-7-sonnet-latest",
+    model: "claude-sonnet-4-5",
     temperature: 0,
     // TODO: Type casting as any here shouldn't be required...
   }).withStructuredOutput(args.schema as any, {
