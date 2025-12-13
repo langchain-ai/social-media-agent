@@ -485,7 +485,8 @@ export async function generateImageCandidatesForPost(
     : [];
   const imageUrlsArray = Array.isArray(imageUrls) ? imageUrls : [];
 
-  const randomGeneratedImage = generatedImages[Math.floor(Math.random() * generatedImages.length)];
+  const randomGeneratedImage =
+    generatedImages[Math.floor(Math.random() * generatedImages.length)];
 
   return {
     imageOptions: [...uploadedUrls, ...imageUrlsArray],
