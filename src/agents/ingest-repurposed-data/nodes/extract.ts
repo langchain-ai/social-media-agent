@@ -56,7 +56,7 @@ async function extractContentsFunc(
   messageText: string,
 ): Promise<Omit<RepurposedContent, "attachmentUrls"> | undefined> {
   const model = new ChatAnthropic({
-    model: "claude-3-7-sonnet-latest",
+    model: "claude-sonnet-4-5",
     temperature: 0,
   }).bindTools(
     [
