@@ -95,6 +95,9 @@ export const TWITTER_USER_ID = "twitterUserId";
 export const TWITTER_TOKEN = "twitterToken";
 export const TWITTER_TOKEN_SECRET = "twitterTokenSecret";
 export const INGEST_TWITTER_USERNAME = "ingestTwitterUsername";
+// Twitter Main Account (for reposting)
+export const TWITTER_MAIN_USER_TOKEN = "TWITTER_MAIN_USER_TOKEN";
+export const TWITTER_MAIN_USER_TOKEN_SECRET = "TWITTER_MAIN_USER_TOKEN_SECRET";
 // Simplified text only mode
 export const TEXT_ONLY_MODE = "textOnlyMode";
 
