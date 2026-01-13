@@ -327,6 +327,26 @@ export class TwitterClient {
   }
 
   /**
+   * Gets the authenticated user's ID.
+   * @returns {Promise<string>} The user ID
+   */
+  async getAuthenticatedUserId(): Promise<string> {
+    const me = await this.twitterClient.v2.me();
+    return me.data.id;
+  }
+
+  /**
+   * Retweets a tweet.
+   * @param {string} tweetId - The ID of the tweet to retweet
+   * @returns {Promise<{ retweeted: boolean }>} The result of the retweet operation
+   */
+  async retweet(tweetId: string): Promise<{ retweeted: boolean }> {
+    const userId = await this.getAuthenticatedUserId();
+    const result = await this.twitterClient.v2.retweet(userId, tweetId);
+    return { retweeted: result.data.retweeted };
+  }
+
+  /**
    * Uploads media to Twitter for use in tweets.
    * Handles authentication differently based on whether using basic auth or Arcade auth.
    *

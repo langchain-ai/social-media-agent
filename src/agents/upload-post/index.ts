@@ -21,7 +21,10 @@ import {
   LINKEDIN_PERSON_URN,
   POST_TO_LINKEDIN_ORGANIZATION,
   TEXT_ONLY_MODE,
+  TWITTER_MAIN_USER_TOKEN,
+  TWITTER_MAIN_USER_TOKEN_SECRET,
 } from "../generate-post/constants.js";
+import { TwitterApi } from "twitter-api-v2";
 import { SlackClient } from "../../clients/slack/client.js";
 import { ComplexPost } from "../shared/nodes/generate-post/types.js";
 
@@ -43,6 +46,38 @@ function ensureSignature(text: string): string {
     return text;
   }
   return `${text}\n${signature}`;
+}
+
+async function retweetFromMainAccount(tweetId: string): Promise<void> {
+  const mainUserToken = process.env[TWITTER_MAIN_USER_TOKEN];
+  const mainUserTokenSecret = process.env[TWITTER_MAIN_USER_TOKEN_SECRET];
+
+  if (!mainUserToken || !mainUserTokenSecret) {
+    console.log(
+      "Main Twitter account credentials not configured. Skipping retweet.",
+    );
+    return;
+  }
+
+  if (!process.env.TWITTER_API_KEY || !process.env.TWITTER_API_KEY_SECRET) {
+    console.warn("Twitter API keys not configured. Skipping retweet.");
+    return;
+  }
+
+  try {
+    const mainClient = new TwitterApi({
+      appKey: process.env.TWITTER_API_KEY,
+      appSecret: process.env.TWITTER_API_KEY_SECRET,
+      accessToken: mainUserToken,
+      accessSecret: mainUserTokenSecret,
+    });
+
+    const me = await mainClient.v2.me();
+    await mainClient.v2.retweet(me.data.id, tweetId);
+    console.log("✅ Successfully retweeted from main Twitter account ✅");
+  } catch (error) {
+    console.error("Failed to retweet from main account (non-blocking):", error);
+  }
 }
 
 const UploadPostAnnotation = Annotation.Root({
@@ -179,8 +214,10 @@ export async function uploadPost(
       mediaBuffer = await getMediaFromImage(state.image);
     }
 
+    let tweetId: string | undefined;
+
     if (state.complexPost) {
-      await twitterClient.uploadThread([
+      const threadResponse = await twitterClient.uploadThread([
         {
           text: ensureSignature(state.complexPost.main_post),
           ...(mediaBuffer && { media: mediaBuffer }),
@@ -189,14 +226,20 @@ export async function uploadPost(
           text: state.complexPost.reply_post,
         },
       ]);
+      tweetId = threadResponse[0]?.data?.id;
     } else {
-      await twitterClient.uploadTweet({
+      const tweetResponse = await twitterClient.uploadTweet({
         text: ensureSignature(state.post),
         ...(mediaBuffer && { media: mediaBuffer }),
       });
+      tweetId = tweetResponse.data?.id;
     }
 
     console.log("✅ Successfully uploaded Tweet ✅");
+
+    if (tweetId) {
+      await retweetFromMainAccount(tweetId);
+    }
   } catch (e: any) {
     console.error("Failed to upload post:", e);
     let errorString = "";
