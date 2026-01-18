@@ -23,6 +23,8 @@ import {
   TEXT_ONLY_MODE,
   TWITTER_MAIN_USER_TOKEN,
   TWITTER_MAIN_USER_TOKEN_SECRET,
+  LINKEDIN_MAIN_ACCESS_TOKEN,
+  LINKEDIN_MAIN_ORGANIZATION_ID,
 } from "../generate-post/constants.js";
 import { TwitterApi } from "twitter-api-v2";
 import { SlackClient } from "../../clients/slack/client.js";
@@ -77,6 +79,57 @@ async function retweetFromMainAccount(tweetId: string): Promise<void> {
     console.log("✅ Successfully retweeted from main Twitter account ✅");
   } catch (error) {
     console.error("Failed to retweet from main account (non-blocking):", error);
+  }
+}
+
+async function reshareFromMainLinkedInAccount(
+  originalPostUrn: string,
+): Promise<void> {
+  const mainAccessToken = process.env[LINKEDIN_MAIN_ACCESS_TOKEN];
+  const mainOrgId = process.env[LINKEDIN_MAIN_ORGANIZATION_ID];
+
+  if (!mainAccessToken || !mainOrgId) {
+    console.log(
+      "Main LinkedIn account credentials not configured. Skipping reshare.",
+    );
+    return;
+  }
+
+  try {
+    const reshareData = {
+      owner: `urn:li:organization:${mainOrgId}`,
+      resharedShare: originalPostUrn,
+      distribution: {
+        linkedInDistributionTarget: {},
+      },
+      text: {
+        text: "",
+      },
+    };
+
+    const response = await fetch("https://api.linkedin.com/v2/shares", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${mainAccessToken}`,
+        "Content-Type": "application/json",
+        "X-Restli-Protocol-Version": "2.0.0",
+      },
+      body: JSON.stringify(reshareData),
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(
+        `LinkedIn reshare failed: ${response.status} ${errorText}`,
+      );
+    }
+
+    console.log("✅ Successfully reshared from main LinkedIn account ✅");
+  } catch (error) {
+    console.error(
+      "Failed to reshare from main LinkedIn account (non-blocking):",
+      error,
+    );
   }
 }
 
@@ -293,8 +346,10 @@ export async function uploadPost(
       });
     }
 
+    let linkedInPostUrn: string | undefined;
+
     if (!isTextOnlyMode && state.image) {
-      await linkedInClient.createImagePost(
+      const response = await linkedInClient.createImagePost(
         {
           text: ensureSignature(state.post),
           imageUrl: state.image.imageUrl,
@@ -303,13 +358,26 @@ export async function uploadPost(
           postToOrganization: postToLinkedInOrg,
         },
       );
+      if (response && typeof response === "object" && "id" in response) {
+        linkedInPostUrn = (response as { id: string }).id;
+      }
     } else {
-      await linkedInClient.createTextPost(ensureSignature(state.post), {
-        postToOrganization: postToLinkedInOrg,
-      });
+      const response = await linkedInClient.createTextPost(
+        ensureSignature(state.post),
+        {
+          postToOrganization: postToLinkedInOrg,
+        },
+      );
+      if (response && typeof response === "object" && "id" in response) {
+        linkedInPostUrn = (response as { id: string }).id;
+      }
     }
 
     console.log("✅ Successfully uploaded post to LinkedIn ✅");
+
+    if (linkedInPostUrn) {
+      await reshareFromMainLinkedInAccount(linkedInPostUrn);
+    }
   } catch (e: any) {
     console.error("Failed to upload post:", e);
     let errorString = "";

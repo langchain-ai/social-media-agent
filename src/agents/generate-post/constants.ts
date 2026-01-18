@@ -98,6 +98,9 @@ export const INGEST_TWITTER_USERNAME = "ingestTwitterUsername";
 // Twitter Main Account (for reposting)
 export const TWITTER_MAIN_USER_TOKEN = "TWITTER_MAIN_USER_TOKEN";
 export const TWITTER_MAIN_USER_TOKEN_SECRET = "TWITTER_MAIN_USER_TOKEN_SECRET";
+// LinkedIn Main Account (for resharing)
+export const LINKEDIN_MAIN_ACCESS_TOKEN = "LINKEDIN_MAIN_ACCESS_TOKEN";
+export const LINKEDIN_MAIN_ORGANIZATION_ID = "LINKEDIN_MAIN_ORGANIZATION_ID";
 // Simplified text only mode
 export const TEXT_ONLY_MODE = "textOnlyMode";
 
