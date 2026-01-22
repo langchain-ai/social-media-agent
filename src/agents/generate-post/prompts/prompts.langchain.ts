@@ -31,9 +31,7 @@ The following are rules to follow when determining whether or not to approve con
 </validation-rules>`;
 
 export const TWEET_EXAMPLES = `<example index="1">
-Podcastfy.ai 🎙️🤖
-
-Made by the LangChain Community
+LangChain Community Spotlight: Podcastfy.ai 🎙️🤖
 
 An Open Source API alternative to NotebookLM's podcast product
 
@@ -43,9 +41,7 @@ https://podcastfy.ai
 </example>
 
 <example index="2">
-🧱Complex SQL Joins with LangGraph and Waii
-
-Made by the LangChain Community
+LangChain Community Spotlight: Complex SQL Joins with LangGraph and Waii 🧱
 
 Waii is a toolkit that provides text-to-SQL and text-to-chart capabilities
 
@@ -55,9 +51,7 @@ https://waii.com
 </example>
 
 <example index="3">
-🌐 Build agents that can interact with any website
-
-Made by the LangChain Community
+LangChain Community Spotlight: Build agents that can interact with any website 🌐
 
 Check out this video by @DendriteSystems showing how to build an agent that can interact with websites just like a human would!
 
@@ -72,9 +66,7 @@ This video demonstrates a workflow that:
 </example>
 
 <example index="4">
-🚀RepoGPT: AI-Powered GitHub Assistant 
-
-Made by the LangChain Community
+LangChain Community Spotlight: RepoGPT 🚀
 
 RepoGPT is an open-source, AI-powered assistant
 
@@ -84,9 +76,7 @@ https://repogpt.com
 </example>
 
 <example index="5">
-✈️AI Travel Agent
-
-Made by the LangChain Community
+LangChain Community Spotlight: AI Travel Agent ✈️
 
 This is one of the most comprehensive examples we've seen of a LangGraph agent. It's specifically designed to be a real world practical use case
 
@@ -103,21 +93,17 @@ export const POST_STRUCTURE_INSTRUCTIONS = `The post should have three main sect
 <structure-instructions>
 
 <section key="1">
-The first part of the post is the header. This should be very short, no more than 5 words, and should include one to two emojis, and the name of the content provided. If the marketing report does not specify a name, you should get creative and come up with a catchy title for it.
+The first part of the post is the header. It MUST start with "LangChain Community Spotlight:" followed by the name of the content/project, and one to two emojis. The project name should be short and concise. If the marketing report does not specify a name, you should get creative and come up with a catchy title for it. Example format: "LangChain Community Spotlight: Project Name 🚀"
 </section>
 
 <section key="2">
-Below the header, but above the main content, you should include 'Made by the LangChain Community'.
-</section>
-
-<section key="3">
 This section will contain the main content of the post. The post body should contain a concise, high-level overview of the content/product/service outlines in the marketing report.
 It should focus on what the content does, or the problem it solves. Also include details on how the content implements LangChain's product(s) and why these products are important to the application.
 Ensure this is short, no more than 3 sentences. Optionally, if the content is very technical, you may include bullet points covering the main technical aspects of the content.
 You should NOT make the main focus of this on LangChain, but instead on the content itself. Remember, the content/product/service outlined in the marketing report is the main focus of this post.
 </section>
 
-<section key="4">
+<section key="3">
 The final section of the post should contain a call to action. This should be a short sentence that encourages the reader to click the link to the content being promoted. Optionally, you can include an emoji here.
 </section>
 
