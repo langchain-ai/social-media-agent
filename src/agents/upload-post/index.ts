@@ -43,11 +43,11 @@ async function getMediaFromImage(image?: {
 }
 
 function ensureSignature(text: string): string {
-  const signature = "Made by the LangChain Community";
-  if (text.toLowerCase().includes(signature.toLowerCase())) {
+  const prefix = "LangChain Community Spotlight:";
+  if (text.toLowerCase().includes(prefix.toLowerCase())) {
     return text;
   }
-  return `${text}\n${signature}`;
+  return `${prefix} ${text}`;
 }
 
 async function retweetFromMainAccount(tweetId: string): Promise<void> {
