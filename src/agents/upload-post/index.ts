@@ -42,12 +42,19 @@ async function getMediaFromImage(image?: {
   };
 }
 
-function ensureSignature(text: string): string {
+export function ensureSignature(text: string): string {
   const prefix = "LangChain Community Spotlight:";
-  if (text.toLowerCase().includes(prefix.toLowerCase())) {
-    return text;
+
+  let result = text.replace(/\n*Made by the LangChain Community\n*/gi, "\n\n");
+  result = result.replace(/^\n+/, "");
+  result = result.replace(/\n+$/, "");
+  result = result.replace(/\n{3,}/g, "\n\n");
+
+  if (!result.toLowerCase().includes(prefix.toLowerCase())) {
+    result = `${prefix} ${result}`;
   }
-  return `${prefix} ${text}`;
+
+  return result;
 }
 
 async function retweetFromMainAccount(tweetId: string): Promise<void> {
