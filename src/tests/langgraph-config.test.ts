@@ -64,7 +64,8 @@ describe("langgraph.json Playwright install config", () => {
   it("uses the same Playwright version as the runtime dependency", () => {
     const config = getLanggraphConfig();
     const installLine = getPlaywrightInstallLine(config);
-    const resolvedPlaywrightVersion = getResolvedPlaywrightVersionFromYarnLock();
+    const resolvedPlaywrightVersion =
+      getResolvedPlaywrightVersionFromYarnLock();
 
     expect(installLine).toBeDefined();
     expect(installLine).toContain(`playwright@${resolvedPlaywrightVersion}`);
