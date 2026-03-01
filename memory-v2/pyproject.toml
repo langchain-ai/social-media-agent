@@ -10,7 +10,9 @@ packages = [{include = "memory_v2"}]
 [tool.poetry.dependencies]
 python = ">=3.11,<4.0.0"
 langmem = ">=0.0.5rc5"
-langgraph = ">=0.2.66"
+# CVE-2025-64439: langgraph-checkpoint < 3.0.0 has RCE in json mode of JsonPlusSerializer.
+# langgraph 0.x pinned checkpoint to <3.0.0; langgraph >=1.0.0 allows checkpoint >=3.0.0.
+langgraph = ">=1.0.0"
 langchain-anthropic = ">=0.3.3"
 langgraph-sdk = ">=0.1.51"
 python-dotenv = ">=1.0.1"

@@ -25,6 +25,7 @@ const BASE_FETCH_TWEET_OPTIONS: Partial<TweetV2PaginableListParams> = {
     "author_id",
     "in_reply_to_user_id",
     "referenced_tweets",
+    "public_metrics",
   ],
   "user.fields": ["username"],
   expansions: [

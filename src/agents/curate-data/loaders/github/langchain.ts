@@ -1,7 +1,6 @@
 import { BaseStore } from "@langchain/langgraph";
 import { getGitHubRepoURLs } from "../../utils/stores/github-repos.js";
 import { Octokit } from "@octokit/rest";
-import { sleep } from "../../../utils.js";
 import { traceable } from "langsmith/traceable";
 
 function getOctokit() {
@@ -10,110 +9,60 @@ function getOctokit() {
     throw new Error("GITHUB_TOKEN environment variable is required");
   }
 
-  const octokit = new Octokit({
-    auth: token,
-  });
-
-  return octokit;
+  return new Octokit({ auth: token });
 }
 
-const JS_LANGCHAIN_PACKAGES = [
-  "@langchain/langgraph",
-  "@langchain/core",
-  "@langchain/community",
-  "@langchain/openai",
-  "@langchain/anthropic",
-];
+const SEARCH_CONFIG = {
+  terms: ["langgraph", "langchain"],
+  deepagentsTerm: "deepagents",
+  excludeOrg: "-org:langchain-ai",
+  maxAgeDays: 30,
+};
 
-const PY_LANGCHAIN_PACKAGES = [
-  "langgraph",
-  "langchain-core",
-  "langchain-community",
-  "langchain-openai",
-  "langchain-anthropic",
-];
+const LIMITS = {
+  newRepos: 40,
+  popularRepos: 15,
+  deepagents: 10,
+};
 
-const JS_PATH_QUERY = "filename:package.json";
-const PY_PATH_QUERY_REQUIREMENTS = "filename:requirements.txt";
-const PY_PATH_QUERY_PYPROJECT = "filename:pyproject.toml";
-
-const NOT_LANGCHAIN_ORG_QUERY = "NOT org:langchain-ai";
-
-const FULL_PY_QUERY = `${PY_PATH_QUERY_REQUIREMENTS} OR ${PY_PATH_QUERY_PYPROJECT} ${NOT_LANGCHAIN_ORG_QUERY}`;
-const FULL_JS_QUERY = `${JS_LANGCHAIN_PACKAGES.join(" OR ")} ${JS_PATH_QUERY} ${NOT_LANGCHAIN_ORG_QUERY}`;
-
-async function checkJSDependencies(
-  octokit: Octokit,
-  owner: string,
-  repo: string,
-  path: string,
-): Promise<boolean> {
-  try {
-    const { data } = await octokit.repos.getContent({
-      owner,
-      repo,
-      path,
-    });
-
-    if (!("content" in data)) {
-      return false;
-    }
-
-    const content = Buffer.from(data.content, "base64").toString();
-    const packageJson = JSON.parse(content);
-    const dependencies = {
-      ...packageJson.dependencies,
-      ...packageJson.devDependencies,
-    };
-
-    const langchainDeps = Object.keys(dependencies).filter((dep) =>
-      JS_LANGCHAIN_PACKAGES.some((jsDep) => jsDep === dep),
-    );
-
-    return langchainDeps.length > 0;
-  } catch (error) {
-    return false;
-  }
+function getSinceDate(): string {
+  const d = new Date();
+  d.setDate(d.getDate() - SEARCH_CONFIG.maxAgeDays);
+  return d.toISOString().split("T")[0];
 }
 
-async function checkPythonDependencies(
+async function searchRepos(
   octokit: Octokit,
-  owner: string,
-  repo: string,
-  path: string,
-): Promise<boolean> {
-  try {
-    const { data } = await octokit.repos.getContent({
-      owner,
-      repo,
-      path,
-    });
+  queries: string[],
+  seen: Set<string>,
+  limit: number,
+): Promise<string[]> {
+  const results: string[] = [];
 
-    if (!("content" in data)) {
-      return false;
+  for (const q of queries) {
+    if (results.length >= limit) break;
+
+    try {
+      const { data } = await octokit.search.repos({
+        q,
+        sort: "stars",
+        order: "desc",
+        per_page: 30,
+      });
+
+      for (const repo of data.items) {
+        if (results.length >= limit) break;
+        if (seen.has(repo.html_url)) continue;
+
+        seen.add(repo.html_url);
+        results.push(repo.html_url);
+      }
+    } catch (error) {
+      console.error(`Failed to search repos for query "${q}":`, error);
     }
-
-    if (path.endsWith(".txt")) {
-      const content = Buffer.from(data.content, "base64").toString();
-      return PY_LANGCHAIN_PACKAGES.some(
-        (pkg) =>
-          content.includes(pkg) || new RegExp(`${pkg}[-~=]+`).test(content),
-      );
-    }
-
-    // Assume it's a pyproject.toml file
-    if (path.endsWith(".toml")) {
-      const content = Buffer.from(data.content, "base64").toString();
-      return PY_LANGCHAIN_PACKAGES.some(
-        (pkg) =>
-          content.includes(pkg) || new RegExp(`${pkg}[-~=]+`).test(content),
-      );
-    }
-
-    return false;
-  } catch (error) {
-    return false;
   }
+
+  return results;
 }
 
 async function langchainDependencyReposLoaderFunc(
@@ -121,156 +70,36 @@ async function langchainDependencyReposLoaderFunc(
 ) {
   const octokit = getOctokit();
   const processedRepos = await getGitHubRepoURLs(store);
-  const newRepoURLs: string[] = [];
-  let page = 0;
-  const maxAttempts = 1;
+  const since = getSinceDate();
+  const seen = new Set<string>(processedRepos);
 
-  // Fetch PY repos first
-  while (newRepoURLs.length < 5 || page <= maxAttempts) {
-    page += 1;
+  const { terms, deepagentsTerm, excludeOrg } = SEARCH_CONFIG;
 
-    try {
-      const results = await Promise.allSettled(
-        PY_LANGCHAIN_PACKAGES.map((pkg) =>
-          octokit.search.code({
-            q: `${pkg} ${FULL_PY_QUERY}`,
-            sort: "indexed",
-            order: "desc",
-            per_page: 25,
-            page,
-          }),
-        ),
-      );
+  const newRepoQueries = terms.map(
+    (term) => `${term} created:>${since} ${excludeOrg} stars:>10`,
+  );
 
-      let incompleteResults = false;
-      const filteredResults = results
-        .filter((result) => result.status === "fulfilled")
-        .map((result) => result.value);
+  const popularRepoQueries = terms.map(
+    (term) => `${term} pushed:>${since} ${excludeOrg} stars:>20`,
+  );
 
-      for (const { data } of filteredResults) {
-        console.log(`Found ${data.total_count} Python repos`);
-        // Only set to true. This is to prevent one query setting it to false when another one returns incomplete results
-        if (data.incomplete_results) {
-          incompleteResults = data.incomplete_results;
-        }
+  const deepagentsQueries = [
+    `${deepagentsTerm} created:>${since} ${excludeOrg} stars:>5`,
+    `${deepagentsTerm} pushed:>${since} ${excludeOrg} stars:>20`,
+  ];
 
-        if (data.total_count === 0) {
-          break;
-        }
+  const [newRepos, popularRepos, deepagentsRepos] = await Promise.all([
+    searchRepos(octokit, newRepoQueries, new Set(seen), LIMITS.newRepos),
+    searchRepos(
+      octokit,
+      popularRepoQueries,
+      new Set(seen),
+      LIMITS.popularRepos,
+    ),
+    searchRepos(octokit, deepagentsQueries, new Set(seen), LIMITS.deepagents),
+  ]);
 
-        for (const repo of data.items) {
-          const repoUrl = repo.repository.html_url;
-          if (
-            processedRepos.includes(repoUrl) ||
-            !repo.repository.owner ||
-            newRepoURLs.some((r) => r === repoUrl)
-          ) {
-            if (data.incomplete_results) {
-              continue;
-            } else {
-              break;
-            }
-          }
-
-          const hasDeps = await checkPythonDependencies(
-            octokit,
-            repo.repository.owner.login,
-            repo.repository.name,
-            repo.path,
-          );
-
-          if (hasDeps) {
-            newRepoURLs.push(repoUrl);
-            if (newRepoURLs.length >= 5) break;
-          }
-
-          // Sleep for 30s due to rate limits of 10 req/min.
-          console.log("Sleeping...");
-          await sleep(30000);
-        }
-      }
-
-      if (newRepoURLs.length >= 5 || !incompleteResults) break;
-    } catch (error) {
-      console.error("Failed to fetch repos:", error);
-      break;
-    }
-  }
-
-  // Reset page counter and search for JS repos
-  page = 0;
-  while (newRepoURLs.length < 10 || page <= maxAttempts) {
-    page += 1;
-
-    try {
-      const results = await Promise.allSettled(
-        JS_LANGCHAIN_PACKAGES.map((pkg) =>
-          octokit.search.code({
-            q: `${pkg} ${FULL_JS_QUERY}`,
-            sort: "indexed",
-            order: "desc",
-            per_page: 25,
-            page,
-          }),
-        ),
-      );
-
-      let incompleteResults = false;
-      const filteredResults = results
-        .filter((result) => result.status === "fulfilled")
-        .map((result) => result.value);
-
-      for (const { data } of filteredResults) {
-        console.log(`Found ${data.total_count} JS repos`);
-        // Only set to true. This is to prevent one query setting it to false when another one returns incomplete results
-        if (data.incomplete_results) {
-          incompleteResults = data.incomplete_results;
-        }
-
-        if (data.total_count === 0) {
-          break;
-        }
-
-        for (const repo of data.items) {
-          const repoUrl = repo.repository.html_url;
-          if (
-            processedRepos.includes(repoUrl) ||
-            !repo.repository.owner ||
-            newRepoURLs.some((r) => r === repoUrl)
-          ) {
-            if (data.incomplete_results) {
-              continue;
-            } else {
-              break;
-            }
-          }
-
-          const hasDeps = await checkJSDependencies(
-            octokit,
-            repo.repository.owner.login,
-            repo.repository.name,
-            repo.path,
-          );
-
-          if (hasDeps) {
-            newRepoURLs.push(repoUrl);
-            if (newRepoURLs.length >= 5) break;
-          }
-
-          // Sleep for 30s due to rate limits of 10 req/min.
-          console.log("Sleeping...");
-          await sleep(30000);
-        }
-      }
-
-      if (newRepoURLs.length >= 25 || !incompleteResults) break;
-    } catch (error) {
-      console.error("Failed to fetch repos:", error);
-      break;
-    }
-  }
-
-  return newRepoURLs.slice(0, 25);
+  return [...newRepos, ...deepagentsRepos, ...popularRepos];
 }
 
 export const langchainDependencyReposLoader = traceable(

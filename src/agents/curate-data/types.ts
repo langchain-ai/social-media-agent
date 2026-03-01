@@ -8,6 +8,7 @@ export type TweetV2WithURLs = TweetV2 & {
 export type GitHubTrendingData = {
   repoURL: string;
   pageContent: string;
+  stargazersCount?: number;
 };
 
 export type TweetsGroupedByContent = {

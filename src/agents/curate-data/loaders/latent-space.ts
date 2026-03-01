@@ -8,7 +8,7 @@ import { getUniqueArrayItems } from "../utils/get-unique-array.js";
 import { traceable } from "langsmith/traceable";
 
 async function latentSpaceLoaderFunc(store: BaseStore | undefined) {
-  const siteMapUrl = "https://www.latent.space/sitemap/2025";
+  const siteMapUrl = `https://www.latent.space/sitemap/${new Date().getFullYear()}`;
 
   const links = await fetch(siteMapUrl)
     .then((response) => response.text())

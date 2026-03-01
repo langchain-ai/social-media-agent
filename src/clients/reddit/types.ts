@@ -152,6 +152,8 @@ export interface SimpleRedditPost {
   created_utc: number;
   selftext: string;
   id: string;
+  score: number;
+  upvote_ratio: number;
 }
 
 export interface RedditCommentData {

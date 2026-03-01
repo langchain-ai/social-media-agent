@@ -133,6 +133,8 @@ export class RedditClient {
       url: post.url,
       created_utc: post.created_utc,
       selftext: post.selftext,
+      score: post.score,
+      upvote_ratio: post.upvote_ratio,
     };
   }
 

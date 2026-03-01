@@ -1,7 +1,7 @@
 import { traceable } from "langsmith/traceable";
 import { parseStringPromise } from "xml2js";
 
-const AI_NEWS_BLOG_RSS_URL = "https://buttondown.com/ainews/rss";
+const AI_NEWS_BLOG_RSS_URL = "https://news.smol.ai/rss.xml";
 
 interface RSSItem {
   title: string[];
@@ -26,7 +26,7 @@ interface RSSFeed {
  * @returns {Promise<string[]>} Array of links
  */
 async function aiNewsBlogLoaderFunc(): Promise<string[]> {
-  const lastCheckTime = new Date(new Date().getTime() - 96 * 60 * 60 * 1000); // 24 hours ago
+  const lastCheckTime = new Date(new Date().getTime() - 96 * 60 * 60 * 1000); // 96 hours ago
 
   try {
     // Fetch the RSS feed
