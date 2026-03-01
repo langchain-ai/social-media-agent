@@ -45,7 +45,7 @@
     "@langchain/langgraph": "^1.0.2",
     "@langchain/langgraph-sdk": "1.0.0",
     "@langchain/openai": "^1.1.0",
-    "@mendable/firecrawl-js": "^1.10.1",
+    "@mendable/firecrawl-js": "^4.13.0",
     "@octokit/rest": "^21.0.2",
     "@slack/web-api": "^7.7.0",
     "@supabase/supabase-js": "^2.47.10",
