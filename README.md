@@ -376,7 +376,7 @@ The Agent Inbox is setup in a way that allows for any graph --local or deployed-
 
 To add your local graph to the inbox, visit the deployed site here: [dev.agentinbox.ai](https://dev.agentinbox.ai/).
 
-If it's your first time vising the site, you'll immediately be prompted to add a new graph. Fill out the form with the following values:
+If it's your first time visiting the site, you'll immediately be prompted to add a new graph. Fill out the form with the following values:
 
 - Graph ID: `generate_post`
 - Graph API URL: `http://localhost:54367`
