@@ -282,13 +282,13 @@ const GENERATE_IMAGE_PROMPT_TEMPLATE = {
 };
 
 const STYLE_VARIATIONS = [
-  `Dark (#030710) background. White (#FFFFFF) text. Accent with Blue (#7FC8FF) and Lime (#E3FF8F).`,
-  `Dark (#030710) background. White (#FFFFFF) text. Accent with Blue (#7FC8FF) and Lavender (#D5C3F7).`,
-  `Dark (#030710) background. White (#FFFFFF) text. Accent with Blue (#7FC8FF) and Pink (#C78EAD).`,
-  `Dark (#030710) background. White (#FFFFFF) text. Accent with Blue (#7FC8FF), Rose (#B27D75), and Lime (#E3FF8F).`,
-  `Surface (#F2FAFF) background. Dark (#030710) text. Accent with Blue (#7FC8FF) and Rose (#B27D75).`,
-  `Surface (#F2FAFF) background. Dark (#030710) text. Accent with Blue (#7FC8FF) and Lavender (#D5C3F7).`,
-  `Card Dark (#0B1120) background. Body light (#C8DDF0) text. Accent with Blue (#7FC8FF), Lavender (#D5C3F7), and Lime (#E3FF8F).`,
+  `Plum (#441E33) background. Pink (#C78EAD) accent text and elements.`,
+  `Plum (#441E33) background. Pink (#C78EAD) accent text and elements.`,
+  `Purple (#2B204D) background. Light purple (#FDF3FF) accent text and elements.`,
+  `Purple (#2B204D) background. Light purple (#FDF3FF) accent text and elements.`,
+  `Peach (#7D2219) background. Soft peach (#F8E8E6) accent text and elements.`,
+  `Peach (#7D2219) background. Soft peach (#F8E8E6) accent text and elements.`,
+  `Green (#133900) background. Lime (#E3FF8F) accent text and elements.`,
 ];
 
 const getPromptString = (
