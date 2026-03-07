@@ -59,9 +59,9 @@ const GENERATE_IMAGE_PROMPT_TEMPLATE = {
           "NEVER include color legends, swatches, or hex codes anywhere in the image.",
         strictly_forbidden: [
           "Color legend boxes or keys showing which colors mean what",
-          "Color swatches with labels like 'Blue 400 (#066998)'",
-          "ANY hex code in ANY format: #FFFFFF, #066998, #366666, etc.",
-          "Color names with numbers like 'Violet 300', 'Green 400', 'Blue 500'",
+          "Color swatches with labels like 'Blue (#7FC8FF)'",
+          "ANY hex code in ANY format: #FFFFFF, #030710, #7FC8FF, etc.",
+          "Color token names like 'lc-blue', 'lc-dark', 'lc-surface'",
           "ANY text starting with # followed by letters/numbers",
         ],
         rule: "The brand color palette is for YOUR internal use only. NEVER show it to viewers.",
@@ -73,18 +73,21 @@ const GENERATE_IMAGE_PROMPT_TEMPLATE = {
           "LangChain Community",
           "LangChain Community Project",
           "Made by LangChain Community",
+          "Content Spotlight",
+          "Community Spotlight",
           "Any variation of LangChain Community attribution text",
         ],
         rule: "This is a clean social media image. NO LangChain Community attribution text of any kind.",
       },
-      no_parrot_imagery: {
+      no_logo_imagery: {
         severity: "CRITICAL",
         description:
-          "Do NOT generate the LangChain logo (a parrot) or any text-based parrot imagery. NEVER render a parrot in any form.",
+          "Do NOT generate the LangChain logo (a pinwheel mark) or any text-based logo imagery. NEVER render the pinwheel in any form.",
         strictly_forbidden: [
-          "A parrot",
-          "The LangChain logo (a parrot)",
-          "Any text-based parrot imagery",
+          "A pinwheel",
+          "The LangChain logo (a pinwheel)",
+          "Any text-based pinwheel or logo imagery",
+          "A parrot (old logo)",
         ],
       },
       no_design_metadata_in_image: {
@@ -92,8 +95,8 @@ const GENERATE_IMAGE_PROMPT_TEMPLATE = {
         description:
           "ABSOLUTELY DO NOT include ANY of the following as visible text or elements:",
         forbidden_elements: [
-          "Font names (Manrope, Arial, Helvetica, etc.)",
-          "Design specifications (100% leading, -2.5% tracking, 16:9, etc.)",
+          "Font names (Lausanne, Inter, Arial, Helvetica, etc.)",
+          "Design specifications (line-height, tracking, 16:9, etc.)",
           "Typography instructions or measurements",
           "Any technical design guidelines or parameters",
         ],
@@ -115,11 +118,13 @@ const GENERATE_IMAGE_PROMPT_TEMPLATE = {
   },
   brand_guidelines: {
     typography: {
-      primary_typeface: "Manrope",
-      style: "Geometric sans-serif; aimed at clarity and modern appeal",
+      primary_typeface: "Lausanne",
+      fallback: "Inter, sans-serif",
+      style: "Clean geometric sans-serif; aimed at clarity and modern appeal",
       headline: {
-        leading: "100% (1.0) - tight, legible spacing",
-        tracking: "-2.5% (-0.025em) - polished, modern look",
+        weight: "700-800",
+        leading: "1.15-1.25 - tight, legible spacing",
+        tracking: "-0.03em to -0.01em - polished, modern look",
         alignment: {
           primary: "Left-aligned",
           secondary: "Centered (only for short headlines)",
@@ -127,8 +132,9 @@ const GENERATE_IMAGE_PROMPT_TEMPLATE = {
         },
       },
       body_text: {
-        leading: "140%-180% (1.4-1.8) - maximize readability",
-        tracking: "-2.5% (-0.025em) - improves legibility at small sizes",
+        weight: "400",
+        leading: "1.65 - maximize readability",
+        tracking: "0 - standard spacing",
         alignment: {
           primary: "Left-aligned",
           secondary: "Centered (only for minimal copy/taglines)",
@@ -143,56 +149,46 @@ const GENERATE_IMAGE_PROMPT_TEMPLATE = {
       ],
     },
     color_palette: {
-      primary: {
-        violet_100: "#F8F7FF",
-        violet_200: "#D0C9FC",
-        violet_300: "#8C81F0",
-        violet_400: "#332C54",
+      core: {
+        dark: "#030710",
+        card: "#0B1120",
+        card_alt: "#E5F4FF",
+        surface: "#F2FAFF",
+        border: "#B8DFFF",
+        border_dark: "#1A2740",
+        muted: "#6B8299",
+        body: "#C8DDF0",
+        white: "#FFFFFF",
+        dark_text: "#030710",
       },
-      interface: {
-        orange: {
-          "100": "#FFEEE5",
-          "200": "#F3CABD",
-          "300": "#FAA490",
-          "400": "#C65522",
-        },
-        red: {
-          "100": "#FBE9E9",
-          "200": "#F3A093",
-          "300": "#B74751",
-          "400": "#782730",
-        },
-        green: {
-          "100": "#EBEBE5",
-          "200": "#BBC494",
-          "300": "#8D9C9C",
-          "400": "#366666",
-          "500": "#132D27",
-        },
-        blue: {
-          "100": "#E6F0F5",
-          "200": "#B5C7E0",
-          "300": "#83B2CC",
-          "400": "#066998",
-          "500": "#04305E",
-        },
+      accent: {
+        blue: "#7FC8FF",
+        blue_hover: "#99D4FF",
+        blue_bg: "#E5F4FF",
+        blue_bg_alt: "#F2FAFF",
+      },
+      secondary: {
+        lime: "#E3FF8F",
+        rose: "#B27D75",
+        pink: "#C78EAD",
+        lavender: "#D5C3F7",
       },
     },
     usage_rules: {
       color_pairing: {
         contrast:
-          "Always use high-contrast pairings (Dark on Light, Light on Dark)",
+          "Always use high-contrast pairings (Light text on dark backgrounds, dark text on light backgrounds)",
         prohibited: [
           "Low contrast (e.g., light text on light backgrounds)",
-          "Brand colors on black backgrounds (unless specifically approved)",
           "Clashing colors that vibrate or reduce visibility",
         ],
       },
+      secondary_accents:
+        "Use lime, rose, pink, and lavender sparingly alongside the primary blue. They work well for differentiating categories in diagrams.",
       gradients: {
         usage: "Sparingly. Use for backgrounds or overlays only.",
         constraints: [
           "Do not use gradients on text (text must be solid)",
-          "Do not create new gradient combinations; use only approved sets",
           "Do not overlay gradients if they reduce legibility",
         ],
       },
@@ -206,9 +202,9 @@ const GENERATE_IMAGE_PROMPT_TEMPLATE = {
       architecture_diagram_aesthetic:
         "Create clean, simple diagrams that resemble technical flowcharts or system architecture diagrams. Think whiteboard sketches or documentation-style visuals.",
       visual_elements: [
-        "Simple 2D shapes (rectangles, circles, rounded boxes)",
+        "Simple 2D shapes (rectangles, circles, rounded boxes with 16px radius)",
         "Clean nodes with solid fills",
-        "Thin connecting lines",
+        "Thin connecting lines and stroke-based elements",
         "Simple directional arrows",
         "Flat modular blocks",
       ],
@@ -223,7 +219,7 @@ const GENERATE_IMAGE_PROMPT_TEMPLATE = {
         "Overly detailed or busy compositions",
       ],
       style_reference:
-        "Aim for the simplicity of hand-drawn whiteboard diagrams or clean SVG illustrations.",
+        "Aim for the simplicity of hand-drawn whiteboard diagrams or clean SVG illustrations with stroke-based icons.",
     },
     step_3_title_generation: {
       guideline:
@@ -235,24 +231,22 @@ const GENERATE_IMAGE_PROMPT_TEMPLATE = {
         shape:
           "Aim for a balanced text block. Avoid deep steps or awkward gaps on the right edge",
       },
-      font_specs: "Use the Manrope typeface with tight, modern spacing",
+      font_specs:
+        "Use the Lausanne (or Inter fallback) typeface with tight, modern spacing",
       capitalization:
         "Use title case or sentence case. NEVER use all capital letters for any text.",
     },
     step_4_colors_and_backgrounds: {
       strategy:
-        "Select a background color based on the mood or content type, using approved 100 (Light) or 400/500 (Dark) levels.",
+        "Select a background color based on the mood or content type, using the approved dark or light backgrounds.",
       approved_backgrounds: [
-        { name: "Violet 100", hex: "#F8F7FF" },
-        { name: "Violet 400", hex: "#332C54" },
-        { name: "Green 500", hex: "#132D27" },
-        { name: "Blue 500", hex: "#04305E" },
-        { name: "Blue 100", hex: "#E6F0F5" },
-        { name: "Green 100", hex: "#EBEBE5" },
-        { name: "Orange 100", hex: "#FFEEE5" },
+        { name: "Dark", hex: "#030710" },
+        { name: "Card Dark", hex: "#0B1120" },
+        { name: "Surface Light", hex: "#F2FAFF" },
+        { name: "Blue Background", hex: "#E5F4FF" },
       ],
       text_contrast:
-        "Dark background (400/500): use White or extremely light text. Light background (100): use Dark Violet or Dark Grey text.",
+        "Dark background (#030710, #0B1120): use White (#FFFFFF) or body light (#C8DDF0) text. Light background (#F2FAFF, #E5F4FF): use dark text (#030710).",
     },
     step_5_lighting:
       "No lighting effects. This is a flat 2D diagram - treat it like a vector illustration with no shadows, highlights, or ambient occlusion.",
@@ -266,15 +260,15 @@ const GENERATE_IMAGE_PROMPT_TEMPLATE = {
       "3D EFFECTS - NO isometric views, depth, perspective, shadows, or any 3D rendering",
       "GRADIENTS ON SHAPES - Use only solid flat colors on diagram elements",
       "COMPLEX EFFECTS - NO glows, reflections, textures, or shine",
-      "COLOR LEGENDS OR SWATCHES - NO boxes showing 'Blue 400 (#066998)' or similar color keys",
-      "HEX CODES - NO text starting with # like #066998, #366666, #8C81F0, #F8F7FF anywhere",
-      "COLOR NAMES WITH NUMBERS - NO 'Violet 300', 'Blue 400', 'Green 500' text",
-      "LANGCHAIN COMMUNITY ATTRIBUTION - NO 'LangChain Community', 'LangChain Community Project', 'Made by LangChain Community'",
+      "COLOR LEGENDS OR SWATCHES - NO boxes showing color keys or hex values",
+      "HEX CODES - NO text starting with # like #7FC8FF, #030710, #E3FF8F anywhere",
+      "COLOR TOKEN NAMES - NO 'lc-blue', 'lc-dark', 'lc-surface' text",
+      "LANGCHAIN COMMUNITY ATTRIBUTION - NO 'LangChain Community', 'Content Spotlight', 'Community Spotlight'",
       "PARENTHESES - NO labels like (AI), (Code), (Input), (Output), (Reliable)",
-      "FONT NAMES - Any font names (Manrope, etc.)",
-      "DESIGN SPECIFICATIONS - Any design specifications (100% leading, -2.5% tracking, 16:9, etc.)",
+      "FONT NAMES - Any font names (Lausanne, Inter, etc.)",
+      "DESIGN SPECIFICATIONS - Any design specifications (line-height, tracking, 16:9, etc.)",
       "TYPOGRAPHY INSTRUCTIONS OR MEASUREMENTS - Any typography instructions or measurements",
-      "PARROT IMAGERY - Any parrot imagery (the LangChain logo)",
+      "LOGO IMAGERY - Any pinwheel or parrot imagery (the LangChain logos)",
       "ALL CAPS TEXT - NO text in all capital letters. Use proper sentence case or title case only.",
     ],
     action:
@@ -288,13 +282,13 @@ const GENERATE_IMAGE_PROMPT_TEMPLATE = {
 };
 
 const STYLE_VARIATIONS = [
-  `Violet 100 (#F8F7FF) background. Accent with Orange 300, Orange 400, and Red 300.`,
-  `Violet 100 (#F8F7FF) background. Accent with Orange 300, Orange 400, and Red 300.`,
-  `Violet 100 (#F8F7FF) background. Accent with Violet 200, Blue 300, and Green 300.`,
-  `Violet 100 (#F8F7FF) background. Accent with Violet 200, Blue 300, and Green 300.`,
-  `Blue 500 (#04305E) background. Accent with Blue 200, Violet 200, and Orange 200.`,
-  `Blue 500 (#04305E) background. Accent with Blue 300, Green 300, and Violet 200.`,
-  `Green 500 (#132D27) background. Accent with Green 200, Blue 300, and Violet 300.`,
+  `Dark (#030710) background. White (#FFFFFF) text. Accent with Blue (#7FC8FF) and Lime (#E3FF8F).`,
+  `Dark (#030710) background. White (#FFFFFF) text. Accent with Blue (#7FC8FF) and Lavender (#D5C3F7).`,
+  `Dark (#030710) background. White (#FFFFFF) text. Accent with Blue (#7FC8FF) and Pink (#C78EAD).`,
+  `Dark (#030710) background. White (#FFFFFF) text. Accent with Blue (#7FC8FF), Rose (#B27D75), and Lime (#E3FF8F).`,
+  `Surface (#F2FAFF) background. Dark (#030710) text. Accent with Blue (#7FC8FF) and Rose (#B27D75).`,
+  `Surface (#F2FAFF) background. Dark (#030710) text. Accent with Blue (#7FC8FF) and Lavender (#D5C3F7).`,
+  `Card Dark (#0B1120) background. Body light (#C8DDF0) text. Accent with Blue (#7FC8FF), Lavender (#D5C3F7), and Lime (#E3FF8F).`,
 ];
 
 const getPromptString = (
