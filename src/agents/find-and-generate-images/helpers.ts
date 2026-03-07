@@ -26,8 +26,8 @@ export async function embedImageInTemplate(
 
   // Update image dimensions from placeholder (256x256) to 16:9 output (1376x768)
   const svgWithDimensions = svgWithImage.replace(
-    /<image id="image0_386_2969" width="256" height="256" preserveAspectRatio="none"/,
-    `<image id="image0_386_2969" width="1376" height="768" preserveAspectRatio="none"`,
+    /<image id="image0_557_54" width="256" height="256" preserveAspectRatio="none"/,
+    `<image id="image0_557_54" width="1376" height="768" preserveAspectRatio="none"`,
   );
 
   // Calculate transform matrix to scale image to fill the pattern box
