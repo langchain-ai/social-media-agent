@@ -282,13 +282,14 @@ const GENERATE_IMAGE_PROMPT_TEMPLATE = {
 };
 
 const STYLE_VARIATIONS = [
-  `Plum (#441E33) background. Pink (#C78EAD) accent text and elements.`,
-  `Plum (#441E33) background. Pink (#C78EAD) accent text and elements.`,
-  `Purple (#2B204D) background. Light purple (#FDF3FF) accent text and elements.`,
-  `Purple (#2B204D) background. Light purple (#FDF3FF) accent text and elements.`,
-  `Peach (#7D2219) background. Soft peach (#F8E8E6) accent text and elements.`,
-  `Peach (#7D2219) background. Soft peach (#F8E8E6) accent text and elements.`,
-  `Green (#133900) background. Lime (#E3FF8F) accent text and elements.`,
+  `Light plum (#C78EAD) background. Dark navy (#030710) text and elements. Use #EBD0F0 for card backgrounds and highlights.`,
+  `Lavender (#EBD0F0) background. Dark navy (#030710) text and elements. Use #C78EAD for accent elements and highlights.`,
+  `Light blue (#7FC8FF) background. Dark navy (#030710) text and elements. Use #99D3FF for secondary fills and #F2FAFF for card backgrounds.`,
+  `Light tint 1 (#99D3FF) background. Dark navy (#030710) text and elements. Use #7FC8FF for accent elements and #B2DEFF for secondary fills.`,
+  `Light tint 2 (#B2DEFF) background. Dark navy (#030710) text and elements. Use #7FC8FF for accent elements and #CCE9FF for card backgrounds.`,
+  `Light tint 3 (#CCE9FF) background. Dark navy (#030710) text and elements. Use #7FC8FF for accent elements and #E5F4FF for card backgrounds.`,
+  `Light tint 4 (#E5F4FF) background. Dark navy (#030710) text and elements. Use #7FC8FF for accent elements and #F2FAFF for card backgrounds.`,
+  `Light tint 5 (#F2FAFF) background. Dark navy (#030710) text and elements. Use #7FC8FF for accent elements and #B2DEFF for secondary fills.`,
 ];
 
 const getPromptString = (
