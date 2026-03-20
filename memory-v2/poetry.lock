@@ -914,18 +914,18 @@ tiktoken = ">=0.7.0,<1.0.0"
 
 [[package]]
 name = "langchain-text-splitters"
-version = "0.3.11"
+version = "1.1.1"
 description = "LangChain text splitting utilities"
 optional = false
-python-versions = ">=3.9"
+python-versions = "<4.0.0,>=3.10.0"
 groups = ["main"]
 files = [
-    {file = "langchain_text_splitters-0.3.11-py3-none-any.whl", hash = "sha256:cf079131166a487f1372c8ab5d0bfaa6c0a4291733d9c43a34a16ac9bcd6a393"},
-    {file = "langchain_text_splitters-0.3.11.tar.gz", hash = "sha256:7a50a04ada9a133bbabb80731df7f6ddac51bc9f1b9cab7fa09304d71d38a6cc"},
+    {file = "langchain_text_splitters-1.1.1-py3-none-any.whl", hash = "sha256:5ed0d7bf314ba925041e7d7d17cd8b10f688300d5415fb26c29442f061e329dc"},
+    {file = "langchain_text_splitters-1.1.1.tar.gz", hash = "sha256:34861abe7c07d9e49d4dc852d0129e26b32738b60a74486853ec9b6d6a8e01d2"},
 ]
 
 [package.dependencies]
-langchain-core = ">=0.3.75,<2.0.0"
+langchain-core = ">=1.2.13,<2.0.0"
 
 [[package]]
 name = "langgraph"
