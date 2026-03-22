@@ -31,6 +31,34 @@ import { Client } from "@langchain/langgraph-sdk";
 import { POST_TO_LINKEDIN_ORGANIZATION } from "./constants.js";
 import { rewritePostWithSplitUrl } from "./nodes/rewrite-with-split-url.js";
 
+async function findAndGenerateImagesWithFallback(
+  state: GeneratePostState,
+  config: LangGraphRunnableConfig,
+): Promise<Partial<GeneratePostUpdate>> {
+  try {
+    const result = await findAndGenerateImagesGraph.invoke(
+      {
+        post: state.post,
+        report: state.report,
+        imageOptions: state.imageOptions,
+        relevantLinks: state.relevantLinks,
+        pageContents: state.pageContents,
+      },
+      config,
+    );
+    return {
+      imageOptions: result.imageOptions,
+      image: result.image,
+    };
+  } catch (error) {
+    console.error(
+      "Image processing failed, falling back to text-only mode:",
+      error,
+    );
+    return {};
+  }
+}
+
 function routeAfterGeneratingReport(
   state: GeneratePostState,
 ): "generatePost" | typeof END {
@@ -174,8 +202,8 @@ const generatePostBuilder = new StateGraph(
   .addNode("rewritePost", rewritePost<GeneratePostState, GeneratePostUpdate>)
   // Generates a report on the content.
   .addNode("generateContentReport", generateContentReport)
-  // Finds images in the content.
-  .addNode("findAndGenerateImagesSubGraph", findAndGenerateImagesGraph)
+  // Finds images in the content. Wrapped with fallback to text-only mode on failure.
+  .addNode("findAndGenerateImagesSubGraph", findAndGenerateImagesWithFallback)
   // Updated the scheduled date from the natural language response from the user.
   .addNode("updateScheduleDate", updateScheduledDate)
   // Rewrite the post splitting the URL from the main body of the tweet
