@@ -147,12 +147,11 @@ export class SocialAuthServer {
       );
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       authUrl.searchParams.append("state", process.env.SESSION_SECRET!);
+      // Includes "w_organization_social" scope for posting to LinkedIn company pages.
+      // Remove "w_organization_social" if only posting to personal profiles.
       authUrl.searchParams.append(
         "scope",
-        "openid profile email w_member_social",
-        // Use these scopes if you plan on posting to a LinkedIn company page.
-        // Posting to company pages requires the "w_organization_social" scope.
-        // "openid profile email w_member_social w_organization_social",
+        "openid profile email w_member_social w_organization_social",
       );
 
       res.redirect(authUrl.toString());
