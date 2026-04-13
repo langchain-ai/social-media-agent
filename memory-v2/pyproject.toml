@@ -14,7 +14,7 @@ langmem = ">=0.0.5rc5"
 # langgraph 0.x pinned checkpoint to <3.0.0; langgraph >=1.0.0 allows checkpoint >=3.0.0.
 langgraph = ">=1.0.0"
 langchain-anthropic = ">=0.3.3"
-langgraph-sdk = ">=0.1.51"
+langgraph-sdk = ">=0.3.13"
 python-dotenv = ">=1.0.1"
 # CVE-2025-68664, CVE-2025-65106: serialization injection & template injection vulnerabilities
 langchain-core = ">=0.3.81"
@@ -28,8 +28,8 @@ aiohttp = ">=3.13.3"
 langchain-text-splitters = ">=0.3.9"
 
 [tool.poetry.group.dev.dependencies]
-mypy = ">=1.11.1"
-ruff = ">=0.6.1"
+mypy = ">=1.20.1"
+ruff = ">=0.15.10"
 
 [tool.ruff]
 lint.select = [
