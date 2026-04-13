@@ -40,6 +40,6 @@ constraint-dependencies = [
 [dependency-groups]
 dev = [
     "ruff>=0.8.4",
-    "langgraph-api>=0.0.28",
+    "langgraph-api>=0.7.100",
     "langgraph-cli>=0.1.75",
 ]
