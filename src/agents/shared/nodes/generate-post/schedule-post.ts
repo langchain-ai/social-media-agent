@@ -80,7 +80,7 @@ ${!isTextOnlyMode ? imageString : "Text only mode enabled. Image support has bee
 
 export async function schedulePost<
   State extends BaseGeneratePostState = BaseGeneratePostState,
-  Update extends BaseGeneratePostUpdate = BaseGeneratePostUpdate,
+  Update = BaseGeneratePostUpdate,
 >(state: State, config: LangGraphRunnableConfig): Promise<Update> {
   if (!state.post) {
     throw new Error("No post to schedule found");

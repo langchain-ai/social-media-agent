@@ -110,7 +110,7 @@ const getUnknownResponseDescription = (state: BaseGeneratePostState) => {
 
 export async function humanNode<
   State extends BaseGeneratePostState = BaseGeneratePostState,
-  Update extends BaseGeneratePostUpdate = BaseGeneratePostUpdate,
+  Update = BaseGeneratePostUpdate,
 >(state: State, config: LangGraphRunnableConfig): Promise<Update> {
   if (!state.post) {
     throw new Error("No post found");

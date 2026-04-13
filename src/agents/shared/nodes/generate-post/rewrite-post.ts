@@ -51,7 +51,7 @@ async function runReflections({
 
 export async function rewritePost<
   State extends BaseGeneratePostState = BaseGeneratePostState,
-  Update extends BaseGeneratePostUpdate = BaseGeneratePostUpdate,
+  Update = BaseGeneratePostUpdate,
 >(state: State, config: LangGraphRunnableConfig): Promise<Update> {
   if (!state.post) {
     throw new Error("No post found");
