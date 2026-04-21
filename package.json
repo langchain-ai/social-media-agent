@@ -92,7 +92,7 @@
     "@types/xml2js": "^0.4.14",
     "@typescript-eslint/eslint-plugin": "^5.59.8",
     "@typescript-eslint/parser": "^5.59.8",
-    "cross-env": "^7.0.3",
+    "cross-env": "^10.1.0",
     "eslint": "^8.41.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-import": "^2.27.5",
