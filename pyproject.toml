@@ -5,15 +5,15 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
-    "fastapi>=0.115.6",
+    "fastapi>=0.136.0",
     "langchain>=0.3.20",
-    "langchain-openai>=1.1.14",
+    "langchain-openai>=1.1.15",
     "langgraph-sdk>=0.1.48",
     "langmem>=0.0.15",
     "python-dotenv>=1.0.1",
     "slack-bolt>=1.22.0",
     "uvicorn>=0.34.0",
-    "langgraph-prebuilt>=0.1.2",
+    "langgraph-prebuilt>=1.0.10",
     "aiohttp>=3.11.13",
 ]
 
@@ -39,7 +39,7 @@ constraint-dependencies = [
 
 [dependency-groups]
 dev = [
-    "ruff>=0.8.4",
-    "langgraph-api>=0.7.100",
-    "langgraph-cli>=0.1.75",
+    "ruff>=0.15.11",
+    "langgraph-api>=0.8.0",
+    "langgraph-cli>=0.4.23",
 ]
