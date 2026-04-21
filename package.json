@@ -103,6 +103,6 @@
     "timezone-mock": "^1.3.6",
     "ts-jest": "^29.4.9",
     "tsx": "^4.19.2",
-    "typescript": "^5.3.3"
+    "typescript": "^6.0.3"
   }
 }
