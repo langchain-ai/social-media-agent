@@ -1060,13 +1060,13 @@
   dependencies:
     js-tiktoken "^1.0.12"
 
-"@mendable/firecrawl-js@1.10.1":
-  version "1.10.1"
-  resolved "https://registry.yarnpkg.com/@mendable/firecrawl-js/-/firecrawl-js-1.10.1.tgz#920e261fbdc59f784a682139e92d8d44d8ef1dff"
-  integrity sha512-fpk09VD9dwMXeptyGjBU1Ntg432c+Njh3mWFbli/99FRic+PS5SQwHzWA/7xIQRa8mp1jwSJ7O0tYcDj9ECVEQ==
+"@mendable/firecrawl-js@4.20.0":
+  version "4.20.0"
+  resolved "https://registry.yarnpkg.com/@mendable/firecrawl-js/-/firecrawl-js-4.20.0.tgz#96e80eadf503281935b29be192b9bbd58cc8f289"
+  integrity sha512-1Ifogzla/gxWv2zkkTu56solIBQengSzbIfJaU0SIjrwGs4KZ+PPtZdATN+dm53jD3oUu1kKYEpGbRbWDuq/7g==
   dependencies:
-    axios "^1.6.8"
-    isows "^1.0.4"
+    axios "1.15.0"
+    firecrawl "4.16.0"
     typescript-event-target "^1.1.1"
     zod "^3.23.8"
     zod-to-json-schema "^3.23.0"
@@ -1936,7 +1936,7 @@ aws4@^1.8.0:
   resolved "https://registry.yarnpkg.com/aws4/-/aws4-1.13.2.tgz#0aa167216965ac9474ccfa83892cfb6b3e1e52ef"
   integrity sha512-lHe62zvbTB5eEABUVi/AwVh0ZKY9rMMDhmm+eeyuuUQbQ3+J+fONVQOZyj+DdrvD4BY33uYniyRJ4UJIaSKAfw==
 
-axios@^1.15.0, axios@^1.6.8:
+axios@1.15.0, axios@^1.13.5, axios@^1.15.0:
   version "1.15.0"
   resolved "https://registry.yarnpkg.com/axios/-/axios-1.15.0.tgz#0fcee91ef03d386514474904b27863b2c683bf4f"
   integrity sha512-wWyJDlAatxk30ZJer+GeCWS209sA42X+N5jU2jy6oHTp7ufw8uzUTVFBX9+wTfAlhiJXGS0Bq7X6efruWjuK9Q==
@@ -3301,6 +3301,16 @@ find-up@^5.0.0:
     locate-path "^6.0.0"
     path-exists "^4.0.0"
 
+firecrawl@4.16.0:
+  version "4.16.0"
+  resolved "https://registry.yarnpkg.com/firecrawl/-/firecrawl-4.16.0.tgz#29ede45682cc092ed30ac3ab8e2e622f891f102b"
+  integrity sha512-7SJ/FWhZBtW2gTCE/BsvU+gbfIpfTq+D9IH82l9MacauLVptaY6EdYAhrK3YSMC9yr5NxvxRcpZKcXG/nqjiiQ==
+  dependencies:
+    axios "^1.13.5"
+    typescript-event-target "^1.1.1"
+    zod "^3.23.8"
+    zod-to-json-schema "^3.23.0"
+
 flat-cache@^3.0.4:
   version "3.2.0"
   resolved "https://registry.yarnpkg.com/flat-cache/-/flat-cache-3.2.0.tgz#2c0c2d5040c99b1632771a9d105725c0115363ee"
@@ -4235,11 +4245,6 @@ isexe@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/isexe/-/isexe-2.0.0.tgz#e8fbf374dc556ff8947a10dcb0572d633f2cfa10"
   integrity sha512-RHxMLp9lnKHGHRng9QFhRCMbYAcVpn69smSGcq3f36xjgVVWThj4qqLbTLlq7Ssj8B+fIQ1EuCEGI2lKsyQeIw==
-
-isows@^1.0.4:
-  version "1.0.7"
-  resolved "https://registry.yarnpkg.com/isows/-/isows-1.0.7.tgz#1c06400b7eed216fbba3bcbd68f12490fc342915"
-  integrity sha512-I1fSfDCZL5P0v33sVqeTDSpcstAg/N+wF5HS033mogOVIp4B+oHC7oOCsA3axAbBSGTJ8QubbNmnIRN/h8U7hg==
 
 isstream@~0.1.2:
   version "0.1.2"
