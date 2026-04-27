@@ -10,17 +10,17 @@
     "@jridgewell/gen-mapping" "^0.3.5"
     "@jridgewell/trace-mapping" "^0.3.24"
 
-"@anthropic-ai/sdk@^0.74.0":
-  version "0.74.0"
-  resolved "https://registry.yarnpkg.com/@anthropic-ai/sdk/-/sdk-0.74.0.tgz#e06e6e5495c1551a70bc04004884e031828dd8ae"
-  integrity sha512-srbJV7JKsc5cQ6eVuFzjZO7UR3xEPJqPamHFIe29bs38Ij2IripoAhC0S5NslNbaFUYqBKypmmpzMTpqfHEUDw==
+"@anthropic-ai/sdk@^0.90.0":
+  version "0.90.0"
+  resolved "https://registry.yarnpkg.com/@anthropic-ai/sdk/-/sdk-0.90.0.tgz#99a89683a3c2c7297e04e72f62640cb04c3da21d"
+  integrity sha512-MzZtPabJF1b0FTDl6Z6H5ljphPwACLGP13lu8MTiB8jXaW/YXlpOp+Po2cVou3MPM5+f5toyLnul9whKCy7fBg==
   dependencies:
     json-schema-to-ts "^3.1.1"
 
-"@arcadeai/arcadejs@^2.3.0":
-  version "2.3.0"
-  resolved "https://registry.yarnpkg.com/@arcadeai/arcadejs/-/arcadejs-2.3.0.tgz#e22a8ad8c1d992696f388e98814755df7e678c2f"
-  integrity sha512-MZ2/nT/uCJDH5Fk3xT9pz7TUcMFZPv5cs2iiomAOb2J1eimc3LbbKy7doPjtfOlLZHVeMiTzPNqsvE+8barK8w==
+"@arcadeai/arcadejs@^2.4.1":
+  version "2.4.1"
+  resolved "https://registry.yarnpkg.com/@arcadeai/arcadejs/-/arcadejs-2.4.1.tgz#c82730652b5c1846f1c2f71184993eb86b2b9ffe"
+  integrity sha512-DLpvvDBvRNjzVmFYJ+upPrUJ8YRBoGWqPfzhuFp2+lh5Shxm0l9qLwe1Ah4pKvuCatU7TLOOTkFpICitTuuJeQ==
 
 "@babel/code-frame@^7.0.0", "@babel/code-frame@^7.12.13", "@babel/code-frame@^7.25.9", "@babel/code-frame@^7.26.0":
   version "7.26.2"
@@ -929,12 +929,12 @@
     "@jridgewell/resolve-uri" "^3.1.0"
     "@jridgewell/sourcemap-codec" "^1.4.14"
 
-"@langchain/anthropic@^1.3.26":
-  version "1.3.26"
-  resolved "https://registry.yarnpkg.com/@langchain/anthropic/-/anthropic-1.3.26.tgz#7f993589efabfec9b11d65a06bde47cb17dfa397"
-  integrity sha512-8gfnM1MzZkb3HVD0WjWeb/HFdP4cNGWSokhBtrwW0qSJN+b1j9oBMwWZaVdd+VBKsx4hqzv0bdrMzWje0TMw+g==
+"@langchain/anthropic@^1.3.28":
+  version "1.3.28"
+  resolved "https://registry.yarnpkg.com/@langchain/anthropic/-/anthropic-1.3.28.tgz#8812bbd10c14de26520aa5aa340c1bfd4638b6ae"
+  integrity sha512-gOF8oXJL8xDdYes2KXNI9vFm/9TldBBBHOjuCdt27kganVaQKzLvTw5kV6R4mjbnFagV5CWteNH7APLZYCpdwg==
   dependencies:
-    "@anthropic-ai/sdk" "^0.74.0"
+    "@anthropic-ai/sdk" "^0.90.0"
     zod "^3.25.76 || ^4"
 
 "@langchain/classic@1.0.27":
@@ -969,10 +969,10 @@
     uuid "^10.0.0"
     zod "^3.25.76 || ^4"
 
-"@langchain/core@^1.1.40":
-  version "1.1.40"
-  resolved "https://registry.yarnpkg.com/@langchain/core/-/core-1.1.40.tgz#3ed3db20aead09d9c99f647cf3af05f0706cc9ac"
-  integrity sha512-RJ41GQEMxr9ZEZNoIiPgW0+v9nAY6FEZGlk+MjBghr2GR8He50abLam0XCe1aqUJjuKbqt2lUD6M+6SZ+2NIJg==
+"@langchain/core@^1.1.42":
+  version "1.1.42"
+  resolved "https://registry.yarnpkg.com/@langchain/core/-/core-1.1.42.tgz#607bfd34c1414c9cbeb2859fda1b254a14c28085"
+  integrity sha512-d0tN96BrwPMryYyWR9VfyAntSivn7EQrZCe5Kpxum93tcjTXbKKmKvItFec8AluQt88iTcmAJrahUZUNfzGwTA==
   dependencies:
     "@cfworker/json-schema" "^4.0.2"
     "@standard-schema/spec" "^1.1.0"
@@ -983,7 +983,6 @@
     langsmith ">=0.5.0 <1.0.0"
     mustache "^4.2.0"
     p-queue "^6.6.2"
-    uuid "^11.1.0"
     zod "^3.25.76 || ^4"
 
 "@langchain/google-common@^1.0.0":
@@ -1044,13 +1043,13 @@
     openai "^6.32.0"
     zod "^3.25.76 || ^4"
 
-"@langchain/openai@^1.4.4":
-  version "1.4.4"
-  resolved "https://registry.yarnpkg.com/@langchain/openai/-/openai-1.4.4.tgz#9e999a8f88213ec61e66deab86a0d74542337fe9"
-  integrity sha512-mRr/X5rvlwPj6cSXPxbL+CtOqYANO1/+CQ3Z+5t48kWnrlgPYOazmA+UAWvqQOuwJ6LaYn3SFrt43rR4lte/Ow==
+"@langchain/openai@^1.4.5":
+  version "1.4.5"
+  resolved "https://registry.yarnpkg.com/@langchain/openai/-/openai-1.4.5.tgz#e2d243d7f6ce64db9bc57dc22ac927ff785dc7be"
+  integrity sha512-bQ2WMIZfSh02trJLYSAtiIcD3j6EBCiAm9nw0dZWQsVaUxmWc3JJqs8uUte6AkMazmLHzcUIw+14UkXO5fRJvQ==
   dependencies:
     js-tiktoken "^1.0.12"
-    openai "^6.32.0"
+    openai "^6.34.0"
     zod "^3.25.76 || ^4"
 
 "@langchain/textsplitters@1.0.1":
@@ -1315,17 +1314,17 @@
   resolved "https://registry.yarnpkg.com/@standard-schema/spec/-/spec-1.1.0.tgz#a79b55dbaf8604812f52d140b2c9ab41bc150bb8"
   integrity sha512-l2aFy5jALhniG5HgqrD6jXLi/rUWrKvqN/qJx6yoJsgKhblVd+iqqU4RCXavm/jPityDo5TCvKMnpjKnOriy0w==
 
-"@supabase/auth-js@2.103.3":
-  version "2.103.3"
-  resolved "https://registry.yarnpkg.com/@supabase/auth-js/-/auth-js-2.103.3.tgz#5389a874a183942c823aa08a1fc2ea4863772e02"
-  integrity sha512-SMDJ4vg5jLXNEHdhN4J4ujSb203WangbDw1n3VaARH0ZqM51E6lJnoUAHlpQU9N7SzP0hfgghA9IvT8c7tGRfg==
+"@supabase/auth-js@2.105.0":
+  version "2.105.0"
+  resolved "https://registry.yarnpkg.com/@supabase/auth-js/-/auth-js-2.105.0.tgz#2aecf243113288cc68f279fa074845b1e2b4cc53"
+  integrity sha512-cwNB9M4gClqOVJrlX+p2oPgqgRHiUm6hOQSRjgntplB/9XLP78/6MtvkhWdGeWpkP6npZxiLZ+VwNgeigk1wiw==
   dependencies:
     tslib "2.8.1"
 
-"@supabase/functions-js@2.103.3":
-  version "2.103.3"
-  resolved "https://registry.yarnpkg.com/@supabase/functions-js/-/functions-js-2.103.3.tgz#af9749836ca743ff0d2dbfe265862b663fa327f1"
-  integrity sha512-A2ZHi95GIRRlN9LGOSa/zGEIPg9taR1giDI9Gkfkgrcz0YmKV8ShiAplIrKsHQFdkzKxtsO3maJF0efL+i31mg==
+"@supabase/functions-js@2.105.0":
+  version "2.105.0"
+  resolved "https://registry.yarnpkg.com/@supabase/functions-js/-/functions-js-2.105.0.tgz#9029b67d883119982ab7b1c59d9cb4db28019bb3"
+  integrity sha512-Q58EDZPb/3KM0Ksp4pUYPrShIAjoC12BRMIKlMOxcpVBYMQRZCDqr5ohRp1pKiCCvRbDD/bhiLIutdBmU5Nu6Q==
   dependencies:
     tslib "2.8.1"
 
@@ -1334,41 +1333,41 @@
   resolved "https://registry.yarnpkg.com/@supabase/phoenix/-/phoenix-0.4.0.tgz#1a2d84658fbd34b6f33a22660efe7def38905d40"
   integrity sha512-RHSx8bHS02xwfHdAbX5Lpbo6PXbgyf7lTaXTlwtFDPwOIw64NnVRwFAXGojHhjtVYI+PEPNSWwkL90f4agN3bw==
 
-"@supabase/postgrest-js@2.103.3":
-  version "2.103.3"
-  resolved "https://registry.yarnpkg.com/@supabase/postgrest-js/-/postgrest-js-2.103.3.tgz#be6e0165b31bcab778ceabe9603217a1be901616"
-  integrity sha512-S0k/9FJVXDeejNfQLCJwRlm4IH8Wet/HEEdBTBpX6/G2o1eU/6CjQop/hJPZIwlQkI6D/zbHH8KymuCsBgy6jA==
+"@supabase/postgrest-js@2.105.0":
+  version "2.105.0"
+  resolved "https://registry.yarnpkg.com/@supabase/postgrest-js/-/postgrest-js-2.105.0.tgz#4aaf99e3438c90178e16f76e2bc0446c7fd5c6e0"
+  integrity sha512-+M8mHTNEGlWXNvDEU14oL0aGQxAwGra19PO49/Gqco9iHKzgKL2xceE5CiqGOLQ547KMB/1uSFsETIKj8WQYmg==
   dependencies:
     tslib "2.8.1"
 
-"@supabase/realtime-js@2.103.3":
-  version "2.103.3"
-  resolved "https://registry.yarnpkg.com/@supabase/realtime-js/-/realtime-js-2.103.3.tgz#3be853c4c6fd8761c2dbbce948b9b7f3153b2961"
-  integrity sha512-fUvKtSXMUk1BkApVwAurWtHF4Vzbb0UB9aC/fQXrRBek7Ta3Kaora+wHf/fGwFNQs7uRz+mvjIVpzLfpR32VXA==
+"@supabase/realtime-js@2.105.0":
+  version "2.105.0"
+  resolved "https://registry.yarnpkg.com/@supabase/realtime-js/-/realtime-js-2.105.0.tgz#9c1c65c5469886a14a26e87740aa02c424134f98"
+  integrity sha512-sU3bhcZnIT8rny4ZAR257JMjh6tBZVLvhTfczDXDKHaFZVje9Qaaqbl4O9UuuZmPsGWRfOfI1kUJ15uPeL0KhA==
   dependencies:
     "@supabase/phoenix" "^0.4.0"
     "@types/ws" "^8.18.1"
     tslib "2.8.1"
     ws "^8.18.2"
 
-"@supabase/storage-js@2.103.3":
-  version "2.103.3"
-  resolved "https://registry.yarnpkg.com/@supabase/storage-js/-/storage-js-2.103.3.tgz#f9bcc44e0a5b4542fbc697d76e6c5ace625bd70b"
-  integrity sha512-5bAIEubrw5keHcdKR2RTois0O1M2Ilx4UYuzOzc07G6mLGCPS/8t1nbC6Vq451pnxR3sK+rmtFHWb9CY/OPjAw==
+"@supabase/storage-js@2.105.0":
+  version "2.105.0"
+  resolved "https://registry.yarnpkg.com/@supabase/storage-js/-/storage-js-2.105.0.tgz#08730d4c5541e4a260b0dbd271ad23c0ea8b5534"
+  integrity sha512-advo1qhRjeNLPYciUMpGeJTVFqaidPJq/6h4FoPF3XSo2SfecBUYQg/axcy26uon7y58QZoJxxguSmRZhuiRQA==
   dependencies:
     iceberg-js "^0.8.1"
     tslib "2.8.1"
 
-"@supabase/supabase-js@^2.103.3":
-  version "2.103.3"
-  resolved "https://registry.yarnpkg.com/@supabase/supabase-js/-/supabase-js-2.103.3.tgz#4aa301e5afd67a68ff7f42b7dd33e9ad3f0dccfa"
-  integrity sha512-DuPiAz5pIJsTAQCt7B6bDZrnLzlq9+/5bta/GWTsgpLn6AkuZQcmYsQHYplv4skQ8U2raKY5HASQOu4KtYq9Qw==
+"@supabase/supabase-js@^2.105.0":
+  version "2.105.0"
+  resolved "https://registry.yarnpkg.com/@supabase/supabase-js/-/supabase-js-2.105.0.tgz#1ee95d16e5aa2980277b160732b062730194d49d"
+  integrity sha512-UUmh6KpStf2RdKpRUmzj0cPl6OXlo1hkRTNHdFHozbiJv2MIxR/7eWGKHAO8OgnaZt0gv52k7NL/bZXgPQbw/A==
   dependencies:
-    "@supabase/auth-js" "2.103.3"
-    "@supabase/functions-js" "2.103.3"
-    "@supabase/postgrest-js" "2.103.3"
-    "@supabase/realtime-js" "2.103.3"
-    "@supabase/storage-js" "2.103.3"
+    "@supabase/auth-js" "2.105.0"
+    "@supabase/functions-js" "2.105.0"
+    "@supabase/postgrest-js" "2.105.0"
+    "@supabase/realtime-js" "2.105.0"
+    "@supabase/storage-js" "2.105.0"
 
 "@tokenizer/inflate@^0.4.1":
   version "0.4.1"
@@ -4798,13 +4797,12 @@ kleur@^3.0.3:
   resolved "https://registry.yarnpkg.com/kleur/-/kleur-3.0.3.tgz#a79c9ecc86ee1ce3fa6206d1216c501f147fc07e"
   integrity sha512-eTIzlVOSUR+JxdDFepEYcBMtZ9Qqdef+rnzWdRZuMbOywu5tO2w2N7rqjoANZ5k9vywhL6Br1VRjUIgTQx4E8w==
 
-"langsmith@>=0.4.0 <1.0.0", "langsmith@>=0.5.0 <1.0.0", langsmith@^0.5.20:
-  version "0.5.20"
-  resolved "https://registry.yarnpkg.com/langsmith/-/langsmith-0.5.20.tgz#4021847d2ccd5a86c5eb96060f9bb5f19f80eca5"
-  integrity sha512-ULhLM8RswvQDXufLtNtvclHrWCBx8Cb5UPI6lAZC+8Dq59iHsVPz/3Ac9khWNm1VIvChRsuykixD/WrmzuuA3Q==
+"langsmith@>=0.4.0 <1.0.0", "langsmith@>=0.5.0 <1.0.0", langsmith@^0.5.25:
+  version "0.5.25"
+  resolved "https://registry.yarnpkg.com/langsmith/-/langsmith-0.5.25.tgz#5d05ece666fa92b3174e2be0b67cc51fa53455d4"
+  integrity sha512-AG7NOymrDmwaWq+wus5hJHZjPFKXwsEdfqGBU3eZiF5242mme+5wuJocdBJKGyU1kgBO7TuLHiqtdyIwl4V4yQ==
   dependencies:
     p-queue "6.6.2"
-    uuid "10.0.0"
 
 leven@^3.1.0:
   version "3.1.0"
@@ -5172,7 +5170,7 @@ onetime@^5.1.2:
   dependencies:
     mimic-fn "^2.1.0"
 
-openai@^6.32.0:
+openai@^6.32.0, openai@^6.34.0:
   version "6.34.0"
   resolved "https://registry.yarnpkg.com/openai/-/openai-6.34.0.tgz#93483a1044e2dcd62891bba580772b9cb792395d"
   integrity sha512-yEr2jdGf4tVFYG6ohmr3pF6VJuveP0EA/sS8TBx+4Eq5NT10alu5zg2dmxMXMgqpihRDQlFGpRt2XwsGj+Fyxw==
@@ -6572,12 +6570,12 @@ utils-merge@1.x.x, utils-merge@^1.0.1:
   resolved "https://registry.yarnpkg.com/utils-merge/-/utils-merge-1.0.1.tgz#9f95710f50a267947b2ccc124741c1028427e713"
   integrity sha512-pMZTvIkT1d+TFGvDOqodOclx0QWkkgi6Tdoa8gC8ffGAAqz9pzPTZWAybbsHHoED/ztMtkv/VoYTYyShUn81hA==
 
-uuid@10.0.0, uuid@^10.0.0:
+uuid@^10.0.0:
   version "10.0.0"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-10.0.0.tgz#5a95aa454e6e002725c79055fd42aaba30ca6294"
   integrity sha512-8XkAphELsDnEGrDxUOHB3RGvXz6TeuYSGEZBOjtTtPm2lwhGBjLgOzLHB63IUWfBpNucQjND6d3AOudO+H3RWQ==
 
-uuid@^11.0.4, uuid@^11.1.0:
+uuid@^11.0.4:
   version "11.1.0"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-11.1.0.tgz#9549028be1753bb934fc96e2bca09bb4105ae912"
   integrity sha512-0/A9rDy9P7cJ+8w1c9WD9V//9Wj15Ce2MPz8Ri6032usz+NfePxx5AcN3bN+r6ZL6jEo066/yNYB3tn4pQEx+A==
