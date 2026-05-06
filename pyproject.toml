@@ -6,7 +6,7 @@ readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
     "fastapi>=0.136.1",
-    "langchain>=0.3.20",
+    "langchain>=1.2.17",
     "langchain-openai>=1.2.1",
     "langgraph-sdk>=0.1.48",
     "langmem>=0.0.15",
@@ -40,6 +40,6 @@ constraint-dependencies = [
 [dependency-groups]
 dev = [
     "ruff>=0.15.12",
-    "langgraph-api>=0.8.1",
+    "langgraph-api>=0.8.5",
     "langgraph-cli>=0.4.24",
 ]
