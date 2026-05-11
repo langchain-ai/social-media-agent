@@ -660,10 +660,10 @@
   resolved "https://registry.yarnpkg.com/@eslint/js/-/js-10.0.1.tgz#1e8a876f50117af8ab67e47d5ad94d38d6622583"
   integrity sha512-zeR9k5pd4gxjZ0abRoIaxdc7I3nDktoXZk2qOv9gCNWx3mVwEn32VRhyLaRsDiJjTs0xq/T8mfPtyuXu7GWBcA==
 
-"@google/genai@^1.51.0":
-  version "1.51.0"
-  resolved "https://registry.yarnpkg.com/@google/genai/-/genai-1.51.0.tgz#5830dbbef23a290d088231c7b31ecd8668cfbc13"
-  integrity sha512-vTZZF3CSimN7cn2zsLpW2p5WF0eZa5Gz69ITMPCNHpPrDlAstOfGifSfi0p/s9Z9400f7xJRkgvkQNrcM7pJ6w==
+"@google/genai@^2.0.1":
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/@google/genai/-/genai-2.0.1.tgz#c98c6eaaf173b1b1f280a6d618d73e2ac28480dc"
+  integrity sha512-trxxbVePM9J8Cuni5x7+xvApoqb2y6Zk27/wugjT2cuwHOT78nFGdf/Ni29MkDxzWwrj90OQpno1Ana6dm3D2A==
   dependencies:
     google-auth-library "^10.3.0"
     p-retry "^4.6.2"
