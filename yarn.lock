@@ -1246,26 +1246,24 @@
     p-queue "^6.6.2"
     zod "^3.25.76 || ^4"
 
-"@langchain/google-common@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@langchain/google-common/-/google-common-1.0.0.tgz#85c9e86693ae620343aea68e0f79ebd5316654af"
-  integrity sha512-4xrh8amC8AtvNAaA4CjptQ/P5jNycCiLNgU/m6T775yBSsJTNWlD8TKsqnOFDpD7q0T5sCIaU0oBAhOU7kjD6w==
-  dependencies:
-    uuid "^10.0.0"
+"@langchain/google-common@2.1.30":
+  version "2.1.30"
+  resolved "https://registry.yarnpkg.com/@langchain/google-common/-/google-common-2.1.30.tgz#487a67d638240c1ec3539297c5f169b392c8a8c0"
+  integrity sha512-IYxGeJbhzBi7+fW9sbkWGqpSSDDf05Kd1DvCM0RoDeYJx4zQk2aPbmB/PI6uUWl9NHISkEZ4dxbZmBSrVelckw==
 
-"@langchain/google-vertexai-web@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@langchain/google-vertexai-web/-/google-vertexai-web-1.0.0.tgz#96de8ad440c09d83d50d9b2f81f5a0755a736cdc"
-  integrity sha512-3/I8pQsgnfJdMWg0UMn8rGoJ4oIQq5pyFTGwnn5KbgVswukG6icBR2FP+CTw1LvkKCPt7KYy9NSLQWUBwpCWgA==
+"@langchain/google-vertexai-web@^2.1.30":
+  version "2.1.30"
+  resolved "https://registry.yarnpkg.com/@langchain/google-vertexai-web/-/google-vertexai-web-2.1.30.tgz#2c30cfe5399f54aa8dbe084f47fbf92b1bf0ad71"
+  integrity sha512-BR2h1SB28YRruHuSp4+eIiiErQMQ0sVAYaDQJBiG04LVCPiPvPpndZ2HlwUHKDJr7y8XJYOhr2+FMVab/nFobg==
   dependencies:
-    "@langchain/google-webauth" "^1.0.0"
+    "@langchain/google-webauth" "2.1.30"
 
-"@langchain/google-webauth@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@langchain/google-webauth/-/google-webauth-1.0.0.tgz#fcb7a50f430f982ea63c1211b3520fe1ca01157d"
-  integrity sha512-4FCk41tfBSQMbSLzqmdd6EChaRa3FNMBtG1HN7SzihLcn2dthJQ0nVob4TsJ5HKb1ftxa348zVBTntJf01pI9g==
+"@langchain/google-webauth@2.1.30":
+  version "2.1.30"
+  resolved "https://registry.yarnpkg.com/@langchain/google-webauth/-/google-webauth-2.1.30.tgz#0f397584c6d5b5d56c974c254365b5050462c311"
+  integrity sha512-8UR7vwGOAiMSZNq/kmsQ0tJFLI5fsS0Yzp7g8K+E0wVwEvmUzGzEvAzhmXitF+A5/CCuanoMrNzLUVsjoGijwA==
   dependencies:
-    "@langchain/google-common" "^1.0.0"
+    "@langchain/google-common" "2.1.30"
     web-auth-library "^1.0.3"
 
 "@langchain/langgraph-checkpoint@^1.0.2":
