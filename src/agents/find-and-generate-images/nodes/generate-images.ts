@@ -312,7 +312,7 @@ export async function generateImageWithNanoBananaPro(
   report: string,
   post: string,
   imageUrls: string[],
-  variationIndex: number = 0,
+  variationIndex = 0,
 ): Promise<{ data: string; mimeType: string }> {
   const client = (() => {
     if (!process.env.GOOGLE_VERTEX_AI_WEB_CREDENTIALS) {

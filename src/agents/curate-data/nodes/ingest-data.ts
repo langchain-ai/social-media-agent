@@ -5,6 +5,7 @@ import {
   twitterLoader,
   twitterLoaderWithLangChain,
 } from "../loaders/twitter.js";
+import { tweetclawLoader } from "../loaders/tweetclaw.js";
 import { getLangChainRedditPosts, getRedditPosts } from "../loaders/reddit.js";
 import { githubTrendingLoader } from "../loaders/github/trending.js";
 import { TweetV2 } from "twitter-api-v2";
@@ -12,7 +13,11 @@ import { latentSpaceLoader } from "../loaders/latent-space.js";
 import { SimpleRedditPostWithComments } from "../../../clients/reddit/types.js";
 import { langchainDependencyReposLoader } from "../loaders/github/langchain.js";
 import { useLangChainPrompts } from "../../utils.js";
-import { NUM_POSTS_PER_SUBREDDIT } from "../constants.js";
+import {
+  NUM_POSTS_PER_SUBREDDIT,
+  TWEETCLAW_SEARCH_LIMIT,
+  TWEETCLAW_SEARCH_QUERY,
+} from "../constants.js";
 
 export async function ingestData(
   _state: CurateDataState,
@@ -39,6 +44,19 @@ export async function ingestData(
         tweets = await twitterLoaderWithLangChain(config.store);
       } catch (e) {
         console.error("Failed to load tweets with LangChain prompts", e);
+      }
+    }
+    if (sources.includes("tweetclaw")) {
+      try {
+        tweets = [
+          ...tweets,
+          ...(await tweetclawLoader({
+            limit: config.configurable?.[TWEETCLAW_SEARCH_LIMIT],
+            searchQuery: config.configurable?.[TWEETCLAW_SEARCH_QUERY],
+          })),
+        ];
+      } catch (e) {
+        console.error("Failed to load tweets with TweetClaw", e);
       }
     }
     if (sources.includes("github")) {
@@ -75,6 +93,19 @@ export async function ingestData(
       tweets = await twitterLoader();
     } catch (e) {
       console.error("Failed to load tweets", e);
+    }
+  }
+  if (sources.includes("tweetclaw")) {
+    try {
+      tweets = [
+        ...tweets,
+        ...(await tweetclawLoader({
+          limit: config.configurable?.[TWEETCLAW_SEARCH_LIMIT],
+          searchQuery: config.configurable?.[TWEETCLAW_SEARCH_QUERY],
+        })),
+      ];
+    } catch (e) {
+      console.error("Failed to load tweets with TweetClaw", e);
     }
   }
   if (sources.includes("github")) {
