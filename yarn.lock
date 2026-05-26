@@ -661,10 +661,10 @@
   resolved "https://registry.yarnpkg.com/@eslint/js/-/js-10.0.1.tgz#1e8a876f50117af8ab67e47d5ad94d38d6622583"
   integrity sha512-zeR9k5pd4gxjZ0abRoIaxdc7I3nDktoXZk2qOv9gCNWx3mVwEn32VRhyLaRsDiJjTs0xq/T8mfPtyuXu7GWBcA==
 
-"@google/genai@^2.4.0":
-  version "2.4.0"
-  resolved "https://registry.yarnpkg.com/@google/genai/-/genai-2.4.0.tgz#87bd245b8137d32e9f1bab46a86865b0c8e73847"
-  integrity sha512-q5q26X/yNKjbzrRdVVDIM9KEmN4dhezmhyliCDIn8mPGT0AlfzOqQfZ5iNCGRCEHSPd86oUdhpNpuzAkEZ5LQg==
+"@google/genai@^2.6.0":
+  version "2.6.0"
+  resolved "https://registry.yarnpkg.com/@google/genai/-/genai-2.6.0.tgz#a8d3fc3c1f40e4d0b4e8d400734289e2701c03bd"
+  integrity sha512-HjoW3mPuEn7pnuKABJl9VbDoWDSF4nbwYKYvYYor7YjPeDxrrBxHzu2d1Prcd+BAuC4w+85UP6y7ZdcrQAoO7g==
   dependencies:
     google-auth-library "^10.3.0"
     p-retry "^4.6.2"
@@ -1231,10 +1231,10 @@
     uuid "^14.0.0"
     zod "^3.25.76 || ^4"
 
-"@langchain/core@^1.1.47":
-  version "1.1.47"
-  resolved "https://registry.yarnpkg.com/@langchain/core/-/core-1.1.47.tgz#00695055f129a0d96eae0eae8ab2ed7b915d21fd"
-  integrity sha512-+fiPu6ZFnJMrZyKeM77OIVPoMPAY6OKWacnPlojHtXTbMMzb2cEOKAJV0U07cDl86NHSCIYYa0i4CyKZzXbHQQ==
+"@langchain/core@^1.1.48":
+  version "1.1.48"
+  resolved "https://registry.yarnpkg.com/@langchain/core/-/core-1.1.48.tgz#dfe7f6a64b0e3e79e5357ed4b402c021ee315a7f"
+  integrity sha512-fQU6Guyb1pwc2fEplmA8FPbKfOMAofjnyJzExevro0FxEiuGHE18Ov/ZHmT9trWCDTZRI9eW1VIc6aChxV8pAQ==
   dependencies:
     "@cfworker/json-schema" "^4.0.2"
     "@standard-schema/spec" "^1.1.0"
@@ -1271,10 +1271,10 @@
   dependencies:
     uuid "^10.0.0"
 
-"@langchain/langgraph-sdk@1.9.4", "@langchain/langgraph-sdk@~1.9.4":
-  version "1.9.4"
-  resolved "https://registry.yarnpkg.com/@langchain/langgraph-sdk/-/langgraph-sdk-1.9.4.tgz#e862f5cef22732a35f9e9b82c35bed748d203551"
-  integrity sha512-hhASJGKa2MDJDtDkuIFdWGysMTog/HkYe0r6B6Gn1XqsURWnF7FIFl9diITAPOv1tB8YpyjnbpsBj/NkT5d+jQ==
+"@langchain/langgraph-sdk@1.9.5", "@langchain/langgraph-sdk@~1.9.4":
+  version "1.9.5"
+  resolved "https://registry.yarnpkg.com/@langchain/langgraph-sdk/-/langgraph-sdk-1.9.5.tgz#e6f04c074be4b12489062a2380dd88d9babec3cb"
+  integrity sha512-NMcz1rEKuVz07ZqcSzNJZCZR9FppRNh+/YWjCKtwZ7a/WNytDEAh26qXTtmDQZ7+J+1nEXhHym1wZDrOxA99wg==
   dependencies:
     "@langchain/protocol" "^0.0.15"
     "@types/json-schema" "^7.0.15"
@@ -1302,10 +1302,10 @@
     openai "^6.34.0"
     zod "^3.25.76 || ^4"
 
-"@langchain/openai@^1.4.1", "@langchain/openai@^1.4.6":
-  version "1.4.6"
-  resolved "https://registry.yarnpkg.com/@langchain/openai/-/openai-1.4.6.tgz#27bf92f233aeadf7fc0a98f5b60705820c09fa42"
-  integrity sha512-R92/hW1aFlL9YNWLDEy1ePBnsn83kPOINNsVD+asjTJKB/00Dwf6s0VBpgZLRJiSWOW/RvbLJ/V4Djayh5boyQ==
+"@langchain/openai@^1.4.1", "@langchain/openai@^1.4.7":
+  version "1.4.7"
+  resolved "https://registry.yarnpkg.com/@langchain/openai/-/openai-1.4.7.tgz#8af279497ead6f5ac3a97dd0f4f5faccf2b31614"
+  integrity sha512-i1YLV4pWbGC6W8m0ZNpLObJuf1nyU4o8aWyX4AF9fHn7eM67HfIJWQ5n5XzcCpuSa41otrxA9jvH5XRKwI1qDA==
   dependencies:
     js-tiktoken "^1.0.12"
     openai "^6.37.0"
@@ -1323,10 +1323,10 @@
   dependencies:
     js-tiktoken "^1.0.12"
 
-"@mendable/firecrawl-js@4.24.2":
-  version "4.24.2"
-  resolved "https://registry.yarnpkg.com/@mendable/firecrawl-js/-/firecrawl-js-4.24.2.tgz#d7d73b81c35e678975d452d633abe49eb5b8297b"
-  integrity sha512-WGFCCkWEgVVTMCpukk/pPHgZE+6N2yR+JWeYve+DfLp+8SrCQB7pjvotN9J/8sAh9THd3daI8C5pb2BBBXJq1Q==
+"@mendable/firecrawl-js@4.25.0":
+  version "4.25.0"
+  resolved "https://registry.yarnpkg.com/@mendable/firecrawl-js/-/firecrawl-js-4.25.0.tgz#eb3ea5f276ff2b8e24cb9e52aa6de208fc95a3e1"
+  integrity sha512-Dxk85bNe/IEVPvND0w3Peenvg08TgLuaN8fYHi3ShDdivc0jJpXEB8rgczOD8gKsz18CzaV/YnPnj6TL/SCQdw==
   dependencies:
     axios "1.15.2"
     firecrawl "4.16.0"
@@ -1585,17 +1585,17 @@
   resolved "https://registry.yarnpkg.com/@standard-schema/spec/-/spec-1.1.0.tgz#a79b55dbaf8604812f52d140b2c9ab41bc150bb8"
   integrity sha512-l2aFy5jALhniG5HgqrD6jXLi/rUWrKvqN/qJx6yoJsgKhblVd+iqqU4RCXavm/jPityDo5TCvKMnpjKnOriy0w==
 
-"@supabase/auth-js@2.106.0":
-  version "2.106.0"
-  resolved "https://registry.yarnpkg.com/@supabase/auth-js/-/auth-js-2.106.0.tgz#a166c86ac350afbac0e2cc282620086eb58d59cf"
-  integrity sha512-JY7602OvjK2l3BjsQkpePpxR+6P0iG37gCrZNWAMhAuNh1iFnhGRwj/y5EshUG0INMPGFrj0UA9MErQ/kOEKFg==
+"@supabase/auth-js@2.106.1":
+  version "2.106.1"
+  resolved "https://registry.yarnpkg.com/@supabase/auth-js/-/auth-js-2.106.1.tgz#39b864e146032b92e4f95910afab91fbeca0b8b9"
+  integrity sha512-7eyheXfAGwkB9bZewJPs+N3UYt6kra2JG6mIxNEgbkvcO15PLD1e75PTIUEYYl3zrifm3GrpShVl7QZxKrXO/w==
   dependencies:
     tslib "2.8.1"
 
-"@supabase/functions-js@2.106.0":
-  version "2.106.0"
-  resolved "https://registry.yarnpkg.com/@supabase/functions-js/-/functions-js-2.106.0.tgz#639afbf30e51ff5eb465689d6d4c2f17493fae6e"
-  integrity sha512-ADIkJYH5w7HbnGVAAlCbyKoLF5QdfyezBLfYXpUqhxZOacK6YepOvnP/8p4p+50bhTPWp6VhDxu19KO7e/qU2g==
+"@supabase/functions-js@2.106.1":
+  version "2.106.1"
+  resolved "https://registry.yarnpkg.com/@supabase/functions-js/-/functions-js-2.106.1.tgz#e351baf1ac89c8336ae6dc47ecebe15b9165d774"
+  integrity sha512-XbOPnR2mW7jp/EcW447xmGwCa+/Wc00Hkw8t4tUIJjRsHQ4xAESsLKcyLRhRJjJoUnJVXUlC+w0wUxUCM7CG2A==
   dependencies:
     tslib "2.8.1"
 
@@ -1604,39 +1604,39 @@
   resolved "https://registry.yarnpkg.com/@supabase/phoenix/-/phoenix-0.4.2.tgz#f64a5d319a7a0b75a36cdb5d786961fa0dbf234d"
   integrity sha512-YSAGnmDAfuleFCVt3CeurQZAhxRfXWeZIIkwp7NhYzQ1UwW6ePSnzsFAiUm/mbCkfoCf70QQHKW/K6RKh52a4A==
 
-"@supabase/postgrest-js@2.106.0":
-  version "2.106.0"
-  resolved "https://registry.yarnpkg.com/@supabase/postgrest-js/-/postgrest-js-2.106.0.tgz#cd2d6e24722ac28150a9a3e18e2e0f7722764b95"
-  integrity sha512-vNKFAXQrtmUn7J3LbN+uMlt0jciAwRIBpdy6Do4DKrpf1xj0kJhbqXTX4y8ziewWUEEx8G5GPnDmprXXaO9f3w==
+"@supabase/postgrest-js@2.106.1":
+  version "2.106.1"
+  resolved "https://registry.yarnpkg.com/@supabase/postgrest-js/-/postgrest-js-2.106.1.tgz#03a8a2acb8749edfdad3b219b63cf5a50e81fa15"
+  integrity sha512-Qbn6d2lqiqeaBX1Uko0e/hL90dtQGRN6CG2wMVQtJpRFstlVW45qmUTyTOsiB8dYUWu1fWYo4YzJuDbokGv3tQ==
   dependencies:
     tslib "2.8.1"
 
-"@supabase/realtime-js@2.106.0":
-  version "2.106.0"
-  resolved "https://registry.yarnpkg.com/@supabase/realtime-js/-/realtime-js-2.106.0.tgz#f15d0da4ae78e2cb1156f1d2dae86401dbef4451"
-  integrity sha512-mYZoaYpkyjlecixbvxCu0h3jw12uHfEcUqNdaRATNI8zQVI5arels+VJzAGcHwNiD+/Juv0OXIuk+M7SHsdI4A==
+"@supabase/realtime-js@2.106.1":
+  version "2.106.1"
+  resolved "https://registry.yarnpkg.com/@supabase/realtime-js/-/realtime-js-2.106.1.tgz#bc699e5d05d6230347edb1c194d37e8021e210ba"
+  integrity sha512-eQCYri5E8KsjpDgC7g28cOOS2britjUWdNSJluFMainqrMRepzjOnaxqXc3RoAz7H0dxmBrfLUNF6NGP8C+YaA==
   dependencies:
     "@supabase/phoenix" "^0.4.2"
     tslib "2.8.1"
 
-"@supabase/storage-js@2.106.0":
-  version "2.106.0"
-  resolved "https://registry.yarnpkg.com/@supabase/storage-js/-/storage-js-2.106.0.tgz#41a40551a111b2d288920df2b14e3db93cc2dba9"
-  integrity sha512-BHc3nIjD3zfdDxBenphXrLJSoQ+qwo24VD96cVzmjBFbQVk5krvwRNUXrA5ozPplA3Vhlst2d/hy9R9ViqH2lg==
+"@supabase/storage-js@2.106.1":
+  version "2.106.1"
+  resolved "https://registry.yarnpkg.com/@supabase/storage-js/-/storage-js-2.106.1.tgz#7f54790cc2e4bc7c4658adf80ba6811ebc6c5ea9"
+  integrity sha512-HWcLIhqinhWKpOQ3WzglR2unjW0eh9J7yOu3IZrZNIEkraK4La/HDvTqndljGsNw0itPtyHhuKBxRoPG1VUARw==
   dependencies:
     iceberg-js "^0.8.1"
     tslib "2.8.1"
 
-"@supabase/supabase-js@^2.106.0":
-  version "2.106.0"
-  resolved "https://registry.yarnpkg.com/@supabase/supabase-js/-/supabase-js-2.106.0.tgz#3c32be98ca809eb600b04a2b079da13d8d42fc31"
-  integrity sha512-OOoo3sLj9iVXNp6b+fkyOfFeQrvvNy7nQbaONNf72dOaictUeS39hFDS9argIRTag6M3ZxIypNWcrDAwLgUihQ==
+"@supabase/supabase-js@^2.106.1":
+  version "2.106.1"
+  resolved "https://registry.yarnpkg.com/@supabase/supabase-js/-/supabase-js-2.106.1.tgz#564023121b9fef24a0a4a6584fdab24711cf182d"
+  integrity sha512-gP4HurGkGu7Z3xoOCjtAI17BKKp7jpsmwY0Ssbsks9XQRzJ7ZhK7LxfLdBSYgUdgZCQgjRK+Mr7+cl4Gxrk0Rw==
   dependencies:
-    "@supabase/auth-js" "2.106.0"
-    "@supabase/functions-js" "2.106.0"
-    "@supabase/postgrest-js" "2.106.0"
-    "@supabase/realtime-js" "2.106.0"
-    "@supabase/storage-js" "2.106.0"
+    "@supabase/auth-js" "2.106.1"
+    "@supabase/functions-js" "2.106.1"
+    "@supabase/postgrest-js" "2.106.1"
+    "@supabase/realtime-js" "2.106.1"
+    "@supabase/storage-js" "2.106.1"
 
 "@tokenizer/inflate@^0.4.1":
   version "0.4.1"
@@ -2765,10 +2765,10 @@ date-fns-tz@^3.2.0:
   resolved "https://registry.yarnpkg.com/date-fns-tz/-/date-fns-tz-3.2.0.tgz#647dc56d38ac33a3e37b65e9d5c4cda5af5e58e6"
   integrity sha512-sg8HqoTEulcbbbVXeg84u5UnlsQa8GS5QXMqjjYIhS4abEVVKIUwe0/l/UhrZdKaL/W5eWZNlbTeEIiOXTcsBQ==
 
-date-fns@^4.2.1:
-  version "4.2.1"
-  resolved "https://registry.yarnpkg.com/date-fns/-/date-fns-4.2.1.tgz#94092832dc4711781540e29102b35da84f8c378c"
-  integrity sha512-37RhSdxaG1suen6VDCza6rNrQfooyQh57HFVPwQGEq2QWliVLzPQZ8Oa017weOu+HZCnzI7N3Pf/wyoBKfEqrA==
+date-fns@^4.3.0:
+  version "4.3.0"
+  resolved "https://registry.yarnpkg.com/date-fns/-/date-fns-4.3.0.tgz#95663b78f2be5ce664eb6606d94582acc39c77ba"
+  integrity sha512-OYcL+3N/jyWbYdFGqoMAhytDgxP9pbYPUUiRCOgn4Fewaadk9l/Wam4Avciiyp2BgkpfQyBV9B+ehnVJych+eQ==
 
 debug@4, debug@^4.1.0, debug@^4.1.1, debug@^4.3.1, debug@^4.3.2, debug@^4.3.4, debug@^4.4.0, debug@^4.4.3:
   version "4.4.3"
@@ -5161,10 +5161,10 @@ keyv@^4.5.3:
   dependencies:
     json-buffer "3.0.1"
 
-"langsmith@>=0.4.0 <1.0.0", "langsmith@>=0.5.0 <1.0.0", langsmith@^0.7.1:
-  version "0.7.1"
-  resolved "https://registry.yarnpkg.com/langsmith/-/langsmith-0.7.1.tgz#d721ad2e5211f9a5373e8a84eb4fed36b5621971"
-  integrity sha512-Wjk90UjNoY5cBHMlNAC/eZx5clI8jnjBOBW8uJu8+MWBtx0QesNjsUiLtjI+I3UnrpxFFpDqGXcnhBjH654Mqg==
+"langsmith@>=0.4.0 <1.0.0", "langsmith@>=0.5.0 <1.0.0", langsmith@^0.7.2:
+  version "0.7.2"
+  resolved "https://registry.yarnpkg.com/langsmith/-/langsmith-0.7.2.tgz#a494a199a297dbb262eb1b82cf9897c072a6a233"
+  integrity sha512-3dZUwQDJluxi2ih5eIygFODtlrQKrs3Tua0Ck3l+DAUkSGFkB1Dc0JPqkGbqiVSN+TQDElnkev/ydAOAz6jndA==
   dependencies:
     p-queue "6.6.2"
 
@@ -6657,10 +6657,10 @@ ts-algebra@^2.0.0:
   resolved "https://registry.yarnpkg.com/ts-algebra/-/ts-algebra-2.0.0.tgz#4e3e0953878f26518fce7f6bb115064a65388b7a"
   integrity sha512-FPAhNPFMrkwz76P7cdjdmiShwMynZYN6SgOujD1urY4oNm80Ou9oMdmbR45LotcKOXoy7wSmHkRFE6Mxbrhefw==
 
-ts-jest@^29.4.10:
-  version "29.4.10"
-  resolved "https://registry.yarnpkg.com/ts-jest/-/ts-jest-29.4.10.tgz#f881f87aa7a8b1f506130f8d4aeb0759ec49d710"
-  integrity sha512-vMTlTTtvz5aKZgzOoc7DQ5TzAL2fCzl8JnG1+ZpwjQa/g0xLlwE44yQ+1Cao9ZP1xVv9y5g34IFXEiqGOGFBUA==
+ts-jest@^29.4.11:
+  version "29.4.11"
+  resolved "https://registry.yarnpkg.com/ts-jest/-/ts-jest-29.4.11.tgz#42f5de21c37ccc01a580253afae6955abbf4d0b3"
+  integrity sha512-IrFl7l9AuB/qrNw5quqvAv/hmKMb8dhWOH4jQOGo0Oq8tCeo1O86/iTFG1FaRimgUkF13l4PcepO8ATFT6Ns4g==
   dependencies:
     bs-logger "^0.2.6"
     fast-json-stable-stringify "^2.1.0"
