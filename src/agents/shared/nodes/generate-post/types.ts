@@ -14,7 +14,7 @@ export type ComplexPost = {
   reply_post: string;
 };
 
-const BaseGeneratePostAnnotation = Annotation.Root({
+export const BaseGeneratePostAnnotation = Annotation.Root({
   /**
    * The generated post for LinkedIn/Twitter.
    */

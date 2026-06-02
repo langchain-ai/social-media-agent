@@ -489,7 +489,7 @@ export function removeQueryParams(url: string): string {
   try {
     const urlObj = new URL(url);
     return `${urlObj.protocol}//${urlObj.host}${urlObj.pathname}`;
-  } catch (error) {
+  } catch (_error) {
     // If URL parsing fails, return the original string
     return url;
   }
