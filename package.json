@@ -20,7 +20,7 @@
     "lint:fix": "eslint src --fix",
     "format:check": "prettier --check .",
     "lint:langgraph-json": "node scripts/checkLanggraphPaths.js",
-    "lint:all": "yarn lint & yarn lint:langgraph-json",
+    "lint:all": "yarn lint && yarn lint:langgraph-json",
     "test:all": "yarn test && yarn test:int && yarn lint:langgraph",
     "start:auth": "yarn tsx src/clients/auth-server.ts",
     "generate_post": "yarn tsx scripts/generate-post.ts",

@@ -2,7 +2,7 @@ import { ChatAnthropic } from "@langchain/anthropic";
 import { traceable } from "langsmith/traceable";
 import { z } from "zod";
 
-const RELEVANCY_SCHEMA = z
+export const RELEVANCY_SCHEMA = z
   .object({
     reasoning: z
       .string()
