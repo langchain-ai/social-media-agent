@@ -14,7 +14,7 @@ dependencies = [
     "slack-bolt>=1.22.0",
     "uvicorn>=0.48.0",
     "langgraph-prebuilt>=1.0.11",
-    "aiohttp>=3.11.13",
+    "aiohttp>=3.14.0",
 ]
 
 [project.packages]
