@@ -677,10 +677,10 @@
     "@eslint/core" "^1.2.1"
     levn "^0.4.1"
 
-"@google/genai@^2.7.0":
-  version "2.7.0"
-  resolved "https://registry.yarnpkg.com/@google/genai/-/genai-2.7.0.tgz#8259b66b83d3576cb1d604fa44a0a267558c3f84"
-  integrity sha512-tv0DRtcndt2oEhBYy+5mA0TaXH98+L1Gt0AP9unBfH7DP20KhB7+O3QqAN1Lz+laMARGTHS7BFQSNpLbl4gm1g==
+"@google/genai@^2.8.0":
+  version "2.8.0"
+  resolved "https://registry.yarnpkg.com/@google/genai/-/genai-2.8.0.tgz#a571838a3afe81fe005fd6f9272a5afdf0a547f4"
+  integrity sha512-pc2ayxqO5+O7AvnHBqpNHIk7PAZkHZgL31tbyx0gJZBSS9qPYiQoqwK7oYOw/ePmG6QY4EMSu+304vD5QlhXAw==
   dependencies:
     google-auth-library "^10.3.0"
     p-retry "^4.6.2"
@@ -1299,10 +1299,10 @@
   dependencies:
     uuid "^14.0.0"
 
-"@langchain/langgraph-sdk@1.9.11", "@langchain/langgraph-sdk@~1.9.11":
-  version "1.9.11"
-  resolved "https://registry.yarnpkg.com/@langchain/langgraph-sdk/-/langgraph-sdk-1.9.11.tgz#d16f18b2c48e544436489172d86b3c78524eb679"
-  integrity sha512-mhadkZy4LQ97NJwvATiVIkSxVfOnauXNhrVHFgGnzyqr5zzPLS0VIKJW9xKT+pM8yLqW8Qj6+nPPNhwGUaxoRw==
+"@langchain/langgraph-sdk@1.9.18", "@langchain/langgraph-sdk@~1.9.17":
+  version "1.9.18"
+  resolved "https://registry.yarnpkg.com/@langchain/langgraph-sdk/-/langgraph-sdk-1.9.18.tgz#139b63e88551a099719a951f8d8cfd273778dc0d"
+  integrity sha512-EQLlop/GLlm52Rii06oZDv1bPvrWARnDuzSY6in4d1gnZX2KSQvxajeZH8GYfMjapDVhbo324DRYJgL9euo2fg==
   dependencies:
     "@langchain/protocol" "^0.0.16"
     "@types/json-schema" "^7.0.15"
@@ -1310,13 +1310,13 @@
     p-retry "^7.1.1"
     uuid "^14.0.0"
 
-"@langchain/langgraph@^1.3.3":
-  version "1.3.3"
-  resolved "https://registry.yarnpkg.com/@langchain/langgraph/-/langgraph-1.3.3.tgz#c7bb19029e37971116e07101be3d8fd4b6483d50"
-  integrity sha512-8xbpGUQNBcWua7ivT5vUvDnQ+6Qbt0JO8RisgXZ8guPXNqh8plGVvrODW68S4AlJbOYY2yi0ROKtrL/1yN3MBQ==
+"@langchain/langgraph@^1.3.6":
+  version "1.3.6"
+  resolved "https://registry.yarnpkg.com/@langchain/langgraph/-/langgraph-1.3.6.tgz#d02005520ff8998e45a5197472aeca0cb4ccb8f7"
+  integrity sha512-OlpIhaMYs2IlN5hCGUMF9B/jgVacLK5nYbwri1AQatB+CcFIk1xVi9jHcD+fkAtn+7ExFbwiOAAdhuGeWQA9BA==
   dependencies:
     "@langchain/langgraph-checkpoint" "^1.0.4"
-    "@langchain/langgraph-sdk" "~1.9.11"
+    "@langchain/langgraph-sdk" "~1.9.17"
     "@langchain/protocol" "^0.0.16"
     "@standard-schema/spec" "1.1.0"
     uuid "^14.0.0"
@@ -1801,10 +1801,10 @@
   resolved "https://registry.yarnpkg.com/@types/mime/-/mime-1.3.5.tgz#1ef302e01cf7d2b5a0fa526790c9123bf1d06690"
   integrity sha512-/pyBZWSLD2n0dcHE3hq8s8ZvcETHtEuF+3E7XVt0Ig2nvsVQXdghHVcEkIWjy9A0wKfTn97a/PSDYohKIlnP/w==
 
-"@types/node@*", "@types/node@>=13.7.0", "@types/node@>=18", "@types/node@^25.9.1":
-  version "25.9.1"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-25.9.1.tgz#3bda556db500ae4319c08e7fc9ab94f19013ba0b"
-  integrity sha512-xfrlY7UD5rMJk3ZVJP8BNzS28J36YJg+xp+LPXV1TdWxr8uMH5A860QNxYDGQe/ylDSgjxE52Q9VnO7p75tJxg==
+"@types/node@*", "@types/node@>=13.7.0", "@types/node@>=18", "@types/node@^25.9.2":
+  version "25.9.2"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-25.9.2.tgz#fc8958e757994b71fee516f9634bdb03d1b19e9f"
+  integrity sha512-G05zqtJhcDLb8uslf5EjCxXg9G1KQxiV8OS0R26IC//Eoyitzqe8z37I7cqvnZlrlSfgocQRfSn/AHBZJJFyGw==
   dependencies:
     undici-types ">=7.24.0 <7.24.7"
 
@@ -3890,10 +3890,10 @@ globalthis@^1.0.4:
     define-properties "^1.2.1"
     gopd "^1.0.1"
 
-google-auth-library@^10.1.0, google-auth-library@^10.3.0, google-auth-library@^10.6.2:
-  version "10.6.2"
-  resolved "https://registry.yarnpkg.com/google-auth-library/-/google-auth-library-10.6.2.tgz#44557c536aec626b7cda48a85b5d026e2c9b74c4"
-  integrity sha512-e27Z6EThmVNNvtYASwQxose/G57rkRuaRbQyxM2bvYLLX/GqWZ5chWq2EBoUchJbCc57eC9ArzO5wMsEmWftCw==
+google-auth-library@^10.1.0, google-auth-library@^10.3.0, google-auth-library@^10.7.0:
+  version "10.7.0"
+  resolved "https://registry.yarnpkg.com/google-auth-library/-/google-auth-library-10.7.0.tgz#affbe0be940e426ddd5d7dc3624c9f543216a402"
+  integrity sha512-QpTAbNJ36TliZLx3TTtahR8HG0hN9RllL1e3FymOvQSIKK8JmgV58H924ub2wa2DsS3ANjjP1Aw1N+Ramc8hqQ==
   dependencies:
     base64-js "^1.3.0"
     ecdsa-sig-formatter "^1.0.11"
@@ -5088,10 +5088,10 @@ keyv@^4.5.4:
   dependencies:
     json-buffer "3.0.1"
 
-"langsmith@>=0.4.0 <1.0.0", "langsmith@>=0.5.0 <1.0.0", langsmith@^0.7.3:
-  version "0.7.3"
-  resolved "https://registry.yarnpkg.com/langsmith/-/langsmith-0.7.3.tgz#d8c70ef62f896aa062d7ce4a7435c962e41d54b8"
-  integrity sha512-Gg+IeRGoF1/aStu80aEnIXJCu+N6+4NoV4tAVFS51ZPRBsRa2KG0LkS7K7/ryZ/yES7O9xdqah5QuuWMIeMjQw==
+"langsmith@>=0.4.0 <1.0.0", "langsmith@>=0.5.0 <1.0.0", langsmith@^0.7.5:
+  version "0.7.5"
+  resolved "https://registry.yarnpkg.com/langsmith/-/langsmith-0.7.5.tgz#5d0e38135f6a3b6f0061e779fa77f792007b0dd4"
+  integrity sha512-OeD6+yKtWwy6sAboq25kD5DICzYv7j2KgtV2n4LsJ8nU2LpEdt1UwbjA6BON/zTggmS/YjV2TtLTHd7VEJhtEA==
   dependencies:
     p-queue "6.6.2"
 
