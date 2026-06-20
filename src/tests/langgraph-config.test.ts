@@ -46,7 +46,7 @@ function getResolvedPlaywrightVersionFromYarnLock(): string {
     "utf8",
   );
   const pattern = new RegExp(
-    `^playwright@${escapeRegExp(requestedPlaywrightVersion)}:\\n(?:.*\\n)*?\\s{2}version\\s+\"([^\"]+)\"`,
+    `^playwright@${escapeRegExp(requestedPlaywrightVersion)}:\\n(?:.*\\n)*?\\s{2}version\\s+"([^"]+)"`,
     "m",
   );
   const match = yarnLockContent.match(pattern);

@@ -8,7 +8,11 @@ import {
 import { TweetV2 } from "twitter-api-v2";
 import { SimpleRedditPostWithComments } from "../../clients/reddit/types.js";
 import { RedditPostsWithExternalData } from "../verify-reddit-post/types.js";
-import { NUM_POSTS_PER_SUBREDDIT } from "./constants.js";
+import {
+  NUM_POSTS_PER_SUBREDDIT,
+  TWEETCLAW_SEARCH_LIMIT,
+  TWEETCLAW_SEARCH_QUERY,
+} from "./constants.js";
 import { Source } from "../supervisor/types.js";
 import { VerifyLinksResultAnnotation } from "../verify-links/verify-links-state.js";
 import { SKIP_CONTENT_RELEVANCY_CHECK } from "../generate-post/constants.js";
@@ -80,6 +84,14 @@ export const CurateDataConfigurableAnnotation = Annotation.Root({
    * The number of posts to fetch per subreddit when ingesting Reddit posts.
    */
   [NUM_POSTS_PER_SUBREDDIT]: Annotation<number | undefined>(),
+  /**
+   * TweetClaw X search query for the optional TweetClaw source.
+   */
+  [TWEETCLAW_SEARCH_QUERY]: Annotation<string | undefined>(),
+  /**
+   * TweetClaw X search result limit for the optional TweetClaw source.
+   */
+  [TWEETCLAW_SEARCH_LIMIT]: Annotation<number | undefined>(),
   [SKIP_CONTENT_RELEVANCY_CHECK]: Annotation<boolean | undefined>(),
 });
 

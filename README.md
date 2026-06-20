@@ -15,6 +15,7 @@ This repository contains an 'agent' which can take in a URL, and generate a Twit
   - [Supabase](#setup-supabase)
   - [Slack](#setup-slack)
   - [GitHub](#setup-github)
+  - [TweetClaw X/Twitter Search Source](#setup-tweetclaw-xtwitter-search-source)
 - [Usage](#usage)
   - [Generate Post](#generate-post)
   - [Setup Crons](#setup-crons)
@@ -163,6 +164,7 @@ To use all of the features of the Social Media Agent, you'll need the following:
 - [GitHub API](https://github.com/settings/personal-access-tokens) - Reading GitHub content
 - [Supabase](https://supabase.com/) - Storing images
 - [Slack Developer Account](https://api.slack.com/apps) (optional) - ingesting data from a Slack channel
+- [TweetClaw](https://github.com/Xquik-dev/tweetclaw) (optional) - search tweets and public X/Twitter signals with Xquik
 
 ## Setup Instructions
 
@@ -316,6 +318,41 @@ The GitHub API token is required to fetch details about GitHub repository URLs s
 To get a GitHub API token, create a new fine grained token with the `Public Repositories (read-only)` scope at a minimum. If you intend on using this agent for private GitHub repositories, you'll need to give the token access to those repositories as well.
 
 Ensure this is set as `GITHUB_TOKEN` in your `.env` file.
+
+### Setup TweetClaw X/Twitter Search Source
+
+TweetClaw is an optional source for the `curate_data` and `supervisor` graphs when you want search tweets, tweet replies, user mentions, or market signals from X/Twitter without changing the post generation flow.
+
+1. Install or review the OpenClaw plugin if you also use OpenClaw:
+
+```bash
+openclaw plugins install @xquik/tweetclaw
+```
+
+2. Create an Xquik API key from [dashboard.xquik.com](https://dashboard.xquik.com/) and store it in `.env`:
+
+```bash
+XQUIK_API_KEY=
+TWEETCLAW_SEARCH_QUERY="LangGraph OR LangChain"
+TWEETCLAW_SEARCH_LIMIT=20
+```
+
+3. Add `tweetclaw` to the source list when invoking `curate_data` or `supervisor`:
+
+```ts
+await client.runs.create(threadId, "curate_data", {
+  input: {},
+  config: {
+    configurable: {
+      sources: ["tweetclaw"],
+      tweetclawSearchQuery: "LangGraph OR LangChain",
+      tweetclawSearchLimit: 20,
+    },
+  },
+});
+```
+
+The loader maps TweetClaw search results into the same tweet shape used by the existing curation, validation, and grouping nodes. Keep `XQUIK_API_KEY` in local environment files only, and pass custom search queries through configurable fields when running different campaigns.
 
 # Usage
 
