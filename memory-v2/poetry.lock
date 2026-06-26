@@ -866,19 +866,19 @@ files = [
 
 [[package]]
 name = "langchain"
-version = "1.3.1"
+version = "1.3.2"
 description = "Building applications with LLMs through composability"
 optional = false
 python-versions = "<4.0.0,>=3.10.0"
 groups = ["main"]
 files = [
-    {file = "langchain-1.3.1-py3-none-any.whl", hash = "sha256:154e9c30c90b391eba4315296f6bf6b6fac6b058ddea4cc771a10470968fe36f"},
-    {file = "langchain-1.3.1.tar.gz", hash = "sha256:bc283c220233230f48b8e50ab1fbf1b688bcb206d933fa448d40a9b143177f62"},
+    {file = "langchain-1.3.2-py3-none-any.whl", hash = "sha256:900f6b3f4ee08b9ba3cdbe667dbf42525bd6f66a4a07a7f1db26262673e41ed6"},
+    {file = "langchain-1.3.2.tar.gz", hash = "sha256:ffd5f204a46b5fa1a38bf89ba3b45ca0902c02d18fa7d2a2eaeaeb1f5bf19d0a"},
 ]
 
 [package.dependencies]
 langchain-core = ">=1.4.0,<2.0.0"
-langgraph = ">=1.2.0,<1.3.0"
+langgraph = ">=1.2.2,<1.3.0"
 pydantic = ">=2.7.4,<3.0.0"
 
 [package.extras]
