@@ -133,8 +133,7 @@ interface VerifyGitHubContentParams {
   contents: string;
   fileType: string;
   dependencyFiles:
-    | Array<{ fileContents: string; fileName: string }>
-    | undefined;
+    Array<{ fileContents: string; fileName: string }> | undefined;
 }
 
 async function verifyGitHubContentIsRelevant({

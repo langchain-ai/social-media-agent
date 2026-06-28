@@ -39,8 +39,7 @@ export async function ingestTweets(
   }
 
   const username = config.configurable?.[INGEST_TWITTER_USERNAME] as
-    | string
-    | undefined;
+    string | undefined;
   if (!username) {
     throw new Error("Twitter username not found in configurable fields.");
   }
