@@ -67,8 +67,7 @@ export async function rewritePostWithSplitUrl(
   ]);
 
   const rewrittenPost = result.tool_calls?.[0].args as
-    | z.infer<typeof postSchema>
-    | undefined;
+    z.infer<typeof postSchema> | undefined;
 
   return {
     complexPost: rewrittenPost,

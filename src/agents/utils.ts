@@ -381,13 +381,7 @@ export function filterUnwantedImageUrls(urls: string[]): string[] {
  * `undefined` if the URL type could not be determined
  */
 export type UrlType =
-  | "github"
-  | "youtube"
-  | "general"
-  | "twitter"
-  | "reddit"
-  | "luma"
-  | undefined;
+  "github" | "youtube" | "general" | "twitter" | "reddit" | "luma" | undefined;
 
 export function getUrlType(url: string): UrlType {
   let parsedUrl: URL | undefined = undefined;
