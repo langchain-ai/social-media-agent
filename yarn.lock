@@ -5025,10 +5025,10 @@ keyv@^4.5.4:
   dependencies:
     json-buffer "3.0.1"
 
-"langsmith@>=0.4.0 <1.0.0", "langsmith@>=0.5.0 <1.0.0", langsmith@^0.7.12:
-  version "0.7.12"
-  resolved "https://registry.yarnpkg.com/langsmith/-/langsmith-0.7.12.tgz#00e369d35cc45345c789e7b09a75d20e44a92255"
-  integrity sha512-ujO2voSkYmGi6aImF3SsD/dKlBo+gu/bcmCrI5CJ7JFnagWxCeE12VsWha421AaAPehaB00w6EGfHgzTs/LD3g==
+"langsmith@>=0.4.0 <1.0.0", "langsmith@>=0.5.0 <1.0.0", langsmith@^0.7.13:
+  version "0.7.13"
+  resolved "https://registry.yarnpkg.com/langsmith/-/langsmith-0.7.13.tgz#d24b94e7caf9594b21276292f2b625e479fbcccc"
+  integrity sha512-7RWGWT0dMkImPHzOHmfNfCLQY8KiJua6q2gHFDagMSpyvnHWWi4gwkn+Z/WBDbuxpykTw06SEfElAxcu8wloKA==
   dependencies:
     p-queue "6.6.2"
 
