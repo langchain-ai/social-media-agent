@@ -47,7 +47,7 @@
     "@langchain/openai": "^1.5.5",
     "@mendable/firecrawl-js": "4.30.1",
     "@octokit/rest": "^22.0.1",
-    "@slack/web-api": "^7.19.0",
+    "@slack/web-api": "^8.0.0",
     "@supabase/supabase-js": "^2.110.7",
     "@types/snoowrap": "^1.19.0",
     "cheerio": "^1.2.0",
