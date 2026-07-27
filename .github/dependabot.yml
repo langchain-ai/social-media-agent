@@ -5,6 +5,13 @@ updates:
     schedule:
       interval: "weekly"
       day: "monday"
+    ignore:
+      - dependency-name: "@mendable/firecrawl-js"
+        versions: [">=1.22.0"]
+      - dependency-name: "@supabase/supabase-js"
+        versions: [">=2.110.0"]
+      - dependency-name: "file-type"
+        versions: [">=22.0.0"]
     groups:
       minor-and-patch:
         patterns:
