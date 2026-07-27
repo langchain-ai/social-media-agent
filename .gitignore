@@ -19,6 +19,11 @@ yarn-error.log
 .env.*
 !.env.example
 !.env.*.example
+*.pem
+*.key
+*.crt
+credentials.json
+.venv/
 
 .ipynb_checkpoints
 
