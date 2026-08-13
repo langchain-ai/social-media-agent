@@ -1,6 +1,7 @@
 import { Annotation } from "@langchain/langgraph";
 import { Source } from "./types.js";
 import { CuratedData } from "../curate-data/types.js";
+import { GenerateReportAnnotation } from "../generate-report/state.js";
 
 export const SupervisorAnnotation = Annotation.Root({
   /**
@@ -11,15 +12,7 @@ export const SupervisorAnnotation = Annotation.Root({
    * A list of reports, each containing a report & key details on a given data source/data group.
    * The report is used for generating a post, and key details are used for identifying reports on the same topic.
    */
-  reports: Annotation<
-    Array<{
-      report: string;
-      keyDetails: string;
-    }>
-  >({
-    reducer: (state, update) => state.concat(update),
-    default: () => [],
-  }),
+  reports: GenerateReportAnnotation.spec.reports,
   /**
    * The list of reports after they have been grouped.
    */
