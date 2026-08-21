@@ -1,4 +1,4 @@
-import { ChatOpenAI } from "@langchain/openai";
+import { getChatModel } from "../../../utils/llm.js";
 import { formatReportsForPrompt } from "../utils.js";
 import { GenerateThreadState } from "../state.js";
 
@@ -74,7 +74,7 @@ function parseTotalPosts(generation: string): number | undefined {
 export async function generateThreadPlan(
   state: GenerateThreadState,
 ): Promise<Partial<GenerateThreadState>> {
-  const model = new ChatOpenAI({
+  const model = getChatModel({
     model: "o1",
     streaming: false,
   });
