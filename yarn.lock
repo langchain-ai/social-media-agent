@@ -624,10 +624,10 @@
     protobufjs "^7.5.4"
     ws "^8.18.0"
 
-"@googleapis/youtube@^33.0.0":
-  version "33.0.0"
-  resolved "https://registry.yarnpkg.com/@googleapis/youtube/-/youtube-33.0.0.tgz#715912d1d064749cc2c66c3f8d1cba4a79451dda"
-  integrity sha512-PW3SdoZ8ULzW0We0lgplyZHjuXJtOdRvU5RL6ErNUlcTeSqjoHtk1pWdHKTwk3brPuIiqUB26K7fX84VroDqRg==
+"@googleapis/youtube@^34.1.0":
+  version "34.1.0"
+  resolved "https://registry.yarnpkg.com/@googleapis/youtube/-/youtube-34.1.0.tgz#2cce389bc6e3e8082617669cbfc4bfb2c5521239"
+  integrity sha512-AVOh1t4NAGJ/qZ5VhiV0NLrNxEneaE6v7dhSMSrMA0L3n8+Q+cVCfsyGN/W31xShLz2gZF9Wg1iQ7lZA4tdZDQ==
   dependencies:
     googleapis-common "^8.0.0"
 
@@ -3677,9 +3677,9 @@ functions-have-names@^1.2.3:
   integrity sha512-xckBUXyTIqT97tq2x2AMb+g163b5JFysYk0x4qxNFwbfQkmNZoiRHb6sPzI9/QV33WeuvVYBUIiD4NzNIyqaRQ==
 
 gaxios@^7.0.0, gaxios@^7.0.0-rc.4, gaxios@^7.1.4:
-  version "7.1.4"
-  resolved "https://registry.yarnpkg.com/gaxios/-/gaxios-7.1.4.tgz#33a5b78e2c5c01cf5a5d17f58dd188839867fc9c"
-  integrity sha512-bTIgTsM2bWn3XklZISBTQX7ZSddGW+IO3bMdGaemHZ3tbqExMENHLx6kKZ/KlejgrMtj8q7wBItt51yegqalrA==
+  version "7.3.1"
+  resolved "https://registry.yarnpkg.com/gaxios/-/gaxios-7.3.1.tgz#b26223db05856dfa5e2393ea376abad00e479c62"
+  integrity sha512-kB3rzJV7d9juLZh8/56QTXCwQfxyhdOMdyYk1HdQKFtF8TJTDTZQJtixWIwXdE9Jji91mC41DUNpjleo4L4eAQ==
   dependencies:
     extend "^3.0.2"
     https-proxy-agent "^7.0.1"
