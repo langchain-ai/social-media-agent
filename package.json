@@ -37,7 +37,7 @@
   "dependencies": {
     "@arcadeai/arcadejs": "^2.4.1",
     "@google/genai": "^2.19.0",
-    "@googleapis/youtube": "^33.0.0",
+    "@googleapis/youtube": "^34.1.0",
     "@langchain/anthropic": "^1.5.8",
     "@langchain/community": "^1.1.29",
     "@langchain/core": "^1.2.9",
@@ -57,7 +57,7 @@
     "express": "^5.2.1",
     "express-session": "^1.19.0",
     "file-type": "21.3.4",
-    "google-auth-library": "^10.9.1",
+    "google-auth-library": "^11.0.2",
     "langsmith": "^0.9.0",
     "moment": "^2.30.1",
     "passport": "^0.7.0",
@@ -103,6 +103,6 @@
     "timezone-mock": "^1.4.3",
     "ts-jest": "^29.4.12",
     "tsx": "^4.23.12",
-    "typescript": "^6.0.3"
+    "typescript": "^7.0.2"
   }
 }
