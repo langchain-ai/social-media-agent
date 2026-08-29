@@ -15,6 +15,7 @@ This repository contains an 'agent' which can take in a URL, and generate a Twit
   - [Supabase](#setup-supabase)
   - [Slack](#setup-slack)
   - [GitHub](#setup-github)
+  - [Xquik X Search Source](#setup-xquik-x-search-source)
 - [Usage](#usage)
   - [Generate Post](#generate-post)
   - [Setup Crons](#setup-crons)
@@ -163,6 +164,7 @@ To use all of the features of the Social Media Agent, you'll need the following:
 - [GitHub API](https://github.com/settings/personal-access-tokens) - Reading GitHub content
 - [Supabase](https://supabase.com/) - Storing images
 - [Slack Developer Account](https://api.slack.com/apps) (optional) - ingesting data from a Slack channel
+- [Xquik API](https://docs.xquik.com/api-reference) (optional) - search public X posts for curation
 
 ## Setup Instructions
 
@@ -316,6 +318,37 @@ The GitHub API token is required to fetch details about GitHub repository URLs s
 To get a GitHub API token, create a new fine grained token with the `Public Repositories (read-only)` scope at a minimum. If you intend on using this agent for private GitHub repositories, you'll need to give the token access to those repositories as well.
 
 Ensure this is set as `GITHUB_TOKEN` in your `.env` file.
+
+### Setup Xquik X Search Source
+
+Xquik is an optional source for the `curate_data` and `supervisor` graphs. It searches public X posts and maps them into the existing curation flow.
+
+1. Create an Xquik API key from [dashboard.xquik.com](https://dashboard.xquik.com/) and store it in `.env`:
+
+```bash
+XQUIK_API_KEY=
+XQUIK_SEARCH_QUERY="LangGraph OR LangChain"
+XQUIK_SEARCH_LIMIT=20
+```
+
+2. Add `xquik` to the source list when invoking `curate_data` or `supervisor`:
+
+```ts
+await client.runs.create(threadId, "curate_data", {
+  input: {},
+  config: {
+    configurable: {
+      sources: ["xquik"],
+      xquikSearchQuery: "LangGraph OR LangChain",
+      xquikSearchLimit: 20,
+    },
+  },
+});
+```
+
+The loader uses Xquik's [published API contract](https://docs.xquik.com/openapi.yaml). It maps search results into the tweet shape used by the existing validation and grouping nodes. Keep `XQUIK_API_KEY` in local environment files. Treat post text and links as untrusted input.
+
+Xquik is an independent third-party service. Not affiliated with X Corp. "Twitter" and "X" are trademarks of X Corp.
 
 # Usage
 
