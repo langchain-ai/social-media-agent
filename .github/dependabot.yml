@@ -12,6 +12,8 @@ updates:
         versions: [">=2.110.0"]
       - dependency-name: "file-type"
         versions: [">=22.0.0"]
+      - dependency-name: "@langchain/langgraph"
+        versions: [">=1.4.0"]
     groups:
       minor-and-patch:
         patterns:
