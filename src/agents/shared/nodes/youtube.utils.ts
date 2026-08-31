@@ -1,5 +1,4 @@
-import { youtube, youtube_v3 } from "@googleapis/youtube";
-import { GoogleAuth } from "google-auth-library";
+import { AuthPlus, youtube, youtube_v3 } from "@googleapis/youtube";
 
 /**
  * Extracts the videoId from a YouTube video URL.
@@ -51,7 +50,7 @@ function getYouTubeClientFromUrl(): youtube_v3.Youtube {
     process.env.GOOGLE_VERTEX_AI_WEB_CREDENTIALS,
   );
 
-  const auth = new GoogleAuth({
+  const auth = new AuthPlus({
     credentials: parsedGoogleCredentials,
     scopes: ["https://www.googleapis.com/auth/youtube.readonly"],
   });
