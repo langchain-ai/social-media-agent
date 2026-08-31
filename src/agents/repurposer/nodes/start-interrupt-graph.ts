@@ -1,9 +1,14 @@
+import { LangGraphRunnableConfig } from "@langchain/langgraph";
 import { Client } from "@langchain/langgraph-sdk";
+import { POST_TO_LINKEDIN_ORGANIZATION } from "../../generate-post/constants.js";
+import { shouldPostToLinkedInOrg } from "../../utils.js";
 import { RepurposerState, RepurposerUpdate } from "../types.js";
 
 export async function startInterruptGraphRuns(
   state: RepurposerState,
+  config?: LangGraphRunnableConfig,
 ): Promise<RepurposerUpdate> {
+  const postToLinkedInOrg = shouldPostToLinkedInOrg(config);
   const client = new Client({
     apiUrl: process.env.LANGGRAPH_API_URL,
     apiKey: process.env.LANGCHAIN_API_KEY,
@@ -25,6 +30,11 @@ export async function startInterruptGraphRuns(
           imageOptions: state.imageOptions,
           posts: state.posts,
           campaignPlan: state.campaignPlan,
+        },
+        config: {
+          configurable: {
+            [POST_TO_LINKEDIN_ORGANIZATION]: postToLinkedInOrg,
+          },
         },
       });
     }),
