@@ -12,6 +12,10 @@ updates:
         versions: [">=2.110.0"]
       - dependency-name: "file-type"
         versions: [">=22.0.0"]
+      - dependency-name: "google-auth-library"
+        versions: [">=11.0.0"]
+      - dependency-name: "typescript"
+        versions: [">=7.0.0"]
     groups:
       minor-and-patch:
         patterns:
