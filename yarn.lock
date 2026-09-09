@@ -624,10 +624,10 @@
     protobufjs "^7.5.4"
     ws "^8.18.0"
 
-"@googleapis/youtube@^34.1.0":
-  version "34.1.0"
-  resolved "https://registry.yarnpkg.com/@googleapis/youtube/-/youtube-34.1.0.tgz#2cce389bc6e3e8082617669cbfc4bfb2c5521239"
-  integrity sha512-AVOh1t4NAGJ/qZ5VhiV0NLrNxEneaE6v7dhSMSrMA0L3n8+Q+cVCfsyGN/W31xShLz2gZF9Wg1iQ7lZA4tdZDQ==
+"@googleapis/youtube@^35.0.0":
+  version "35.0.0"
+  resolved "https://registry.yarnpkg.com/@googleapis/youtube/-/youtube-35.0.0.tgz#2e4ba6cce2393e953492b16869673d75988c6717"
+  integrity sha512-mUD2mMgqFmmSZbTgKisVFpOwWj1aOt3UbMCVorwYTVyZkqdY1QURs2SMaP5g6IPHvuUYWBaBIn7CMhFWIEqQ2Q==
   dependencies:
     googleapis-common "^8.0.0"
 
