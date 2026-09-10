@@ -1,4 +1,4 @@
-import { ChatOpenAI } from "@langchain/openai";
+import { getChatModel } from "../../../utils/llm.js";
 import { RepurposerState } from "../types.js";
 import { formatReportForPrompt } from "../utils.js";
 
@@ -72,7 +72,7 @@ some details text here
 export async function generateCampaignPlan(
   state: RepurposerState,
 ): Promise<Partial<RepurposerState>> {
-  const model = new ChatOpenAI({
+  const model = getChatModel({
     model: "o1",
     streaming: false,
   });
