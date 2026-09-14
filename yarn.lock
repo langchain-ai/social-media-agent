@@ -642,12 +642,12 @@
     protobufjs "^7.5.4"
     ws "^8.18.0"
 
-"@googleapis/youtube@^35.0.0":
-  version "35.0.0"
-  resolved "https://registry.yarnpkg.com/@googleapis/youtube/-/youtube-35.0.0.tgz#2e4ba6cce2393e953492b16869673d75988c6717"
-  integrity sha512-mUD2mMgqFmmSZbTgKisVFpOwWj1aOt3UbMCVorwYTVyZkqdY1QURs2SMaP5g6IPHvuUYWBaBIn7CMhFWIEqQ2Q==
+"@googleapis/youtube@^38.0.0":
+  version "38.0.0"
+  resolved "https://registry.yarnpkg.com/@googleapis/youtube/-/youtube-38.0.0.tgz#415260796c1e6361f610d7cbea9325bbbda298fb"
+  integrity sha512-1E8QQ9cZKt2bs0ly6lketaNPO1pmgqLLCBUXkKzwPiRB7Gm478wUzlAdFc4gbQaT4ZirlO0xUIUon+lVMv8Svg==
   dependencies:
-    googleapis-common "^8.0.0"
+    googleapis-common "^9.0.0"
 
 "@humanfs/core@^0.19.2":
   version "0.19.2"
@@ -3975,7 +3975,7 @@ functions-have-names@^1.2.3:
   resolved "https://registry.yarnpkg.com/functions-have-names/-/functions-have-names-1.2.3.tgz#0404fe4ee2ba2f607f0e0ec3c80bae994133b834"
   integrity sha512-xckBUXyTIqT97tq2x2AMb+g163b5JFysYk0x4qxNFwbfQkmNZoiRHb6sPzI9/QV33WeuvVYBUIiD4NzNIyqaRQ==
 
-gaxios@^7.0.0, gaxios@^7.0.0-rc.4, gaxios@^7.1.3, gaxios@^7.1.4:
+gaxios@^7.0.0, gaxios@^7.1.3, gaxios@^7.1.4, gaxios@^7.3.0:
   version "7.3.1"
   resolved "https://registry.yarnpkg.com/gaxios/-/gaxios-7.3.1.tgz#b26223db05856dfa5e2393ea376abad00e479c62"
   integrity sha512-kB3rzJV7d9juLZh8/56QTXCwQfxyhdOMdyYk1HdQKFtF8TJTDTZQJtixWIwXdE9Jji91mC41DUNpjleo4L4eAQ==
@@ -4123,7 +4123,7 @@ globalthis@^1.0.4:
     define-properties "^1.2.1"
     gopd "^1.0.1"
 
-google-auth-library@^10.1.0, google-auth-library@^10.3.0:
+google-auth-library@^10.3.0:
   version "10.9.1"
   resolved "https://registry.yarnpkg.com/google-auth-library/-/google-auth-library-10.9.1.tgz#af9852a328a6077e8ffbe776681b4ca9420a1714"
   integrity sha512-i1ydyHrqcIxXkWh/uBmVkzCvIuq5yiK2ATndIe5XxKholrG/MTYP9xGYka4sQhrbIAgGjL2B6NOE7rFaiF3fXw==
@@ -4135,7 +4135,7 @@ google-auth-library@^10.1.0, google-auth-library@^10.3.0:
     google-logging-utils "1.1.3"
     jws "^4.0.0"
 
-google-auth-library@^11.0.2:
+google-auth-library@^11.0.0, google-auth-library@^11.0.2:
   version "11.0.2"
   resolved "https://registry.yarnpkg.com/google-auth-library/-/google-auth-library-11.0.2.tgz#7d08ae14bd81521d27ed27b3f4d0074d2af880a3"
   integrity sha512-vzpgPutxrghPsnjrjpzLX2bdv8IOL719Rh0oEjGnQu8YCIbnbMuTTQ5zU9LcKvLdOPgCxBwppbvnhgW90Qna5Q==
@@ -4157,14 +4157,15 @@ google-logging-utils@^2.0.0:
   resolved "https://registry.yarnpkg.com/google-logging-utils/-/google-logging-utils-2.0.1.tgz#d78b34f4250db9ee816f29fee3321939296bcb8a"
   integrity sha512-HMhaQghlOTvbcb3c4T5jmmOMtG3JUF1iOQMezaJXL86CDS+Tm2vHd0IeLFRAx3+ewd+bo9E1HFHoy17X5aJa9A==
 
-googleapis-common@^8.0.0:
-  version "8.0.1"
-  resolved "https://registry.yarnpkg.com/googleapis-common/-/googleapis-common-8.0.1.tgz#5dc9042ec095d75c841e0e95cbeb17a88c010015"
-  integrity sha512-eCzNACUXPb1PW5l0ULTzMHaL/ltPRADoPgjBlT8jWsTbxkCp6siv+qKJ/1ldaybCthGwsYFYallF7u9AkU4L+A==
+googleapis-common@^9.0.0:
+  version "9.0.4"
+  resolved "https://registry.yarnpkg.com/googleapis-common/-/googleapis-common-9.0.4.tgz#4a17be7e198a07776f86c015dbf6babf446a002f"
+  integrity sha512-fcI5bm1gN+9MNb+gvANRPFsxaJ07h/ZYvKCh6H3RoDJBUTwp5ySaCpCqnmX8gnGJUD/9bKmkacivRJT1g+xXyg==
   dependencies:
     extend "^3.0.2"
-    gaxios "^7.0.0-rc.4"
-    google-auth-library "^10.1.0"
+    gaxios "^7.3.0"
+    google-auth-library "^11.0.0"
+    google-logging-utils "^2.0.0"
     qs "^6.7.0"
     url-template "^2.0.8"
 
