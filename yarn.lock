@@ -642,10 +642,10 @@
     protobufjs "^7.5.4"
     ws "^8.18.0"
 
-"@googleapis/youtube@^38.0.0":
-  version "38.0.0"
-  resolved "https://registry.yarnpkg.com/@googleapis/youtube/-/youtube-38.0.0.tgz#415260796c1e6361f610d7cbea9325bbbda298fb"
-  integrity sha512-1E8QQ9cZKt2bs0ly6lketaNPO1pmgqLLCBUXkKzwPiRB7Gm478wUzlAdFc4gbQaT4ZirlO0xUIUon+lVMv8Svg==
+"@googleapis/youtube@^39.0.0":
+  version "39.0.0"
+  resolved "https://registry.yarnpkg.com/@googleapis/youtube/-/youtube-39.0.0.tgz#bcd343955bcfc9d8cdc3560bdda9a46a97db94b9"
+  integrity sha512-ROGXvKLwOWOS4dSEexWS4ZF061ZGaTmGzkdOiTB6OvpimzmbnVyMioRRi0q+/sZ6C1CwffOb8+WYo5SPiZlTag==
   dependencies:
     googleapis-common "^9.0.0"
 
@@ -3139,10 +3139,10 @@ domutils@^3.0.1, domutils@^3.2.2:
     domelementtype "^2.3.0"
     domhandler "^5.0.3"
 
-dotenv@^17.4.2:
-  version "17.4.2"
-  resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-17.4.2.tgz#c07e54a746e11eba021dd9e1047ced5afdc1c034"
-  integrity sha512-nI4U3TottKAcAD9LLud4Cb7b2QztQMUEfHbvhTH09bqXTxnSie8WnjPALV/WMCrJZ6UV/qHJ6L03OqO3LcdYZw==
+dotenv@^18.0.3:
+  version "18.0.3"
+  resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-18.0.3.tgz#b631bd444652cd971357123dc2342976589467ab"
+  integrity sha512-/8CJTyL817qPnfbQrJgOEcrU3fDrJkRIoXBE566wHuvIXKOCHUZhPqGPbCPi9SogjdGnreF0TlvnTgK6J/8zpA==
 
 dunder-proto@^1.0.0, dunder-proto@^1.0.1:
   version "1.0.1"

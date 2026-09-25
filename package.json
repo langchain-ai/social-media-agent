@@ -37,7 +37,7 @@
   "dependencies": {
     "@arcadeai/arcadejs": "^2.4.1",
     "@google/genai": "^2.23.0",
-    "@googleapis/youtube": "^38.0.0",
+    "@googleapis/youtube": "^39.0.0",
     "@langchain/anthropic": "^1.5.10",
     "@langchain/community": "^1.1.29",
     "@langchain/core": "^1.2.11",
@@ -53,7 +53,7 @@
     "cheerio": "^1.2.0",
     "date-fns": "^4.4.0",
     "date-fns-tz": "^3.2.0",
-    "dotenv": "^17.4.2",
+    "dotenv": "^18.0.3",
     "express": "^5.2.1",
     "express-session": "^1.19.0",
     "file-type": "21.3.4",
