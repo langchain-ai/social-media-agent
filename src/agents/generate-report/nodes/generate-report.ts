@@ -1,4 +1,4 @@
-import { ChatOpenAI } from "@langchain/openai";
+import { getChatModel } from "../../../utils/llm.js";
 import { GenerateReportState } from "../state.js";
 import { GENERATE_REPORT_PROMPT_O1 } from "../prompts.js";
 import { TweetsGroupedByContent } from "../../curate-data/types.js";
@@ -78,7 +78,7 @@ export async function generateReport(
     tweetGroup: state.tweetGroup,
   });
 
-  const reportO1Model = new ChatOpenAI({
+  const reportO1Model = getChatModel({
     model: "o1",
     streaming: false,
   });

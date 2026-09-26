@@ -1,7 +1,7 @@
 import { Client } from "@langchain/langgraph-sdk";
 import { LangGraphRunnableConfig } from "@langchain/langgraph";
 import { BaseGeneratePostState, BaseGeneratePostUpdate } from "./types.js";
-import { ChatAnthropic } from "@langchain/anthropic";
+import { getAnthropicModel } from "../../../../utils/llm.js";
 import {
   getReflectionsPrompt,
   REFLECTIONS_PROMPT,
@@ -60,7 +60,7 @@ export async function rewritePost<
     throw new Error("No user response found");
   }
 
-  const rewritePostModel = new ChatAnthropic({
+  const rewritePostModel = getAnthropicModel({
     model: "claude-sonnet-4-5",
     temperature: 0.5,
   });
