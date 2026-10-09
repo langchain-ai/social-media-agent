@@ -1,4 +1,4 @@
-import { ChatAnthropic } from "@langchain/anthropic";
+import { getAnthropicModel } from "../../../utils/llm.js";
 import { z } from "zod";
 import { formatReportForPrompt } from "../../repurposer/utils.js";
 import {
@@ -48,7 +48,7 @@ export async function rewritePost(
     throw new Error("Can not rewrite posts without user response");
   }
 
-  const model = new ChatAnthropic({
+  const model = getAnthropicModel({
     model: "claude-sonnet-4-5",
     temperature: 0,
   }).bindTools(
