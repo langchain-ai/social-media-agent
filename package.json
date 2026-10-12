@@ -37,7 +37,7 @@
   "dependencies": {
     "@arcadeai/arcadejs": "^2.4.1",
     "@google/genai": "^2.26.0",
-    "@googleapis/youtube": "^39.0.1",
+    "@googleapis/youtube": "^40.0.0",
     "@langchain/anthropic": "^1.5.12",
     "@langchain/community": "^1.1.29",
     "@langchain/core": "^1.2.14",
