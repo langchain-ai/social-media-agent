@@ -7,13 +7,11 @@ if DEPLOY_MODAL := environ.get("DEPLOY_MODAL"):
     DEPLOY_MODAL = DEPLOY_MODAL.lower() == "true"
 BOT_USER_ID = environ.get("SLACK_BOT_USER_ID")
 BOT_TOKEN = environ.get("SLACK_BOT_TOKEN")
+if not BOT_TOKEN or not BOT_TOKEN.strip() or BOT_TOKEN == "fake-token":
+    raise RuntimeError("SLACK_BOT_TOKEN must be set to a valid Slack bot token")
+
 if DEPLOY_MODAL:
-    if not environ.get("SLACK_BOT_TOKEN"):
-        environ["SLACK_BOT_TOKEN"] = "fake-token"
     BOT_USER_ID = BOT_USER_ID or "fake-user-id"
-else:
-    assert isinstance(BOT_TOKEN, str)
-    # APP_TOKEN = environ["SLACK_APP_TOKEN"]
 
 
 LANGGRAPH_URL = environ.get("LANGGRAPH_URL")
