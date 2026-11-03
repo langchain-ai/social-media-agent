@@ -49,6 +49,15 @@ To get started, you'll need the following API keys/software:
 - [FireCrawl API](https://www.firecrawl.dev/) - Web scraping. New users get 500 credits for free
 - [Arcade](https://www.arcade.dev/) - Easy authentication for reading & writing to social media platforms
 
+> **Optional: use [OrcaRouter](https://www.orcarouter.ai) as the model gateway.**
+> Instead of calling Anthropic/OpenAI directly, set `ORCAROUTER_API_KEY` and all chat
+> model calls in this repo are routed through the OrcaRouter gateway
+> (`https://api.orcarouter.ai/v1`), which is OpenAI/Anthropic-compatible. You can also
+> override the endpoint and model with `ORCAROUTER_BASE_URL` and `ORCAROUTER_MODEL`
+> (default `orcarouter/auto`). It also runs gateway-level, zero-trust security for AI
+> agents on the same endpoint — screening every prompt/response and governing every tool
+> call on a default-deny basis, with no application code changes.
+
 ## Setup Instructions
 
 ### Clone the repository:

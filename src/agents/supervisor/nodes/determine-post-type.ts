@@ -1,4 +1,4 @@
-import { ChatAnthropic } from "@langchain/anthropic";
+import { getAnthropicModel } from "../../../utils/llm.js";
 import { SupervisorState } from "../supervisor-state.js";
 import { z } from "zod";
 
@@ -66,7 +66,7 @@ Please take your time, and identify the best type of post to generate for these 
 export async function determinePostType(
   state: SupervisorState,
 ): Promise<Partial<SupervisorState>> {
-  const model = new ChatAnthropic({
+  const model = getAnthropicModel({
     model: "claude-sonnet-4-5",
     temperature: 0,
   }).withStructuredOutput(postTypeSchema, {

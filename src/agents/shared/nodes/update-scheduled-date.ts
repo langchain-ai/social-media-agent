@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { ChatAnthropic } from "@langchain/anthropic";
+import { getAnthropicModel } from "../../../utils/llm.js";
 import { toZonedTime } from "date-fns-tz";
 import { DateType } from "../../types.js";
 import { timezoneToUtc } from "../../../utils/date.js";
@@ -43,7 +43,7 @@ export async function updateScheduledDate(
   if (!state.userResponse) {
     throw new Error("No user response found");
   }
-  const model = new ChatAnthropic({
+  const model = getAnthropicModel({
     model: "claude-sonnet-4-5",
     temperature: 0.5,
   }).withStructuredOutput(scheduleDateSchema, {

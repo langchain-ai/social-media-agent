@@ -1,4 +1,4 @@
-import { ChatOpenAI } from "@langchain/openai";
+import { getChatModel } from "../../../utils/llm.js";
 import { GenerateReportState } from "../state.js";
 import { EXTRACT_KEY_DETAILS_PROMPT } from "../prompts.js";
 import { TweetsGroupedByContent } from "../../curate-data/types.js";
@@ -57,7 +57,7 @@ export async function extractKeyDetails(
     state.tweetGroup,
   );
 
-  const model = new ChatOpenAI({
+  const model = getChatModel({
     model: "o1",
     streaming: false,
   });

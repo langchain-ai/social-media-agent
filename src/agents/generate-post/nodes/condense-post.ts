@@ -1,4 +1,4 @@
-import { ChatAnthropic } from "@langchain/anthropic";
+import { getAnthropicModel } from "../../../utils/llm.js";
 import { GeneratePostAnnotation } from "../generate-post-state.js";
 import { parseGeneration } from "./generate-post/utils.js";
 import { filterLinksForPostContent, removeUrls } from "../../utils.js";
@@ -86,7 +86,7 @@ export async function condensePost(
     .replace("{originalPostLength}", originalPostLength)
     .replace("{reflectionsPrompt}", reflectionsPrompt);
 
-  const condensePostModel = new ChatAnthropic({
+  const condensePostModel = getAnthropicModel({
     model: "claude-sonnet-4-5",
     temperature: 0.5,
   });

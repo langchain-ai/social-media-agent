@@ -1,4 +1,4 @@
-import { ChatOpenAI } from "@langchain/openai";
+import { getChatModel } from "../../../../utils/llm.js";
 import { CurateDataState } from "../../state.js";
 import { GROUP_BY_CONTENT_CRITERIA } from "./prompts.js";
 import { TweetsGroupedByContent, TweetV2WithURLs } from "../../types.js";
@@ -135,7 +135,7 @@ export async function reGroupTweets(
     return {};
   }
 
-  const model = new ChatOpenAI({ model: "o1", streaming: false });
+  const model = getChatModel({ model: "o1", streaming: false });
 
   const { include, review } = splitGroups(
     state.tweetsGroupedByContent,
