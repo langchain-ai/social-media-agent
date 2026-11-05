@@ -1350,16 +1350,16 @@
   dependencies:
     js-tiktoken "^1.0.12"
 
-"@mendable/firecrawl-js@1.21.1":
-  version "1.21.1"
-  resolved "https://registry.yarnpkg.com/@mendable/firecrawl-js/-/firecrawl-js-1.21.1.tgz#e3504a9c2aeed8ab7a008fc142170115a25aff79"
-  integrity sha512-k+ju7P6/tpvj8EHQrKZBbBcPxV1dF3z7PzXQIFsn7Dpp7pWlU/LlAbai+b9hxzDkTlY05ec3NJG0V68VjyoJcA==
+"@mendable/firecrawl-js@4.52.0":
+  version "4.52.0"
+  resolved "https://registry.yarnpkg.com/@mendable/firecrawl-js/-/firecrawl-js-4.52.0.tgz#628dca4b8001c9a454dd0affdcd645c76d1996b3"
+  integrity sha512-oxHoRqlmZXexGN6NpT9nCOZw3wKly9bkZRFvuS3oIygstQIjArUkCnNnwyws6FHLZvGcQOPAKh6+xx/MwvtB8g==
   dependencies:
-    axios "^1.6.8"
-    isows "^1.0.4"
+    axios "1.20.0"
+    firecrawl "4.52.0"
     typescript-event-target "^1.1.1"
-    zod "^3.23.8"
-    zod-to-json-schema "^3.23.0"
+    zod "^3.25.28 || ^4.6.6"
+    zod-to-json-schema "^3.25.2"
 
 "@napi-rs/wasm-runtime@^1.1.4":
   version "1.2.3"
@@ -2537,7 +2537,7 @@ aws4@^1.8.0:
   resolved "https://registry.yarnpkg.com/aws4/-/aws4-1.13.2.tgz#0aa167216965ac9474ccfa83892cfb6b3e1e52ef"
   integrity sha512-lHe62zvbTB5eEABUVi/AwVh0ZKY9rMMDhmm+eeyuuUQbQ3+J+fONVQOZyj+DdrvD4BY33uYniyRJ4UJIaSKAfw==
 
-axios@^1.20.0, axios@^1.6.8:
+axios@1.20.0, axios@^1.20.0:
   version "1.20.0"
   resolved "https://registry.yarnpkg.com/axios/-/axios-1.20.0.tgz#515513445aa60e71d04b6521ca6210829ccb4786"
   integrity sha512-r8aOh8j9cGKpgQAqpzrUHnSIc6a59Y3Xf/cv8sy1DrHCkZHzQGEuoq1tARk6qSyDdtQGSDgpb9kFlruzPvrgwg==
@@ -3854,6 +3854,16 @@ find-up@^5.0.0:
     locate-path "^6.0.0"
     path-exists "^4.0.0"
 
+firecrawl@4.52.0:
+  version "4.52.0"
+  resolved "https://registry.yarnpkg.com/firecrawl/-/firecrawl-4.52.0.tgz#e08cd156b2be2a47dbf6c291c06055ac04a9affb"
+  integrity sha512-uRIUky4HZYpebq/sfxU+O7Kob5bcnAfwZTsxJWwtLNYS7p2IBytQY4y3v5bUZuxV61MnCzovhLLz+74MH1wCuw==
+  dependencies:
+    axios "1.20.0"
+    typescript-event-target "^1.1.1"
+    zod "^3.25.28 || ^4.6.6"
+    zod-to-json-schema "^3.25.2"
+
 flat-cache@^6.1.23:
   version "6.1.23"
   resolved "https://registry.yarnpkg.com/flat-cache/-/flat-cache-6.1.23.tgz#735dc888c271868d7301b3bbb8edba5028afb61d"
@@ -3873,10 +3883,10 @@ flatted@^3.4.2:
   resolved "https://registry.yarnpkg.com/flatted/-/flatted-3.4.4.tgz#aeeca2a506303f0cee61c59e6c9f2a88d2f29fc6"
   integrity sha512-5+ybhBZANEJxaH3X5evAFatUxLfEHSr7n6kYJ+1Qd0mUqr4eu9gIf6GDbWHf8RJijHrjjO8G+la14SlL2SeS1Q==
 
-follow-redirects@^1.16.0:
-  version "1.16.1"
-  resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.16.1.tgz#6e0efa40a727fb369b98dab15883ec34787d675e"
-  integrity sha512-FNvFGzoMLWmE6Yj9spb/zjd7yiNCHiAW9/Tg9CXrQ8wuu32HtlJOwWO11OJafl5FfY3DxTdQ0vj42zU1kvv5jg==
+follow-redirects@^1.16.0, follow-redirects@^1.16.2:
+  version "1.16.2"
+  resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.16.2.tgz#a233160dd1bc9b16cbbab43709e6adc7cc941c8c"
+  integrity sha512-/kVP2U8z596Ia0gwFrwyIeo74ta5aVmSeU1FfAUMAmcEP5EP7zydmag3SLiN64NaRKef3lxsq7i/g7ltJQDGow==
 
 for-each@^0.3.3:
   version "0.3.3"
@@ -4737,11 +4747,6 @@ isexe@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/isexe/-/isexe-2.0.0.tgz#e8fbf374dc556ff8947a10dcb0572d633f2cfa10"
   integrity sha512-RHxMLp9lnKHGHRng9QFhRCMbYAcVpn69smSGcq3f36xjgVVWThj4qqLbTLlq7Ssj8B+fIQ1EuCEGI2lKsyQeIw==
-
-isows@^1.0.4:
-  version "1.0.7"
-  resolved "https://registry.yarnpkg.com/isows/-/isows-1.0.7.tgz#1c06400b7eed216fbba3bcbd68f12490fc342915"
-  integrity sha512-I1fSfDCZL5P0v33sVqeTDSpcstAg/N+wF5HS033mogOVIp4B+oHC7oOCsA3axAbBSGTJ8QubbNmnIRN/h8U7hg==
 
 isstream@~0.1.2:
   version "0.1.2"
@@ -7408,17 +7413,12 @@ yocto-queue@^0.1.0:
   resolved "https://registry.yarnpkg.com/yocto-queue/-/yocto-queue-0.1.0.tgz#0294eb3dee05028d31ee1a5fa2c556a6aaf10a1b"
   integrity sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==
 
-zod-to-json-schema@^3.23.0:
-  version "3.23.5"
-  resolved "https://registry.yarnpkg.com/zod-to-json-schema/-/zod-to-json-schema-3.23.5.tgz#ec23def47dcafe3a4d640eba6a346b34f9a693a5"
-  integrity sha512-5wlSS0bXfF/BrL4jPAbz9da5hDlDptdEppYfe+x4eIJ7jioqKG9uUxOwPzqof09u/XeVdrgFu29lZi+8XNDJtA==
+zod-to-json-schema@^3.25.2:
+  version "3.25.2"
+  resolved "https://registry.yarnpkg.com/zod-to-json-schema/-/zod-to-json-schema-3.25.2.tgz#3fa799a7badd554541472fb65843fdc460b2e5aa"
+  integrity sha512-O/PgfnpT1xKSDeQYSCfRI5Gy3hPf91mKVDuYLUHZJMiDFptvP41MSnWofm8dnCm0256ZNfZIM7DSzuSMAFnjHA==
 
-zod@^3.23.8:
-  version "3.23.8"
-  resolved "https://registry.yarnpkg.com/zod/-/zod-3.23.8.tgz#e37b957b5d52079769fb8097099b592f0ef4067d"
-  integrity sha512-XBx9AXhXktjUqnepgTiE5flcKIYWi/rme0Eaj+5Y0lftuGBq+jyRu/md4WnuxqgP1ubdpNCsYEYPxrzVHD8d6g==
-
-"zod@^3.25.76 || ^4", zod@^4.6.7:
+"zod@^3.25.28 || ^4.6.6", "zod@^3.25.76 || ^4", zod@^4.6.7:
   version "4.6.7"
   resolved "https://registry.yarnpkg.com/zod/-/zod-4.6.7.tgz#e806cf64a7f4e37635ce9f2f52c04c3766f75e5b"
   integrity sha512-g8W2D2kU6a8untc053fX1uVBKzM7yqAxW/3zwk83+6RyF2+SKOuV+c0wBDhUwzV1PaGapmZH+rmcUzPf+3CGwg==
