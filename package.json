@@ -45,7 +45,7 @@
     "@langchain/langgraph": "^1.5.2",
     "@langchain/langgraph-sdk": "1.12.7",
     "@langchain/openai": "^1.7.0",
-    "@mendable/firecrawl-js": "1.21.1",
+    "@mendable/firecrawl-js": "4.52.0",
     "@octokit/rest": "^22.0.1",
     "@slack/web-api": "^8.2.0",
     "@supabase/supabase-js": "2.109.0",
@@ -72,6 +72,7 @@
   },
   "resolutions": {
     "axios": "^1.20.0",
+    "follow-redirects": "^1.16.2",
     "jws": "^4.0.1",
     "form-data": "^4.0.4",
     "qs": "^6.16.0",
