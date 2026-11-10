@@ -3,6 +3,7 @@ import passport from "passport";
 import { Strategy as TwitterStrategy } from "passport-twitter";
 import session from "express-session";
 import dotenv from "dotenv";
+import { randomBytes } from "node:crypto";
 
 dotenv.config();
 
@@ -11,6 +12,7 @@ declare module "express-session" {
   interface SessionData {
     linkedinToken?: string;
     linkedinUserInfo?: any;
+    linkedinOAuthState?: string;
   }
 }
 
@@ -40,9 +42,14 @@ export class SocialAuthServer {
   }
 
   private configureMiddleware(): void {
+    const secret = process.env.SESSION_SECRET;
+    if (!secret || !secret.trim() || secret === "your-session-secret") {
+      throw new Error("SESSION_SECRET must be set to a unique random secret");
+    }
+
     this.app.use(
       session({
-        secret: process.env.SESSION_SECRET || "your-session-secret",
+        secret,
         resave: true,
         saveUninitialized: true,
         cookie: {
@@ -134,7 +141,9 @@ export class SocialAuthServer {
     });
 
     // LinkedIn routes
-    this.app.get("/auth/linkedin", (_req: Request, res: Response) => {
+    this.app.get("/auth/linkedin", (req: Request, res: Response) => {
+      const state = randomBytes(32).toString("hex");
+      req.session.linkedinOAuthState = state;
       const authUrl = new URL(
         "https://www.linkedin.com/oauth/v2/authorization",
       );
@@ -145,8 +154,7 @@ export class SocialAuthServer {
         "redirect_uri",
         "http://localhost:3000/auth/linkedin/callback",
       );
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      authUrl.searchParams.append("state", process.env.SESSION_SECRET!);
+      authUrl.searchParams.append("state", state);
       // Includes "w_organization_social" scope for posting to LinkedIn company pages.
       // Remove "w_organization_social" if only posting to personal profiles.
       authUrl.searchParams.append(
@@ -159,8 +167,10 @@ export class SocialAuthServer {
 
     this.app.get("/auth/linkedin/callback", (req: Request, res: Response) => {
       const { code, state } = req.query;
+      const expectedState = req.session.linkedinOAuthState;
+      delete req.session.linkedinOAuthState;
 
-      if (state !== process.env.SESSION_SECRET) {
+      if (!expectedState || state !== expectedState) {
         return res
           .status(401)
           .send("State mismatch. Possible CSRF attack.") as any;
@@ -267,7 +277,10 @@ async function main() {
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) {
-  main().catch(console.error);
+  main().catch((error) => {
+    console.error(error);
+    process.exitCode = 1;
+  });
 }
 
 export default SocialAuthServer;
