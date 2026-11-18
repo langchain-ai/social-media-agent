@@ -199,6 +199,10 @@ The agent needs your authorization to read and write to social media platforms. 
 
 You can use either method, but not both.
 
+If you run `yarn start:auth` for Twitter or LinkedIn, set `SESSION_SECRET` in
+your `.env` file to a unique random value (for example, generate one with
+`openssl rand -hex 32`). Keep the value stable across restarts.
+
 #### Arcade setup
 
 Create an Arcade account [here](https://www.arcade.dev). After you register, [get an Arcade API key](https://docs.arcade.dev/home/quickstart?lang=typescript). Set this value as `ARCADE_API_KEY` in your `.env` file.
