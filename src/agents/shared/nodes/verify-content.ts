@@ -1,4 +1,4 @@
-import { ChatAnthropic } from "@langchain/anthropic";
+import { getAnthropicModel } from "../../../utils/llm.js";
 import { traceable } from "langsmith/traceable";
 import { z } from "zod";
 
@@ -24,7 +24,7 @@ async function verifyContentIsRelevantFunc(
     schema: z.ZodType<z.infer<typeof RELEVANCY_SCHEMA>>;
   },
 ): Promise<boolean> {
-  const relevancyModel = new ChatAnthropic({
+  const relevancyModel = getAnthropicModel({
     model: "claude-sonnet-4-5",
     temperature: 0,
     // TODO: Type casting as any here shouldn't be required...

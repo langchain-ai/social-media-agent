@@ -3,7 +3,7 @@ import {
   GeneratePostState,
   GeneratePostUpdate,
 } from "../generate-post-state.js";
-import { ChatAnthropic } from "@langchain/anthropic";
+import { getAnthropicModel } from "../../../utils/llm.js";
 
 const postSchema = z.object({
   main_post: z
@@ -37,7 +37,7 @@ Please split it into the two unique posts. Ensure the ONLY modification you make
 export async function rewritePostWithSplitUrl(
   state: GeneratePostState,
 ): Promise<GeneratePostUpdate> {
-  const postModel = new ChatAnthropic({
+  const postModel = getAnthropicModel({
     model: "claude-sonnet-4-5",
     temperature: 0,
   }).bindTools(

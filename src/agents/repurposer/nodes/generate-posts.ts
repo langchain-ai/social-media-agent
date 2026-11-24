@@ -1,4 +1,4 @@
-import { ChatAnthropic } from "@langchain/anthropic";
+import { getAnthropicModel } from "../../../utils/llm.js";
 import { getPrompts } from "../../generate-post/prompts/index.js";
 import { RepurposerState } from "../types.js";
 import { z } from "zod";
@@ -95,7 +95,7 @@ export async function generatePosts(
       ),
   });
 
-  const model = new ChatAnthropic({
+  const model = getAnthropicModel({
     model: "claude-sonnet-4-5",
     temperature: 0.5,
   }).bindTools([
